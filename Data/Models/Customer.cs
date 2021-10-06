@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Data.Models
 {
@@ -29,5 +30,9 @@ namespace Data.Models
 
 		[Required(AllowEmptyStrings = false), MinLength(6), MaxLength(50)]
 		public string Email { get; set; }
+
+		
+		// COLLECTION NAVIGATION
+		public ICollection<Order> Orders { get; set; }
 	}
 }

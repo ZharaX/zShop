@@ -6,7 +6,5 @@
 	public class Category
 	{
 		public int CategoryID { get; set; }
-
-		public Product Product { get; set; }
 	}
 }
