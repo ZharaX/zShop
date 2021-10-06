@@ -15,6 +15,33 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Data.Models.Order">
+    <TypeIdentifier>
+      <HashCode>EAEAABAAABAAQAAAAAAAAACAEAAAQAABAgAAAAAAAAQ=</HashCode>
+      <FileName>Models\Order.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Data.Models.Product">
+    <Position X="5.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAEAAAACAQAgAAAAAAAAAAQAgAAAABAgAAAAAAAACAA=</HashCode>
+      <FileName>Models\Product.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Data.ZShopContext">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IQEAAQAQAQAQAAAAIAAAAACAEAAAAAAIAAAACAABAAw=</HashCode>
+      <FileName>ZShopContext.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Data.IDBHandler">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IQAAAQAQAQAQAAAAIAAAAACAAAAAAAAAAAAACAABAAg=</HashCode>
+      <FileName>ZShopContext.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
     <Position X="2.5" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EAEAABAAAAAAAAAAAAAAAACAEAAAQAAAAgAAAAAAAAA=</HashCode>

@@ -5,6 +5,7 @@ namespace Data.Models
 {
 	/// <summary>
 	/// Context Class Defining an Order
+	/// NOTE: ANNOTATIONS ARE DEFINED BY FLUID API
 	/// </summary>
 	public class Order
 	{
@@ -22,7 +23,7 @@ namespace Data.Models
 		public int CustomerID { get; set; }
 		public Customer Customer { get; set; }
 
-		// NAVIGATION COLLECTION OF PRODUCTS ON THIS ORDER
+		// PRODUCTS COLLECTION NAVIGATION FOR THIS ORDER
 		public ICollection<Product> Products { get; set; }
 	}
 }

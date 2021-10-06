@@ -6,37 +6,261 @@ using System.Linq;
 
 namespace Data
 {
-	public class ZShopContext : DbContext
+	/// <summary>
+	/// INTERFACE IMPLEMENTATION
+	/// Use this to implement DB Context Related Functionality
+	/// </summary>
+	public interface IDBHandler
 	{
+		/// <summary>
+		/// Implementation of Customer DB Create
+		/// </summary>
+		/// <param name="customer">Customer Object</param>
+		void CreateCustomer(Models.Customer customer);
+		/// <summary>
+		/// Implementation of Retrieving Customer By ID
+		/// </summary>
+		/// <param name="id">Customer ID</param>
+		/// <returns>Customer Object</returns>
+		Models.Customer GetCustomer(int id);
+		/// <summary>
+		/// Implementation of Customer DB Update
+		/// </summary>
+		/// <param name="customer">Customer Object</param>
+		void UpdateCustomer(Models.Customer customer);
+
+		/// <summary>
+		/// Implementation of Product DB Create
+		/// </summary>
+		/// <param name="product">Product Object</param>
+		void CreateProduct(Models.Product product);
+		/// <summary>
+		/// Implementation of Retrieving Product By ID
+		/// </summary>
+		/// <param name="id">Product ID</param>
+		/// <returns>Product Object</returns>
+		Models.Product GetProduct(int id);
+		/// <summary>
+		/// Implementation of Retrieving All Products
+		/// </summary>
+		/// <returns>List of Product Objects</returns>
+		List<Models.Product> GetAllProducts();
+		/// <summary>
+		/// Implementation of Product DB Update
+		/// </summary>
+		/// <param name="product"></param>
+		void UpdateProduct(Models.Product product);
+
+		/// <summary>
+		/// Implementation of Order DB Create
+		/// </summary>
+		/// <param name="order">Order Objects</param>
+		void CreateOrder(Models.Order order);
+		/// <summary>
+		/// Implementation of Retrieving Order By ID
+		/// </summary>
+		/// <param name="id">Order ID</param>
+		/// <returns>Order Object</returns>
+		Models.Order GetOrder(int id);
+		/// <summary>
+		/// Implementation of Retrieving All Existing Orders
+		/// </summary>
+		/// <returns>List of Order Objects</returns>
+		List<Models.Order> GetAllOrders();
+		/// <summary>
+		/// Implementation of Order DB Update
+		/// </summary>
+		/// <param name="order">Order Object</param>
+		void UpdateOrder(Models.Order order);
+	}
+
+	/// <summary>
+	/// Main DB Contact Class
+	/// DONT USE THIS DIRECTLY! Implement IDBHandler
+	/// <see cref="IDBHandler"/>
+	/// </summary>
+	public class ZShopContext : DbContext, IDBHandler
+	{
+		private readonly string _connectionString;
+
 		public DbSet<Models.Product> Products { get; set; }
 		public DbSet<Models.Customer> Customers { get; set; }
 		public DbSet<Models.Order> Orders { get; set; }
+
+		public ZShopContext() { } // USING EMPTY DEFAULT FOR NOW UNTIL DEPENDENCY IS SETUP FROM RAZOR
+		public ZShopContext(string connectionString) { _connectionString = connectionString; } // LATER FOR DEPENDENCY INJECTION
 
 		protected override void OnConfiguring(DbContextOptionsBuilder options)
 			=> options.UseSqlServer(@"Server=S-HF-EUC-UB-04\ZZ_SQLSERVER;Database=zShopDB;Trusted_Connection=True;");
 		//=> options.UseSqlServer(@"Server=ZZ-SERVER\ZZSQLSERVER;Database=BookStoreDb;Trusted_Connection=True;");
 
+		#region MODEL CREATION
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			// ADDING DECIMAL PRECISION TO BOOK PRICE
-			modelBuilder.Entity<Models.Product>()
-					.Property(x => x.Price)
-					.HasPrecision(8, 2);
+			// DEFINING PRODUCT REQUIREMENTS
+			modelBuilder.Entity<Models.Product>().Property(x => x.Name)
+				.IsRequired(true)
+				.HasMaxLength(50);
 
-			// ADDING DECIMAL PRECISION TO PROMOTION PRICE
-			modelBuilder.Entity<Models.Order>()
-					.Property(x => x.TotalPrice)
-					.HasPrecision(8, 2);
+			modelBuilder.Entity<Models.Product>().Property(x => x.Description)
+				.IsRequired(true)
+				.HasMaxLength(250);
 
-			// ADDING DECIMAL PRECISION TO PROMOTION PRICE
-			modelBuilder.Entity<Models.Order>()
-					.Property(x => x.Discount)
-					.HasPrecision(8, 2);
+			modelBuilder.Entity<Models.Product>().Property(x => x.Image)
+				.IsRequired(true)
+				.HasMaxLength(50);
 
-			modelBuilder.Entity<Models.Customer>()
+			modelBuilder.Entity<Models.Product>().Property(x => x.Price)
+				.HasPrecision(8, 2);
+
+			// DEFINING ORDER REQUIREMENTS
+			modelBuilder.Entity<Models.Order>().Property(x => x.Amount)
+				.IsRequired(true);
+
+			modelBuilder.Entity<Models.Order>().Property(x => x.TotalPrice)
+				.HasPrecision(8, 2);
+
+			modelBuilder.Entity<Models.Order>().Property(x => x.Discount)
+				.HasPrecision(8, 2);
+
+			modelBuilder.Entity<Models.Order>().Property(x => x.Date)
+				.HasDefaultValueSql("GetDate()");
+
+			// DEFINING CUSTOMER REQUIREMENTS
+			modelBuilder.Entity<Models.Customer>() // MANY TO MANY
 				.HasMany(x => x.Orders)
 				.WithOne(x => x.Customer)
 				.HasForeignKey(x => x.CustomerID);
+
+			modelBuilder.Entity<Models.Customer>().Property(x => x.FirstName)
+				.IsRequired(true)
+				.HasMaxLength(25);
+
+			modelBuilder.Entity<Models.Customer>().Property(x => x.LastName)
+				.IsRequired(true)
+				.HasMaxLength(25);
+
+			modelBuilder.Entity<Models.Customer>().Property(x => x.Address)
+				.IsRequired(true)
+				.HasMaxLength(50);
+
+			modelBuilder.Entity<Models.Customer>().Property(x => x.City)
+				.IsRequired(true)
+				.HasMaxLength(50);
+
+			modelBuilder.Entity<Models.Customer>().Property(x => x.Postal)
+				.IsRequired(true)
+				.HasMaxLength(8);
+
+			modelBuilder.Entity<Models.Customer>().Property(x => x.Country)
+				.IsRequired(true)
+				.HasMaxLength(25);
+
+			modelBuilder.Entity<Models.Customer>().Property(x => x.Phone)
+				.IsRequired(true)
+				.HasMaxLength(16);
+
+			modelBuilder.Entity<Models.Customer>().Property(x => x.Email)
+				.IsRequired(true)
+				.HasMaxLength(50);
 		}
+		#endregion
+		#region CUSTOMER QUERYS
+		public void CreateCustomer(Models.Customer customer)
+		{
+			using (var dbContext = new ZShopContext())
+			{
+				dbContext.Customers.Add(customer);
+				dbContext.SaveChanges();
+			};
+		}
+
+		public Models.Customer GetCustomer(int id)
+		{
+			using (var dbContext = new ZShopContext())
+			{
+				return dbContext.Customers.FirstOrDefault(c => c.CustomerID == id);
+			};
+		}
+
+		public void UpdateCustomer(Models.Customer customer)
+		{
+			using (var dbContext = new ZShopContext())
+			{
+				dbContext.Update(customer);
+				dbContext.SaveChanges();
+			};
+		}
+		#endregion
+		#region PRODUCT QUERYS
+		public void CreateProduct(Models.Product product)
+		{
+			using (var dbContext = new ZShopContext())
+			{
+				dbContext.Products.Add(product);
+				dbContext.SaveChanges();
+			};
+		}
+
+		public Models.Product GetProduct(int id)
+		{
+			using (var dbContext = new ZShopContext())
+			{
+				return dbContext.Products.FirstOrDefault(c => c.ProductID == id);
+			};
+		}
+
+		public List<Models.Product> GetAllProducts()
+		{
+			using (var dbContext = new ZShopContext())
+			{
+				return dbContext.Products.ToList();
+			};
+		}
+
+		public void UpdateProduct(Models.Product product)
+		{
+			using (var dbContext = new ZShopContext())
+			{
+				dbContext.Update(product);
+				dbContext.SaveChanges();
+			};
+		}
+		#endregion
+		#region ORDER QUERYS
+		public void CreateOrder(Models.Order order)
+		{
+			using (var dbContext = new ZShopContext())
+			{
+				dbContext.Orders.Add(order);
+				dbContext.SaveChanges();
+			};
+		}
+
+		public Models.Order GetOrder(int id)
+		{
+			using (var dbContext = new ZShopContext())
+			{
+				return dbContext.Orders.FirstOrDefault(c => c.OrderID == id);
+			};
+		}
+
+		public List<Models.Order> GetAllOrders()
+		{
+			using (var dbContext = new ZShopContext())
+			{
+				return dbContext.Orders.ToList();
+			};
+		}
+
+		public void UpdateOrder(Models.Order order)
+		{
+			using (var dbContext = new ZShopContext())
+			{
+				dbContext.Update(order);
+				dbContext.SaveChanges();
+			};
+		}
+		#endregion
 	}
 }
