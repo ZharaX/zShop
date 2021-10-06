@@ -1,21 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Data.Models.Category">
-    <Position X="7.25" Y="5" Width="1.5" />
+    <Position X="4.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>EAACAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Category.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Data.Models.Customer">
-    <Position X="3" Y="0.5" Width="1.5" />
+    <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAEAAACAAAAAIAAAAAAAAEAIAAAACAAAAIAABAAg=</HashCode>
       <FileName>Models\Customer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Data.Models.Order">
-    <Position X="5.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EAEAABAAABAAQAAAAAAAAACAEAAAQAABAgAAAAAAAAQ=</HashCode>
       <FileName>Models\Order.cs</FileName>
@@ -43,5 +42,25 @@
       <FileName>ZShopContext.cs</FileName>
     </TypeIdentifier>
   </Interface>
+    <Position X="2.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAEAABAAAAAAAAAAAAAAAACAEAAAQAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Models\Order.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Data.Models.OrderDetails">
+    <Position X="0.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAABAAABAAQAAAAAAAAAAAEAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Models\OrderDetails.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Data.Models.Product">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAACAQAgAAAAAAAAAAQAgAAAABAgAAAAAAAACAA=</HashCode>
+      <FileName>Models\Product.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
