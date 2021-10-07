@@ -96,8 +96,8 @@ namespace Data
 		public ZShopContext(string connectionString) { _connectionString = connectionString; } // LATER FOR DEPENDENCY INJECTION
 
 		protected override void OnConfiguring(DbContextOptionsBuilder options)
-			//=> options.UseSqlServer(@"Server=S-HF-EUC-UB-04\ZZ_SQLSERVER;Database=zShopDB;Trusted_Connection=True;");
-			=> options.UseSqlServer(@"Server=ZZ-SERVER\ZZSQLSERVER;Database=zShopDB;Trusted_Connection=True;");
+			=> options.UseSqlServer(@"Server=S-HF-DB-666\ZZ_SQLSERVER;Database=zShopDB;Trusted_Connection=True;");
+			//=> options.UseSqlServer(@"Server=ZZ-SERVER\ZZSQLSERVER;Database=zShopDB;Trusted_Connection=True;");
 
 		#region MODEL CREATION
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -171,6 +171,7 @@ namespace Data
 		}
 		#endregion
 		#region CUSTOMER QUERYS
+		// CREATE
 		public string CreateCustomer(Models.Customer customer)
 		{
 			using (var dbContext = new ZShopContext())
@@ -194,6 +195,7 @@ namespace Data
 			};
 		}
 
+		// UPDATE
 		public string UpdateCustomer(Models.Customer customer)
 		{
 			using (var dbContext = new ZShopContext())
@@ -208,6 +210,7 @@ namespace Data
 		// DELETE (DEACTIVATE)
 		#endregion
 		#region PRODUCT QUERYS
+		// CREATE
 		public string CreateProduct(Models.Product product)
 		{
 			using (var dbContext = new ZShopContext())
@@ -219,6 +222,7 @@ namespace Data
 			return null;
 		}
 
+		// RETRIEVE 1
 		public Models.Product GetProduct(int id)
 		{
 			using (var dbContext = new ZShopContext())
@@ -227,6 +231,7 @@ namespace Data
 			};
 		}
 
+		// RETRIEVE ALL
 		public List<Models.Product> GetAllProducts()
 		{
 			using (var dbContext = new ZShopContext())
@@ -235,6 +240,7 @@ namespace Data
 			};
 		}
 
+		// UPDATE
 		public string UpdateProduct(Models.Product product)
 		{
 			using (var dbContext = new ZShopContext())
@@ -245,8 +251,11 @@ namespace Data
 
 			return null;
 		}
+
+		// DELETE (DEACTIVATE)
 		#endregion
 		#region ORDER QUERYS
+		// CREATE
 		public string CreateOrder(Models.Order order)
 		{
 			using (var dbContext = new ZShopContext())
@@ -258,6 +267,7 @@ namespace Data
 			return null;
 		}
 
+		// RETRIEVE 1
 		public Models.Order GetOrder(int id)
 		{
 			using (var dbContext = new ZShopContext())
@@ -266,6 +276,7 @@ namespace Data
 			};
 		}
 
+		// RETRIEVE ALL
 		public List<Models.Order> GetAllOrders()
 		{
 			using (var dbContext = new ZShopContext())
@@ -274,6 +285,7 @@ namespace Data
 			};
 		}
 
+		// UPDATE
 		public string UpdateOrder(Models.Order order)
 		{
 			using (var dbContext = new ZShopContext())
@@ -284,6 +296,8 @@ namespace Data
 
 			return null;
 		}
+
+		// DELETE (DEACTIVATE)
 		#endregion
 	}
 }
