@@ -185,6 +185,7 @@ namespace Data
 			return "Ingen Kunde Oprettet!";
 		}
 
+		// RETRIEVE
 		public Models.Customer GetCustomer(int id)
 		{
 			using (var dbContext = new ZShopContext())
@@ -203,6 +204,8 @@ namespace Data
 
 			return null;
 		}
+
+		// DELETE (DEACTIVATE)
 		#endregion
 		#region PRODUCT QUERYS
 		public string CreateProduct(Models.Product product)
