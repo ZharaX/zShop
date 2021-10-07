@@ -16,7 +16,8 @@ namespace Data
 		/// Implementation of Customer DB Create
 		/// </summary>
 		/// <param name="customer">Customer Object</param>
-		void CreateCustomer(Models.Customer customer);
+		/// <returns>DB Status String</returns>
+		string CreateCustomer(Models.Customer customer);
 		/// <summary>
 		/// Implementation of Retrieving Customer By ID
 		/// </summary>
@@ -27,13 +28,14 @@ namespace Data
 		/// Implementation of Customer DB Update
 		/// </summary>
 		/// <param name="customer">Customer Object</param>
-		void UpdateCustomer(Models.Customer customer);
+		string UpdateCustomer(Models.Customer customer);
 
 		/// <summary>
 		/// Implementation of Product DB Create
 		/// </summary>
 		/// <param name="product">Product Object</param>
-		void CreateProduct(Models.Product product);
+		/// <returns>DB Status String</returns>
+		string CreateProduct(Models.Product product);
 		/// <summary>
 		/// Implementation of Retrieving Product By ID
 		/// </summary>
@@ -49,13 +51,15 @@ namespace Data
 		/// Implementation of Product DB Update
 		/// </summary>
 		/// <param name="product"></param>
-		void UpdateProduct(Models.Product product);
+		/// <returns>DB Status String</returns>
+		string UpdateProduct(Models.Product product);
 
 		/// <summary>
 		/// Implementation of Order DB Create
 		/// </summary>
 		/// <param name="order">Order Objects</param>
-		void CreateOrder(Models.Order order);
+		/// /// <returns>DB Status String</returns>
+		string CreateOrder(Models.Order order);
 		/// <summary>
 		/// Implementation of Retrieving Order By ID
 		/// </summary>
@@ -71,7 +75,8 @@ namespace Data
 		/// Implementation of Order DB Update
 		/// </summary>
 		/// <param name="order">Order Object</param>
-		void UpdateOrder(Models.Order order);
+		/// <returns>DB Status String</returns>
+		string UpdateOrder(Models.Order order);
 	}
 
 	/// <summary>
@@ -91,8 +96,8 @@ namespace Data
 		public ZShopContext(string connectionString) { _connectionString = connectionString; } // LATER FOR DEPENDENCY INJECTION
 
 		protected override void OnConfiguring(DbContextOptionsBuilder options)
-			=> options.UseSqlServer(@"Server=S-HF-EUC-UB-04\ZZ_SQLSERVER;Database=zShopDB;Trusted_Connection=True;");
-		//=> options.UseSqlServer(@"Server=ZZ-SERVER\ZZSQLSERVER;Database=BookStoreDb;Trusted_Connection=True;");
+			//=> options.UseSqlServer(@"Server=S-HF-EUC-UB-04\ZZ_SQLSERVER;Database=zShopDB;Trusted_Connection=True;");
+			=> options.UseSqlServer(@"Server=ZZ-SERVER\ZZSQLSERVER;Database=zShopDB;Trusted_Connection=True;");
 
 		#region MODEL CREATION
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -166,13 +171,18 @@ namespace Data
 		}
 		#endregion
 		#region CUSTOMER QUERYS
-		public void CreateCustomer(Models.Customer customer)
+		public string CreateCustomer(Models.Customer customer)
 		{
 			using (var dbContext = new ZShopContext())
 			{
 				dbContext.Customers.Add(customer);
-				dbContext.SaveChanges();
+
+
+				if (dbContext.SaveChanges() == 1)
+					return "Kunde Oprettet!";
 			};
+
+			return "Ingen Kunde Oprettet!";
 		}
 
 		public Models.Customer GetCustomer(int id)
@@ -183,23 +193,27 @@ namespace Data
 			};
 		}
 
-		public void UpdateCustomer(Models.Customer customer)
+		public string UpdateCustomer(Models.Customer customer)
 		{
 			using (var dbContext = new ZShopContext())
 			{
 				dbContext.Update(customer);
 				dbContext.SaveChanges();
 			};
+
+			return null;
 		}
 		#endregion
 		#region PRODUCT QUERYS
-		public void CreateProduct(Models.Product product)
+		public string CreateProduct(Models.Product product)
 		{
 			using (var dbContext = new ZShopContext())
 			{
 				dbContext.Products.Add(product);
 				dbContext.SaveChanges();
 			};
+
+			return null;
 		}
 
 		public Models.Product GetProduct(int id)
@@ -218,23 +232,27 @@ namespace Data
 			};
 		}
 
-		public void UpdateProduct(Models.Product product)
+		public string UpdateProduct(Models.Product product)
 		{
 			using (var dbContext = new ZShopContext())
 			{
 				dbContext.Update(product);
 				dbContext.SaveChanges();
 			};
+
+			return null;
 		}
 		#endregion
 		#region ORDER QUERYS
-		public void CreateOrder(Models.Order order)
+		public string CreateOrder(Models.Order order)
 		{
 			using (var dbContext = new ZShopContext())
 			{
 				dbContext.Orders.Add(order);
 				dbContext.SaveChanges();
 			};
+
+			return null;
 		}
 
 		public Models.Order GetOrder(int id)
@@ -253,13 +271,15 @@ namespace Data
 			};
 		}
 
-		public void UpdateOrder(Models.Order order)
+		public string UpdateOrder(Models.Order order)
 		{
 			using (var dbContext = new ZShopContext())
 			{
 				dbContext.Update(order);
 				dbContext.SaveChanges();
 			};
+
+			return null;
 		}
 		#endregion
 	}
