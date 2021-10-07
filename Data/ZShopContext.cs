@@ -16,67 +16,78 @@ namespace Data
 		/// Implementation of Customer DB Create
 		/// </summary>
 		/// <param name="customer">Customer Object</param>
-		/// <returns>DB Status String</returns>
-		string CreateCustomer(Models.Customer customer);
+		/// <returns>SUCCESS/FAILURE BOOL</returns>
+		bool CreateCustomer(Models.Customer customer);
+
 		/// <summary>
 		/// Implementation of Retrieving Customer By ID
 		/// </summary>
 		/// <param name="id">Customer ID</param>
 		/// <returns>Customer Object</returns>
 		Models.Customer GetCustomer(int id);
+
 		/// <summary>
 		/// Implementation of Customer DB Update
 		/// </summary>
 		/// <param name="customer">Customer Object</param>
-		string UpdateCustomer(Models.Customer customer);
+		/// <returns>SUCCESS/FAILURE BOOL</returns>
+		bool UpdateCustomer(Models.Customer customer);
+
 
 		/// <summary>
 		/// Implementation of Product DB Create
 		/// </summary>
 		/// <param name="product">Product Object</param>
-		/// <returns>DB Status String</returns>
-		string CreateProduct(Models.Product product);
+		/// <returns>SUCCESS/FAILURE BOOL</returns>
+		bool CreateProduct(Models.Product product);
+
 		/// <summary>
 		/// Implementation of Retrieving Product By ID
 		/// </summary>
 		/// <param name="id">Product ID</param>
 		/// <returns>Product Object</returns>
 		Models.Product GetProduct(int id);
+
 		/// <summary>
 		/// Implementation of Retrieving All Products
 		/// </summary>
 		/// <returns>List of Product Objects</returns>
 		List<Models.Product> GetAllProducts();
+
 		/// <summary>
 		/// Implementation of Product DB Update
 		/// </summary>
 		/// <param name="product"></param>
-		/// <returns>DB Status String</returns>
-		string UpdateProduct(Models.Product product);
+		/// <returns>SUCCESS/FAILURE BOOL</returns>
+		bool UpdateProduct(Models.Product product);
+
 
 		/// <summary>
 		/// Implementation of Order DB Create
 		/// </summary>
 		/// <param name="order">Order Objects</param>
-		/// /// <returns>DB Status String</returns>
-		string CreateOrder(Models.Order order);
+		/// <returns>SUCCESS/FAILURE BOOL</returns>
+		bool CreateOrder(Models.Order order);
+
 		/// <summary>
 		/// Implementation of Retrieving Order By ID
 		/// </summary>
 		/// <param name="id">Order ID</param>
 		/// <returns>Order Object</returns>
 		Models.Order GetOrder(int id);
+
 		/// <summary>
 		/// Implementation of Retrieving All Existing Orders
 		/// </summary>
 		/// <returns>List of Order Objects</returns>
 		List<Models.Order> GetAllOrders();
+
 		/// <summary>
 		/// Implementation of Order DB Update
 		/// </summary>
 		/// <param name="order">Order Object</param>
-		/// <returns>DB Status String</returns>
-		string UpdateOrder(Models.Order order);
+		/// <returns>SUCCESS/FAILURE BOOL</returns>
+		bool UpdateOrder(Models.Order order);
 	}
 
 	/// <summary>
@@ -172,7 +183,7 @@ namespace Data
 		#endregion
 		#region CUSTOMER QUERYS
 		// CREATE
-		public string CreateCustomer(Models.Customer customer)
+		public bool CreateCustomer(Models.Customer customer)
 		{
 			using (var dbContext = new ZShopContext())
 			{
@@ -180,10 +191,10 @@ namespace Data
 
 
 				if (dbContext.SaveChanges() == 1)
-					return "Kunde Oprettet!";
+					return true;
 			};
 
-			return "Ingen Kunde Oprettet!";
+			return false;
 		}
 
 		// RETRIEVE
@@ -196,30 +207,34 @@ namespace Data
 		}
 
 		// UPDATE
-		public string UpdateCustomer(Models.Customer customer)
+		public bool UpdateCustomer(Models.Customer customer)
 		{
 			using (var dbContext = new ZShopContext())
 			{
 				dbContext.Update(customer);
 				dbContext.SaveChanges();
+
+				return true;
 			};
 
-			return null;
+			return false;
 		}
 
 		// DELETE (DEACTIVATE)
 		#endregion
 		#region PRODUCT QUERYS
 		// CREATE
-		public string CreateProduct(Models.Product product)
+		public bool CreateProduct(Models.Product product)
 		{
 			using (var dbContext = new ZShopContext())
 			{
 				dbContext.Products.Add(product);
 				dbContext.SaveChanges();
+
+				return true;
 			};
 
-			return null;
+			return false;
 		}
 
 		// RETRIEVE 1
@@ -241,30 +256,34 @@ namespace Data
 		}
 
 		// UPDATE
-		public string UpdateProduct(Models.Product product)
+		public bool UpdateProduct(Models.Product product)
 		{
 			using (var dbContext = new ZShopContext())
 			{
 				dbContext.Update(product);
 				dbContext.SaveChanges();
+
+				return true;
 			};
 
-			return null;
+			return false;
 		}
 
 		// DELETE (DEACTIVATE)
 		#endregion
 		#region ORDER QUERYS
 		// CREATE
-		public string CreateOrder(Models.Order order)
+		public bool CreateOrder(Models.Order order)
 		{
 			using (var dbContext = new ZShopContext())
 			{
 				dbContext.Orders.Add(order);
 				dbContext.SaveChanges();
+
+				return true;
 			};
 
-			return null;
+			return false;
 		}
 
 		// RETRIEVE 1
@@ -286,15 +305,17 @@ namespace Data
 		}
 
 		// UPDATE
-		public string UpdateOrder(Models.Order order)
+		public bool UpdateOrder(Models.Order order)
 		{
 			using (var dbContext = new ZShopContext())
 			{
 				dbContext.Update(order);
 				dbContext.SaveChanges();
+
+				return true;
 			};
 
-			return null;
+			return false;
 		}
 
 		// DELETE (DEACTIVATE)
