@@ -34,6 +34,13 @@ namespace Data
 		/// <returns>SUCCESS/FAILURE BOOL</returns>
 		bool UpdateCustomer(Models.Customer customer);
 
+		/// <summary>
+		/// Implementation of Customer DB Delete
+		/// </summary>
+		/// <param name="cID">Customer ID</param>
+		/// <returns>SUCCESS/FAILURE BOOL</returns>
+		bool DeleteCustomer(int cID);
+
 
 		/// <summary>
 		/// Implementation of Product DB Create
@@ -61,6 +68,13 @@ namespace Data
 		/// <param name="product"></param>
 		/// <returns>SUCCESS/FAILURE BOOL</returns>
 		bool UpdateProduct(Models.Product product);
+
+		/// <summary>
+		/// Implementation of Product DB Delete
+		/// </summary>
+		/// <param name="pID">Order ID</param>
+		/// <returns>SUCCESS/FAILURE BOOL</returns>
+		bool DeleteProduct(int pID);
 
 
 		/// <summary>
@@ -90,7 +104,48 @@ namespace Data
 		/// <returns>SUCCESS/FAILURE BOOL</returns>
 		bool UpdateOrder(Models.Order order);
 
+		/// <summary>
+		/// Implementation of Order DB Delete
+		/// </summary>
+		/// <param name="oID">Order ID</param>
+		/// <returns>SUCCESS/FAILURE BOOL</returns>
+		bool DeleteOrder(int oID);
+
+
+		/// <summary>
+		/// Implementation of Order DB Create
+		/// </summary>
+		/// <param name="order">Order Objects</param>
+		/// <returns>SUCCESS/FAILURE BOOL</returns>
+		bool CreateCategory(string name);
+
+		/// <summary>
+		/// Implementation of Retrieving a single Category found by either ID or Name
+		/// </summary>
+		/// <param name="name">Name of Category</param>
+		/// <param name="cID">Category ID</param>
+		/// <returns>Single Category Object</returns>
+		Models.Category GetCategory(string name, int cID);
+
+		/// <summary>
+		/// Implementation of Retrieving All Categorys
+		/// </summary>
+		/// <returns>List of Category Objects</returns>
 		List<Models.Category> GetAllCategorys();
+
+		/// <summary>
+		/// Implementation of Category DB Update
+		/// </summary>
+		/// <param name="name">Categorys New Name</param>
+		/// <returns>SUCCESS/FAILURE BOOL</returns>
+		bool UpdateCategory(string name);
+
+		/// <summary>
+		/// Implementation of Category DB Delete
+		/// </summary>
+		/// <param name="cID">Category ID</param>
+		/// <returns>SUCCESS/FAILURE BOOL</returns>
+		bool DeleteCategory(int cID);
 	}
 
 	/// <summary>
@@ -217,6 +272,13 @@ namespace Data
 		}
 
 		// DELETE (DEACTIVATE)
+		public bool DeleteCustomer(int cID)
+		{
+			Remove(Customers.FirstOrDefault(c => c.CustomerID == cID));
+			if (SaveChanges() == 1) return true;
+
+			return false;
+		}
 		#endregion
 		#region PRODUCT QUERYS
 		// CREATE
@@ -250,6 +312,13 @@ namespace Data
 		}
 
 		// DELETE (DEACTIVATE)
+		public bool DeleteProduct(int pID)
+		{
+			Remove(Products.FirstOrDefault(p => p.ProductID == pID));
+			if (SaveChanges() == 1) return true;
+
+			return false;
+		}
 		#endregion
 		#region ORDER QUERYS
 		// CREATE
@@ -283,11 +352,47 @@ namespace Data
 		}
 
 		// DELETE (DEACTIVATE)
+		public bool DeleteOrder(int oID)
+		{
+			Remove(Orders.FirstOrDefault(o => o.OrderID == oID));
+			if (SaveChanges() == 1) return true;
+
+			return false;
+		}
 		#endregion
 		#region CATEGORY QUERY
+		// CREATE
+		public bool CreateCategory(string name)
+		{
+			//Category.Add(customer); TODO: IMPLEMENT
+
+			if (SaveChanges() == 1) return true;
+
+			return false;
+		}
+
+		// RETRIEVE 1
+		public Models.Category GetCategory(string name, int cID)
+		{
+			return null;
+		}
+
+		// RETRIEVE ALL
 		public List<Models.Category> GetAllCategorys()
 		{
 			return null;
+		}
+
+		// UPDATE
+		public bool UpdateCategory(string name)
+		{
+			return false;
+		}
+
+		// DELETE
+		public bool DeleteCategory(int cID)
+		{
+			return false;
 		}
 		#endregion
 	}

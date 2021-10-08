@@ -65,13 +65,13 @@
 						return _dbContext.CreateCustomer(data as Data.Models.Customer);
 
 					if (function == FunctionName.Order) // FUNCTION: PRODUCT
-						return null;
+						return _dbContext.CreateOrder(data as Data.Models.Order);
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
 						return NewProduct(data);
 
 					if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
-						return null;
+						return _dbContext.CreateCategory(data as string);
 
 					return null; // WE SHOULD EVEN NOT BE GETTING HERE
 
@@ -96,16 +96,16 @@
 				// ACTION -> UPDATE
 				case ActionType.Update:
 					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
-						return null;
+						return _dbContext.UpdateCustomer(data as Data.Models.Customer);
 
 					if (function == FunctionName.Order) // FUNCTION: ORDER
-						return null;
+						return _dbContext.UpdateOrder(data as Data.Models.Order);
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
 						return UpdateProduct(data);
 
 					if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
-						return null;
+						return _dbContext.UpdateCategory(data as string);
 
 					return null; // WE SHOULD EVEN NOT BE GETTING HERE
 
@@ -113,16 +113,16 @@
 				// ACTION -> DELETE
 				case ActionType.Delete:
 					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
-						return null;
+						return _dbContext.DeleteCustomer(data as int[]);
 
 					if (function == FunctionName.Order) // FUNCTION: ORDER
-						return null;
+						return _dbContext.DeleteOrder(data as int[]);
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return null;
+						return _dbContext.DeleteProduct(data as int[]);
 
 					if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
-						return null;
+						return _dbContext.DeleteCategory(data as int[]);
 
 					return null; // WE SHOULD EVEN NOT BE GETTING HERE
 

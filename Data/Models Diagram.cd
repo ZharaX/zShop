@@ -37,7 +37,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Interface Name="Data.IDBHandler">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Position X="0.5" Y="0.5" Width="2" />
     <TypeIdentifier>
       <HashCode>IQAAAQAQAQAQAEAAIAAAAACAQAAAAAAAAAAACAABAAg=</HashCode>
       <FileName>ZShopContext.cs</FileName>
