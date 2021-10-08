@@ -17,6 +17,11 @@
 		object PerformAction<T>(ActionType action, FunctionName function, T data) where T : class;
 	}
 
+	/// <summary>
+	/// SiteFunctions Class, one and only method for Site Wide Functionalitys
+	/// <para>NOTE: DO NOT DIRECTLY USE THIS CLASS, IMPLEMENT ISiteFunctions</para>
+	/// <see cref="ISiteFunctions"/>
+	/// </summary>
 	public class SiteFunctions : ISiteFunctions
 	{
 		// REFERENCE FOR DB MANAGER
@@ -38,7 +43,7 @@
 			//DataTransferObjects.SiteRepository = _siteRepository;
 		}
 
-		#region NORMAL USER FUNCTION HANDLER
+		#region USER FUNCTION HANDLER
 		/// <summary>
 		/// Method handling retrieval only of various requested data.
 		/// Create, Update & Delete will be an Admin only feature.

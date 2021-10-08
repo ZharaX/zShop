@@ -1,37 +1,20 @@
 ﻿using Data;
 using Service;
 using System;
-using System.Collections.Generic;
 
 namespace zShopConsole
 {
 	class Program
 	{
-		static IDBHandler db = new ZShopContext();
+		static IDBHandler db = new ZShopContext(); // IMPLEMENT DB CONTEXT
 		private static readonly ISiteFunctions _siteFunctions = new SiteFunctions("");
 
 		static void Main(string[] args)
 		{
 			//InsertCustomer();
 
-			Data.Models.Customer cust = db.GetCustomer(1);
-
-			List<Data.Models.Category> cat = db.GetAllCategorys();
-
-			//bool status = (bool)_siteFunctions.PerformAction(
-			//	ActionType.Create,
-			//	FunctionName.Customer,
-			//	new Data.Models.Customer
-			//	{
-			//		FirstName = "Jens_test",
-			//		LastName = "Burmeister_test",
-			//		Address = "Skovvej 22_test",
-			//		City = "Sønderborg_test",
-			//		Postal = "6400_t",
-			//		Country = "Danmark_test",
-			//		Phone = "31318859_test",
-			//		Email = "jens114x@elevcampus.dk"
-			//	});
+			//Data.Models.Customer cust = db.GetCustomer(1);
+			//List<Data.Models.Category> cat = db.GetAllCategorys();
 		}
 
 		static void InsertCustomer()

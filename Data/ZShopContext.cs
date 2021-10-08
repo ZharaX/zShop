@@ -110,8 +110,8 @@ namespace Data
 		public ZShopContext(string connectionString) { _connectionString = connectionString; } // LATER FOR DEPENDENCY INJECTION
 
 		protected override void OnConfiguring(DbContextOptionsBuilder options)
-			//=> options.UseSqlServer(@"Server=S-HF-DB-666\ZZ_SQLSERVER;Database=zShopDB;Trusted_Connection=True;");
-			=> options.UseSqlServer(@"Server=ZZ-SERVER\ZZSQLSERVER;Database=zShopDB;Trusted_Connection=True;");
+			=> options.UseSqlServer(@"Server=S-HF-DB-666\ZZ_SQLSERVER;Database=zShopDB;Trusted_Connection=True;");
+			//=> options.UseSqlServer(@"Server=ZZ-SERVER\ZZSQLSERVER;Database=zShopDB;Trusted_Connection=True;");
 
 		#region MODEL CREATION
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -284,9 +284,11 @@ namespace Data
 
 		// DELETE (DEACTIVATE)
 		#endregion
+		#region CATEGORY QUERY
 		public List<Models.Category> GetAllCategorys()
 		{
 			return null;
 		}
+		#endregion
 	}
 }
