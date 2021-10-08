@@ -31,7 +31,7 @@
 		public SiteFunctions(string connectionString)
 		{
 			// CREATE DB MANAGER REFERENCE
-			_dbContext = new Data.ZShopContext(connectionString);
+			_dbContext = new Data.ZShopContext();
 			_customerHandler = new CustomerHandler(_dbContext);
 
 			// SETTING DTO HANDLER CLASS REFERENCE

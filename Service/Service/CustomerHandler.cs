@@ -65,7 +65,9 @@ namespace Service
 		private int LoginCustomer(string[] cred)
 		{
 			// GET CUSTOMER OBJECT
-			Data.Models.Customer cust = _dbContext.LoginCustomer(cred);
+			//Data.Models.Customer cust = _dbContext.LoginCustomer(cred);
+
+			Data.Models.Customer cust = _dbContext.GetCustomer(1);
 
 			// RETURN CUSTOMER ID
 			if (cust != null) return cust.CustomerID;
