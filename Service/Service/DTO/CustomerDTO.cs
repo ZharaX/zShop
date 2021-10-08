@@ -12,5 +12,7 @@
 		public string Country { get; set; }
 		public string Phone { get; set; }
 		public string Email { get; set; }
+
+		// TODO: List of Orders goes here
 	}
 }

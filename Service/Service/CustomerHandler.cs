@@ -31,7 +31,7 @@ namespace Service
 		private List<ActiveUsers.UserData> _users = new List<ActiveUsers.UserData>();
 
 		// ON INSTANTIATION: Starts Timer Event which checks for user activity (Auto-Logout Functionality)
-		public CustomerHandler(Data.IDBHandler dbContext) { CheckUserStatus(); }
+		public CustomerHandler(Data.IDBHandler dbContext) { _dbContext = dbContext; CheckUserStatus(); }
 
 		#region USER / CUSTOMER AUTHENTICATION
 		public string AddUserForSession(string[] cred)
@@ -65,7 +65,9 @@ namespace Service
 		private int LoginCustomer(string[] cred)
 		{
 			// GET CUSTOMER OBJECT
-			Data.Models.Customer cust = _dbContext.LoginCustomer(cred);
+			//Data.Models.Customer cust = _dbContext.LoginCustomer(cred);
+
+			Data.Models.Customer cust = _dbContext.GetCustomer(1);
 
 			// RETURN CUSTOMER ID
 			if (cust != null) return cust.CustomerID;
@@ -81,7 +83,10 @@ namespace Service
 		public DTO.CustomerDTO ReturnCustomerDTO(string sID)
 		{
 			// GET CUSTOMER OBJECT
-			Data.Models.Customer cust = _dbContext.GetCustomer(_users.FirstOrDefault(c => c.SID == sID).CID);
+			//Data.Models.Customer cust = _dbContext.GetCustomer(_users.FirstOrDefault(c => c.SID == sID).CID);
+
+			// NEEDED FOR NOW FOR TEST PRESENTATION -> ABOVE IS THE ACTUAL IMPLEMENTATION
+			Data.Models.Customer cust = _dbContext.GetCustomer(1);
 
 			// RETURN CUSTOMER ID
 			if (cust != null) return new DTO.CustomerDTO

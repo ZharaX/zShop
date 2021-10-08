@@ -1,18 +1,20 @@
 ﻿using Data;
+using Service;
 using System;
-using System.Collections.Generic;
 
 namespace zShopConsole
 {
 	class Program
 	{
-		static IDBHandler db = new ZShopContext();
+		static IDBHandler db = new ZShopContext(); // IMPLEMENT DB CONTEXT
+		private static readonly ISiteFunctions _siteFunctions = new SiteFunctions("");
 
 		static void Main(string[] args)
 		{
 			//InsertCustomer();
 
-			List<Data.Models.Category> cat = db.GetAllCategorys();
+			//Data.Models.Customer cust = db.GetCustomer(1);
+			//List<Data.Models.Category> cat = db.GetAllCategorys();
 		}
 
 		static void InsertCustomer()

@@ -17,6 +17,11 @@
 		object PerformAction<T>(ActionType action, FunctionName function, T data) where T : class;
 	}
 
+	/// <summary>
+	/// SiteFunctions Class, one and only method for Site Wide Functionalitys
+	/// <para>NOTE: DO NOT DIRECTLY USE THIS CLASS, IMPLEMENT ISiteFunctions</para>
+	/// <see cref="ISiteFunctions"/>
+	/// </summary>
 	public class SiteFunctions : ISiteFunctions
 	{
 		// REFERENCE FOR DB MANAGER
@@ -31,14 +36,14 @@
 		public SiteFunctions(string connectionString)
 		{
 			// CREATE DB MANAGER REFERENCE
-			_dbContext = new Data.ZShopContext(connectionString);
+			_dbContext = new Data.ZShopContext();
 			_customerHandler = new CustomerHandler(_dbContext);
 
 			// SETTING DTO HANDLER CLASS REFERENCE
 			//DataTransferObjects.SiteRepository = _siteRepository;
 		}
 
-		#region NORMAL USER FUNCTION HANDLER
+		#region USER FUNCTION HANDLER
 		/// <summary>
 		/// Method handling retrieval only of various requested data.
 		/// Create, Update & Delete will be an Admin only feature.
@@ -60,13 +65,13 @@
 						return _dbContext.CreateCustomer(data as Data.Models.Customer);
 
 					if (function == FunctionName.Order) // FUNCTION: PRODUCT
-						return null;
+						return _dbContext.CreateOrder(data as Data.Models.Order);
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
 						return NewProduct(data);
 
 					if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
-						return null;
+						return _dbContext.CreateCategory(data as string);
 
 					return null; // WE SHOULD EVEN NOT BE GETTING HERE
 
@@ -91,16 +96,16 @@
 				// ACTION -> UPDATE
 				case ActionType.Update:
 					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
-						return null;
+						return _dbContext.UpdateCustomer(data as Data.Models.Customer);
 
 					if (function == FunctionName.Order) // FUNCTION: ORDER
-						return null;
+						return _dbContext.UpdateOrder(data as Data.Models.Order);
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
 						return UpdateProduct(data);
 
 					if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
-						return null;
+						return _dbContext.UpdateCategory(data as string);
 
 					return null; // WE SHOULD EVEN NOT BE GETTING HERE
 
@@ -108,16 +113,16 @@
 				// ACTION -> DELETE
 				case ActionType.Delete:
 					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
-						return null;
+						return _dbContext.DeleteCustomer(data as int[]);
 
 					if (function == FunctionName.Order) // FUNCTION: ORDER
-						return null;
+						return _dbContext.DeleteOrder(data as int[]);
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return null;
+						return _dbContext.DeleteProduct(data as int[]);
 
 					if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
-						return null;
+						return _dbContext.DeleteCategory(data as int[]);
 
 					return null; // WE SHOULD EVEN NOT BE GETTING HERE
 
