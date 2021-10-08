@@ -1,5 +1,6 @@
 ﻿using Data;
 using System;
+using System.Collections.Generic;
 
 namespace zShopConsole
 {
@@ -9,7 +10,9 @@ namespace zShopConsole
 
 		static void Main(string[] args)
 		{
-			InsertCustomer();
+			//InsertCustomer();
+
+			List<Data.Models.Category> cat = db.GetAllCategorys();
 		}
 
 		static void InsertCustomer()

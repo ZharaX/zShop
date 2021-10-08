@@ -25,6 +25,7 @@ namespace Data
 		/// <param name="id">Customer ID</param>
 		/// <returns>Customer Object</returns>
 		Models.Customer GetCustomer(int id);
+		Models.Customer LoginCustomer(string[] cred);
 
 		/// <summary>
 		/// Implementation of Customer DB Update
@@ -46,7 +47,7 @@ namespace Data
 		/// </summary>
 		/// <param name="id">Product ID</param>
 		/// <returns>Product Object</returns>
-		Models.Product GetProduct(int id);
+		Models.Product GetProduct(int[] id);
 
 		/// <summary>
 		/// Implementation of Retrieving All Products
@@ -74,7 +75,7 @@ namespace Data
 		/// </summary>
 		/// <param name="id">Order ID</param>
 		/// <returns>Order Object</returns>
-		Models.Order GetOrder(int id);
+		Models.Order GetOrder(int[] id);
 
 		/// <summary>
 		/// Implementation of Retrieving All Existing Orders
@@ -88,6 +89,8 @@ namespace Data
 		/// <param name="order">Order Object</param>
 		/// <returns>SUCCESS/FAILURE BOOL</returns>
 		bool UpdateOrder(Models.Order order);
+
+		List<Models.Category> GetAllCategorys();
 	}
 
 	/// <summary>
@@ -107,8 +110,8 @@ namespace Data
 		public ZShopContext(string connectionString) { _connectionString = connectionString; } // LATER FOR DEPENDENCY INJECTION
 
 		protected override void OnConfiguring(DbContextOptionsBuilder options)
-			=> options.UseSqlServer(@"Server=S-HF-DB-666\ZZ_SQLSERVER;Database=zShopDB;Trusted_Connection=True;");
-			//=> options.UseSqlServer(@"Server=ZZ-SERVER\ZZSQLSERVER;Database=zShopDB;Trusted_Connection=True;");
+			//=> options.UseSqlServer(@"Server=S-HF-DB-666\ZZ_SQLSERVER;Database=zShopDB;Trusted_Connection=True;");
+			=> options.UseSqlServer(@"Server=ZZ-SERVER\ZZSQLSERVER;Database=zShopDB;Trusted_Connection=True;");
 
 		#region MODEL CREATION
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -182,17 +185,18 @@ namespace Data
 		}
 		#endregion
 		#region CUSTOMER QUERYS
+		// CUSTOMER LOGIN
+		public Models.Customer LoginCustomer(string[] cred)
+		{
+			return null; // TODO:
+		}
+
 		// CREATE
 		public bool CreateCustomer(Models.Customer customer)
 		{
-			using (var dbContext = new ZShopContext())
-			{
-				dbContext.Customers.Add(customer);
-
-
-				if (dbContext.SaveChanges() == 1)
-					return true;
-			};
+			Customers.Add(customer);
+			
+			if (SaveChanges() == 1) return true;
 
 			return false;
 		}
@@ -200,23 +204,15 @@ namespace Data
 		// RETRIEVE
 		public Models.Customer GetCustomer(int id)
 		{
-			using (var dbContext = new ZShopContext())
-			{
-				return dbContext.Customers.FirstOrDefault(c => c.CustomerID == id);
-			};
+			return Customers.FirstOrDefault(c => c.CustomerID == id);
 		}
 
 		// UPDATE
 		public bool UpdateCustomer(Models.Customer customer)
 		{
-			using (var dbContext = new ZShopContext())
-			{
-				dbContext.Update(customer);
-				dbContext.SaveChanges();
-
-				return true;
-			};
-
+			Update(customer);
+			if(SaveChanges() == 1) return true;
+			
 			return false;
 		}
 
@@ -226,45 +222,29 @@ namespace Data
 		// CREATE
 		public bool CreateProduct(Models.Product product)
 		{
-			using (var dbContext = new ZShopContext())
-			{
-				dbContext.Products.Add(product);
-				dbContext.SaveChanges();
-
-				return true;
-			};
+			Products.Add(product);
+			if(SaveChanges() == 1) return true;
 
 			return false;
 		}
 
 		// RETRIEVE 1
-		public Models.Product GetProduct(int id)
+		public Models.Product GetProduct(int[] id)
 		{
-			using (var dbContext = new ZShopContext())
-			{
-				return dbContext.Products.FirstOrDefault(c => c.ProductID == id);
-			};
+			return Products.FirstOrDefault(c => c.ProductID == id[0]);
 		}
 
 		// RETRIEVE ALL
 		public List<Models.Product> GetAllProducts()
 		{
-			using (var dbContext = new ZShopContext())
-			{
-				return dbContext.Products.ToList();
-			};
+			return Products.ToList();
 		}
 
 		// UPDATE
 		public bool UpdateProduct(Models.Product product)
 		{
-			using (var dbContext = new ZShopContext())
-			{
-				dbContext.Update(product);
-				dbContext.SaveChanges();
-
-				return true;
-			};
+			Update(product);
+			if(SaveChanges() == 1) return true;
 
 			return false;
 		}
@@ -275,50 +255,38 @@ namespace Data
 		// CREATE
 		public bool CreateOrder(Models.Order order)
 		{
-			using (var dbContext = new ZShopContext())
-			{
-				dbContext.Orders.Add(order);
-				dbContext.SaveChanges();
-
-				return true;
-			};
+			Orders.Add(order);
+			if(SaveChanges() == 1) return true;
 
 			return false;
 		}
 
 		// RETRIEVE 1
-		public Models.Order GetOrder(int id)
+		public Models.Order GetOrder(int[] id)
 		{
-			using (var dbContext = new ZShopContext())
-			{
-				return dbContext.Orders.FirstOrDefault(c => c.OrderID == id);
-			};
+			return Orders.FirstOrDefault(c => c.OrderID == id[0]);
 		}
 
 		// RETRIEVE ALL
 		public List<Models.Order> GetAllOrders()
 		{
-			using (var dbContext = new ZShopContext())
-			{
-				return dbContext.Orders.ToList();
-			};
+			return Orders.ToList();
 		}
 
 		// UPDATE
 		public bool UpdateOrder(Models.Order order)
 		{
-			using (var dbContext = new ZShopContext())
-			{
-				dbContext.Update(order);
-				dbContext.SaveChanges();
-
-				return true;
-			};
+			Update(order);
+			if(SaveChanges() == 1) return true;
 
 			return false;
 		}
 
 		// DELETE (DEACTIVATE)
 		#endregion
+		public List<Models.Category> GetAllCategorys()
+		{
+			return null;
+		}
 	}
 }
