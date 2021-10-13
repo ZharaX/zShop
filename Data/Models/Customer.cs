@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Data.Models
 {
@@ -7,9 +6,8 @@ namespace Data.Models
 	/// Context Class Defining a Customer
 	/// NOTE: ANNOTATIONS ARE DEFINED BY FLUID API
 	/// </summary>
-	public class Customer
+	public class Customer : BaseModel
 	{
-		public int CustomerID { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public string Address { get; set; }

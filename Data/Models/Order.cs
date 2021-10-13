@@ -7,10 +7,8 @@ namespace Data.Models
 	/// Context Class Defining an Order
 	/// NOTE: ANNOTATIONS ARE DEFINED BY FLUID API
 	/// </summary>
-	public class Order
+	public class Order : BaseModel
 	{
-		public int OrderID { get; set; }
-
 		public int Amount { get; set; }
 		public decimal TotalPrice { get; set; }
 		public decimal Discount { get; set; }
@@ -20,7 +18,6 @@ namespace Data.Models
 		public bool IsProcessed { get; set; }
 
 		// CUSTOMER NAVIGATION REFERENCE
-		public int CustomerID { get; set; }
 		public Customer Customer { get; set; }
 
 		// PRODUCTS COLLECTION NAVIGATION FOR THIS ORDER
