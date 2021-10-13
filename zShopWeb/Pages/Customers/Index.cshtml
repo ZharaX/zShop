@@ -1,0 +1,80 @@
+﻿@page
+@model S21DMH3B11_zShop.Pages.Customer.IndexModel
+
+@{
+	ViewData["Title"] = "Kunde Listen!";
+}
+
+<h1>Viser Alle Kunder</h1>
+
+<p>
+	<a asp-page="Create">Opret Ny Kunde</a>
+</p>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Customers[0].FirstName)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Customers[0].LastName)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Customers[0].Address)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Customers[0].Postal)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Customers[0].City)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Customers[0].Country)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Customers[0].Phone)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Customers[0].Email)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var cust in Model.Customers)
+		{
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => cust.FirstName)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => cust.LastName)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => cust.Address)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => cust.Postal)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => cust.City)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => cust.Country)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => cust.Phone)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => cust.Email)
+			</td>
+			<td>
+				<a asp-page="./Edit" asp-route-id="@cust.SID">Redigér</a> |
+				<a asp-page="./Details" asp-route-id="@cust.SID">Detaljer</a> |
+				<a asp-page="./Delete" asp-route-id="@cust.SID">Slet</a>
+			</td>
+		</tr>
+		}
+	</tbody>
+</table>
