@@ -6,9 +6,8 @@ namespace Data.Models
 	/// Context Class Defining a Product
 	/// NOTE: ANNOTATIONS ARE DEFINED BY FLUID API
 	/// </summary>
-	public class Product
+	public class Product : BaseModel
 	{
-		public int ProductID { get; set; }
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public decimal Price { get; set; }
@@ -17,7 +16,6 @@ namespace Data.Models
 		public bool Active { get; set; }
 
 		// CATEGORY REFERENCE NAVIGATION
-		public int CategoryID { get; set; }
 		public Category Category { get; set; }
 
 		// ORDER COLLECTION NAVIGATION FOR THIS PRODUCT
