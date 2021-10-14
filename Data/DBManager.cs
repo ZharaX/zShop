@@ -63,13 +63,11 @@ namespace Data.DBManager
 					return _dbContext.SaveChanges() > 0;
 				}
 
-				var order = model as Data.Models.Order;
-				order.Customer = _dbContext.Customers.Attach(_dbContext.Customers.AsNoTracking().Include(c => c.Orders).Where(c => c.ID == 1).Single()).Entity;
+				//(model as Data.Models.Order).Customer = _dbContext.Customers.Attach(_dbContext.Customers.AsNoTracking().Where(c => c.ID == 1).Single()).Entity;
+				//_dbContext.Entry(model).State = EntityState.Unchanged;
 
 				this.Models.Add(model);
 				return _dbContext.SaveChanges() > 0;
-
-				return false;
 			}
 			catch (DbUpdateException e)
 			{

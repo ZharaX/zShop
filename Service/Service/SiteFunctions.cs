@@ -174,29 +174,55 @@ namespace Service
 		#region CREATE ORDER
 		private bool CreateOrder(DTO.OrderDTO order)
 		{
-			var products = _products.GetProducts().ToList();
+			//var products = _products.GetProducts().ToList();
 
-			var newOrder = new Order
+			using (_dbManager.DBManager())
 			{
-				Amount = order.Amount,
-				TotalPrice = order.TotalPrice,
-				Discount = order.Discount,
-				Date = System.DateTime.Now,
-			};
+				var customer = _dbManager.DBManager().Customers.AsNoTracking().Include(c => c.Orders).Where(c => c.ID == 1).Single();
+				var orders = _dbManager.DBManager().Orders.AsNoTracking().Where(o => o.Customer == customer).ToList();
 
-			//var cust = _customers.GetCustomers().AsQueryable().Include(c => c.Orders).Single();
+				var newOrder = new Order
+				{
+					Amount = order.Amount,
+					TotalPrice = order.TotalPrice,
+					Discount = order.Discount,
+					Date = System.DateTime.Now,
+					Customer = customer
+				};
 
-			//newOrder.Customer = cust;
+				_dbManager.DBManager().Entry(customer).State = EntityState.Unchanged;
 
-			var op = new System.Collections.Generic.List<OrderProduct>();
-			foreach (Service.DTO.ProductDTO p in order.Products)
-			{
-				op.Add(new OrderProduct { ProductID = p.ProductID/*, Order = newOrder*/ });
+				//orders.Add(newOrder);
+				//_dbManager.DBManager().Orders.Add(newOrder);
+
+				//_dbManager.DBManager().Entry(newOrder).State = EntityState.Unchanged;
+
+				//System.Collections.Generic.List<OrderProduct> op = new System.Collections.Generic.List<OrderProduct>();
+				System.Collections.Generic.List<OrderProduct> op = _dbManager.DBManager().NewOrder.AsNoTracking().ToList();
+				foreach (Service.DTO.ProductDTO prod in order.Products)
+				{
+					op.Add(new OrderProduct { Order = newOrder, ProductsID = _dbManager.DBManager().Products.AsNoTracking().Where(p => p.ID == prod.ProductID).Single().ID });
+				}
+
+				//newOrder.Products = op;
+				
+				//customer.Orders.Add(newOrder);
+
+				//_dbManager.DBManager().Entry(newOrder).State = EntityState.Added;
+				//_dbManager.DBManager().SaveChanges();
+
+				////newOrder.Products = op;
+
+				_dbManager.DBManager().NewOrder.AddRange(op.Skip(4).Take(2));
+				return _dbManager.DBManager().SaveChanges() > 0;
 			}
 
-			newOrder.Products = op;
+				//var cust = _customers.GetCustomers().Single();
 
-			return _orders.Create(newOrder);
+				//cust.Orders = _orders.GetOrders().AsNoTracking().Where(o => o.Customer == cust).ToList();
+
+				//cust.Orders = orders;
+				//newOrder.Customer = cust;
 		}
 		//newOrder.Customer = cust;
 
