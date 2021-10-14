@@ -13,6 +13,6 @@
 		public string Phone { get; set; }
 		public string Email { get; set; }
 
-		// TODO: List of Orders goes here
+		public System.Collections.Generic.List<OrderDTO> Orders { get; set; }
 	}
 }
