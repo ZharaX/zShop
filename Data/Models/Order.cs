@@ -20,7 +20,7 @@ namespace Data.Models
 		// CUSTOMER NAVIGATION REFERENCE
 		public Customer Customer { get; set; }
 
-		// PRODUCTS COLLECTION NAVIGATION FOR THIS ORDER
-		public ICollection<Product> Products { get; set; }
+		// ORDER<->PRODUCTS COLLECTION NAVIGATION FOR THIS ORDER
+		public ICollection<OrderProduct> Products { get; set; }
 	}
 }

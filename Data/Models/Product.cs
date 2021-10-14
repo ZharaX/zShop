@@ -19,6 +19,6 @@ namespace Data.Models
 		public Category Category { get; set; }
 
 		// ORDER COLLECTION NAVIGATION FOR THIS PRODUCT
-		public ICollection<Order> Orders { get; set; }
+		public ICollection<OrderProduct> Orders { get; set; }
 	}
 }

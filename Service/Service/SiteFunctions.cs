@@ -174,48 +174,33 @@ namespace Service
 		#region CREATE ORDER
 		private bool CreateOrder(DTO.OrderDTO order)
 		{
-			var newOrder = new Data.Models.Order
+			var products = _products.GetProducts().ToList();
+
+			var newOrder = new Order
 			{
 				Amount = order.Amount,
 				TotalPrice = order.TotalPrice,
 				Discount = order.Discount,
 				Date = System.DateTime.Now,
-				Products = Querys.QueryManager.FromProductDTO(order.Products)
 			};
 
-			//using (var dbContext = new Data.ZShopContext())
-			//{
-			//	//var customer = new DBManager<Customer>(dbContext);
-			//	//var orders = new DBManager<Order>(dbContext);
-			//	//var products = new DBManager<Product>(dbContext);
+			//var cust = _customers.GetCustomers().AsQueryable().Include(c => c.Orders).Single();
 
-			//	//var cust = customer.Table.Where(c => c.ID == 1).Include(c => c.Orders).ThenInclude(o => o.Products).AsNoTracking().Single();
-			//	//var o = orders.Table.Where(o => o.Customer == cust).AsNoTracking().ToList();
+			//newOrder.Customer = cust;
 
-			//	var cust = dbContext.Customers.Attach(dbContext.Customers.Where(c => c.ID == 1).Include(c => c.Orders).Single()).Entity;
-			//	//cust.Orders = dbContext.Orders.Where(o => o.Customer == cust).AsNoTracking().ToList();
+			var op = new System.Collections.Generic.List<OrderProduct>();
+			foreach (Service.DTO.ProductDTO p in order.Products)
+			{
+				op.Add(new OrderProduct { ProductID = p.ProductID/*, Order = newOrder*/ });
+			}
 
-			//	newOrder.Customer = cust;
+			newOrder.Products = op;
 
-			//	var products = dbContext.Products.Include(p => p.Orders).AsNoTracking().ToList();
-			//	foreach (var prod in newOrder.Products)
-			//	{
-			//		prod.Orders = products.Where(p => p.ID == prod.ID).Select(p => p.Orders).Single();
-			//		prod.Orders.Add(newOrder);
-			//		dbContext.Entry<Product>(prod).State = EntityState.Modified;
-			//	}
-
-			//	cust.Orders.Add(newOrder);
-			//	dbContext.Entry<Customer>(cust).State = EntityState.Modified;
-
-			//	//dbContext.Entry<Order>(newOrder).State = EntityState.Added;
-			//	dbContext.SaveChanges();
-			//}
-			
-			return false;
-
-			//return orders.Last();
+			return _orders.Create(newOrder);
 		}
+		//newOrder.Customer = cust;
+
+		//return _orders.Create(newOrder);
 		#endregion
 	}
 

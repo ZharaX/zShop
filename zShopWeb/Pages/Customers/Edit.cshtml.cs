@@ -23,13 +23,13 @@ namespace S21DMH3B11_zShop.Pages.Customer
 
 		public async Task<IActionResult> OnGetAsync(int? id)
 		{
-			id = 3;
+			id = 1;
 			if (id == null)
 			{
 				return NotFound();
 			}
 
-			Customer = (Service.DTO.CustomerDTO)_siteFunctions.PerformAction(ActionType.Retrieve, FunctionName.Customer, 3);
+			Customer = (Service.DTO.CustomerDTO)_siteFunctions.PerformAction(ActionType.Retrieve, FunctionName.Customer, 1);
 
 			if (Customer == null)
 			{

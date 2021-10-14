@@ -39,10 +39,10 @@ namespace Service.Querys
 		/// <returns>OrderDTO</returns>
 		public static IQueryable<OrderDTO> ToOrderDTO(this IQueryable<Data.Models.Order> order, Data.Models.Customer customer)
 		{
-			foreach(Data.Models.Product prod in order.SelectMany(o => o.Products))
+			foreach (Data.Models.Product prod in order.SelectMany(op => op.Products).Select(p => p.Product))
 			{
 				order.Select(o => new ProductDTO
-				{ 
+				{
 					ProductID = prod.ID,
 					Name = prod.Name,
 					Description = prod.Description,
@@ -53,7 +53,7 @@ namespace Service.Querys
 			}
 
 			System.Collections.Generic.List<ProductDTO> pr = new System.Collections.Generic.List<ProductDTO>();
-			pr = ToProductDTO(order.SelectMany(o => o.Products).AsQueryable()).ToList();
+			pr = ToProductDTO(order.SelectMany(o => o.Products).AsQueryable().Select(p => p.Product)).ToList();
 
 			return order
 				.Where(o => o.Customer == customer)
@@ -112,15 +112,17 @@ namespace Service.Querys
 		/// <returns>OrderDTO</returns>
 		public static Data.Models.Order FromOrderDTO(OrderDTO order, CustomerDTO customer)
 		{
-			return new Data.Models.Order
-			{
-				Amount = order.Amount,
-				Discount = order.Discount,
-				Date = order.Date,
-				CompletedOn = order.CompletedOn,
-				IsProcessed = order.IsProcessed,
-				Products = FromProductDTO(order.Products)
-			};
+			//return new Data.Models.Order
+			//{
+			//	Amount = order.Amount,
+			//	Discount = order.Discount,
+			//	Date = order.Date,
+			//	CompletedOn = order.CompletedOn,
+			//	IsProcessed = order.IsProcessed,
+			//	Products = FromProductDTO(order.Products)
+			//};
+
+			return null;
 		}
 
 		/// <summary>

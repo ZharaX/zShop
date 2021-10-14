@@ -1,8 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Data
 {
@@ -12,7 +8,7 @@ namespace Data
 	}
 
 	/// <summary>
-	/// Main DB Contact Class
+	/// Main DB Context Class
 	/// DONT USE THIS DIRECTLY! IMPLEMENT IDBMANAGER
 	/// </summary>
 	public class ZShopContext : DbContext, IDBManager
@@ -28,6 +24,12 @@ namespace Data
 		#region MODEL CREATION
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			//modelBuilder.Entity<Models.OrderProduct>();
+			//modelBuilder.Entity<Models.Order>().HasMany(x => x.Products).WithOne("Product");
+			//modelBuilder.Entity<Models.Product>().HasMany(x => x.Orders).WithOne("Order");
+
+			modelBuilder.Entity<Models.OrderProduct>().HasKey(o => new { o.OrderID, o.ProductID });
+
 			// DEFINING PRODUCT REQUIREMENTS
 			modelBuilder.Entity<Models.Product>().Property(x => x.Name)
 				.IsRequired(true)
