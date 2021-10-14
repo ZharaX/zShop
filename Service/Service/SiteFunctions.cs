@@ -1,4 +1,9 @@
-﻿namespace Service
+﻿using Data.DBManager;
+using Data.Models;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
+namespace Service
 {
 	/// <summary>
 	/// Site Functions Interface implementations
@@ -9,12 +14,12 @@
 		/// <summary>
 		/// Method for Performing Site Wide User Functions
 		/// </summary>
-		/// <typeparam name="T">T for DATA</typeparam>
+		/// <typeparam name="T">T Generic (Model / ID)</typeparam>
 		/// <param name="action">CRUD Enum Selector</param>
-		/// <param name="function">Action Enum Selector</param>
+		/// <param name="function">Function Enum Selector</param>
 		/// <param name="data">T DATA</param>
 		/// <returns>Objects of Various Types</returns>
-		object PerformAction<T>(ActionType action, FunctionName function, T data) where T : class;
+		object PerformAction<T>(ActionType action, FunctionName function, T data);
 	}
 
 	/// <summary>
@@ -24,26 +29,47 @@
 	/// </summary>
 	public class SiteFunctions : ISiteFunctions
 	{
-		// REFERENCE FOR DB MANAGER
-		private readonly Data.IDBHandler _dbContext;
-		private readonly ICustomerHandler _customerHandler;
+		#region CONTEXT DATA
+		// ACCESS TO SERVICE LAYER AND FUNCTIONS
+		private readonly Data.IDBManager _dbManager;
+		#endregion
+
+		// REFERENCES FOR MODEL DB CONTEXTS
+		internal readonly IDBManager<Customer> _customerContext;
+		internal readonly IDBManager<Order> _orderContext;
+		internal readonly IDBManager<Product> _productContext;
+
+		// REFERENCES FOR MODEL DB CONTEXTS
+		internal readonly Concrete.ICustomer _customers;
+		internal readonly Concrete.IOrder _orders;
+		internal readonly Concrete.IProduct _products;
+
+		//private readonly ICustomerHandler _customerHandler;
 
 		/// <summary>
-		/// Constructor: Supplying ConnectionString for DBContext Use
+		/// Constructor: Supplying ConnectionString for DBContext
 		/// Instantiates: DataTransferObjects Class
+		/// Instantiates: Model Contexts
 		/// </summary>
-		/// <param name="connectionString">DB CONNECTION STRING</param>
-		public SiteFunctions(string connectionString)
+		public SiteFunctions(Data.IDBManager dbContext)
 		{
-			// CREATE DB MANAGER REFERENCE
-			_dbContext = new Data.ZShopContext();
-			_customerHandler = new CustomerHandler(_dbContext);
+			_dbManager = dbContext;
+
+			// CREATING INDIVIDUAL MODEL DBCONTEXTS
+			_customerContext = new DBManager<Customer>(_dbManager.DBManager());
+			_orderContext = new DBManager<Order>(_dbManager.DBManager());
+			_productContext = new DBManager<Product>(_dbManager.DBManager());
+
+			// ATTACHING DBCONTEXT TO CONCRETE SERVICE TYPES
+			_customers = new Concrete.CustomerService(_customerContext);
+			_orders = new Concrete.OrderService(_orderContext);
+			_products = new Concrete.ProductService(_productContext);
 
 			// SETTING DTO HANDLER CLASS REFERENCE
 			//DataTransferObjects.SiteRepository = _siteRepository;
 		}
 
-		#region USER FUNCTION HANDLER
+		#region FUNCTION HANDLER
 		/// <summary>
 		/// Method handling retrieval only of various requested data.
 		/// Create, Update & Delete will be an Admin only feature.
@@ -52,9 +78,9 @@
 		/// </summary>
 		/// <param name="action">Enum Values</param>
 		/// <param name="function">Enum Values</param>
-		/// <param name="data">Data to be Handled</param>
+		/// <param name="data">T Generic (Model / ID)</param>
 		/// <returns>Object: Depending on Data</returns>
-		public object PerformAction<T>(ActionType action, FunctionName function, T data) where T : class
+		public object PerformAction<T>(ActionType action, FunctionName function, T data)
 		{
 			switch (action)
 			{
@@ -62,16 +88,16 @@
 				// ACTION -> CREATE
 				case ActionType.Create:
 					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
-						return _dbContext.CreateCustomer(data as Data.Models.Customer);
+						return _customers.Create(Querys.QueryManager.FromCustomerDTO(data as DTO.CustomerDTO));
 
 					if (function == FunctionName.Order) // FUNCTION: PRODUCT
-						return _dbContext.CreateOrder(data as Data.Models.Order);
+						return CreateOrder(data as DTO.OrderDTO);
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return NewProduct(data);
+						return _products.Create(data as Product);
 
-					if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
-						return _dbContext.CreateCategory(data as string);
+					//if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
+					//	return _dbContext.CreateCategory(data as string);
 
 					return null; // WE SHOULD EVEN NOT BE GETTING HERE
 
@@ -79,16 +105,16 @@
 				// ACTION -> RETRIEVE
 				case ActionType.Retrieve:
 					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
-						return _customerHandler.AddUserForSession(data as string[]);
+						return Querys.QueryManager.ToCustomerDTO(_customers.GetCustomers().Where(c => c.ID == (int)(object)data)).FirstOrDefault();
 
 					if (function == FunctionName.Order) // FUNCTION: ORDER
-						return _dbContext.GetOrder(data as int[]);
+						return Querys.QueryManager.ToOrderDTO(_orders.GetOrders(), _customers.Retrieve((int)(object)data)).FirstOrDefault();
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return ReturnProductData(data);
+						return Querys.QueryManager.ToProductDTO(_products.GetProducts().Where(p => p.ID == (int)(object)data)).FirstOrDefault();
 
-					if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
-						return _dbContext.GetAllCategorys();
+					//if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
+					//	return _dbContext.GetAllCategorys();
 
 					return null; // WE SHOULD EVEN NOT BE GETTING HERE
 
@@ -96,16 +122,16 @@
 				// ACTION -> UPDATE
 				case ActionType.Update:
 					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
-						return _dbContext.UpdateCustomer(data as Data.Models.Customer);
+						return _customers.Update(Querys.QueryManager.FromCustomerDTO(data as DTO.CustomerDTO));
 
 					if (function == FunctionName.Order) // FUNCTION: ORDER
-						return _dbContext.UpdateOrder(data as Data.Models.Order);
+						return _orders.Update(data as Order);
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return UpdateProduct(data);
+						return _products.Update(data as Product);
 
-					if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
-						return _dbContext.UpdateCategory(data as string);
+					//if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
+					//	return _dbContext.UpdateCategory(data as string);
 
 					return null; // WE SHOULD EVEN NOT BE GETTING HERE
 
@@ -113,62 +139,82 @@
 				// ACTION -> DELETE
 				case ActionType.Delete:
 					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
-						return _dbContext.DeleteCustomer(data as int[]);
+						return _customers.Delete(data as Customer);
 
 					if (function == FunctionName.Order) // FUNCTION: ORDER
-						return _dbContext.DeleteOrder(data as int[]);
+						return _orders.Delete(data as Order);
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return _dbContext.DeleteProduct(data as int[]);
+						return _products.Delete(data as Product);
 
-					if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
-						return _dbContext.DeleteCategory(data as int[]);
+				//	if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
+				//		return _dbContext.DeleteCategory(data as int[]);
 
 					return null; // WE SHOULD EVEN NOT BE GETTING HERE
 
+				// CASE:
+				// ACTION -> RETRIEVE
+				case ActionType.Query:
+					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
+						return Querys.QueryManager.ToCustomerDTO(_customers.GetCustomers()).ToList();
+
+					if (function == FunctionName.Order) // FUNCTION: ORDER
+						return Querys.QueryManager.ToOrderDTO(_orders.GetOrders(), null);
+
+					if (function == FunctionName.Product) // FUNCTION: PRODUCT
+						return Querys.QueryManager.ToProductDTO(_products.GetProducts()).ToList();
+
+					return null; // WE SHOULD EVEN NOT BE GETTING HERE
 
 				default:
 					return null; // DEFAULTS NULL IF WE EVEN SHOULD BE GETTING HERE!
 			}
 		}
 		#endregion
-		#region PRIVATE METHODS FOR SITE ACTIONS
-		/// <summary>
-		/// Method Product Creator and Database Inserter
-		/// </summary>
-		/// <param name="data">The Product Data Object (UI)</param>
-		/// <returns>Success/Failure Status</returns>
-		private bool NewProduct<T>(T data)
+		#region CREATE ORDER
+		private bool CreateOrder(DTO.OrderDTO order)
 		{
-			// UI.PRODUCT WILL BE 'CONVERTED' TO DATA.MODELS.PRODUCT (DATA)
-			//Data.Models.Product p = DataTransferObjects.Product(data);
+			var newOrder = new Data.Models.Order
+			{
+				Amount = order.Amount,
+				TotalPrice = order.TotalPrice,
+				Discount = order.Discount,
+				Date = System.DateTime.Now,
+				Products = Querys.QueryManager.FromProductDTO(order.Products)
+			};
 
-			// PERFORMS PRODUCT CREATION -> RETURNS DB MESSAGE
-			return false;
-		}
+			//using (var dbContext = new Data.ZShopContext())
+			//{
+			//	//var customer = new DBManager<Customer>(dbContext);
+			//	//var orders = new DBManager<Order>(dbContext);
+			//	//var products = new DBManager<Product>(dbContext);
 
-		/// <summary>
-		/// Method for finding Product per ID
-		/// </summary>
-		/// <param name="data">ID</param>
-		/// <returns>Data.Models.Product or (Not Found String)</returns>
-		private object ReturnProductData<T>(T data)
-		{
-			Data.Models.Product p = _dbContext.GetProduct(data as int[]);
+			//	//var cust = customer.Table.Where(c => c.ID == 1).Include(c => c.Orders).ThenInclude(o => o.Products).AsNoTracking().Single();
+			//	//var o = orders.Table.Where(o => o.Customer == cust).AsNoTracking().ToList();
 
-			if (p != null) return p;
+			//	var cust = dbContext.Customers.Attach(dbContext.Customers.Where(c => c.ID == 1).Include(c => c.Orders).Single()).Entity;
+			//	//cust.Orders = dbContext.Orders.Where(o => o.Customer == cust).AsNoTracking().ToList();
+
+			//	newOrder.Customer = cust;
+
+			//	var products = dbContext.Products.Include(p => p.Orders).AsNoTracking().ToList();
+			//	foreach (var prod in newOrder.Products)
+			//	{
+			//		prod.Orders = products.Where(p => p.ID == prod.ID).Select(p => p.Orders).Single();
+			//		prod.Orders.Add(newOrder);
+			//		dbContext.Entry<Product>(prod).State = EntityState.Modified;
+			//	}
+
+			//	cust.Orders.Add(newOrder);
+			//	dbContext.Entry<Customer>(cust).State = EntityState.Modified;
+
+			//	//dbContext.Entry<Order>(newOrder).State = EntityState.Added;
+			//	dbContext.SaveChanges();
+			//}
 			
-			return "Vare Ikke Fundet!";
-		}
+			return false;
 
-		/// <summary>
-		/// Method for Updating a Product
-		/// </summary>
-		/// <param name="data">T Product Model</param>
-		/// <returns>Success/Failure Status</returns>
-		private bool UpdateProduct<T>(T data)
-		{
-			return _dbContext.UpdateProduct(data as Data.Models.Product);
+			//return orders.Last();
 		}
 		#endregion
 	}
@@ -181,7 +227,8 @@
 		Create,
 		Retrieve,
 		Update,
-		Delete
+		Delete,
+		Query
 	}
 
 	/// <summary>
