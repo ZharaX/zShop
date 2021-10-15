@@ -18,9 +18,10 @@ namespace Data.Models
 		public bool IsProcessed { get; set; }
 
 		// CUSTOMER NAVIGATION REFERENCE
+		public int CustomerID { get; set; }
 		public Customer Customer { get; set; }
 
 		// PRODUCTS COLLECTION NAVIGATION FOR THIS ORDER
-		public ICollection<Product> Products { get; set; }
+		public virtual ICollection<Product> Products { get; set; }
 	}
 }

@@ -180,8 +180,12 @@ namespace Service
 				TotalPrice = order.TotalPrice,
 				Discount = order.Discount,
 				Date = System.DateTime.Now,
+				Customer = _customers.Retrieve(1),
 				Products = Querys.QueryManager.FromProductDTO(order.Products)
 			};
+
+			//var cust = _customers.GetCustomers().Where(c => c.ID == 1).Include(c => c.Orders).Single();
+			//cust.Orders = dbContext.Orders.Where(o => o.Customer == cust).AsNoTracking().ToList();
 
 			//using (var dbContext = new Data.ZShopContext())
 			//{
@@ -211,10 +215,10 @@ namespace Service
 			//	//dbContext.Entry<Order>(newOrder).State = EntityState.Added;
 			//	dbContext.SaveChanges();
 			//}
-			
-			return false;
 
-			//return orders.Last();
+			//return false;
+
+			return _orders.Create(newOrder);
 		}
 		#endregion
 	}

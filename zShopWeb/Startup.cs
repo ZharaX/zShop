@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,6 +14,8 @@ namespace zShopWeb
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
+			//var status = new Exception("TJEK DATABASE 1-MANGE KUNDE->ORDRE!!!");
+			//throw status;
 		}
 
 		public IConfiguration Configuration { get; }
@@ -20,7 +23,7 @@ namespace zShopWeb
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			string connectionString = Configuration.GetConnectionString("S21DMH3B11_zShopDBContext");
+			string connectionString = Configuration.GetConnectionString("S21DMH3B11_zShopDBContext2");
 			services.AddDbContext<Data.IDBManager, Data.ZShopContext>(
 				options => options.UseSqlServer(connectionString)
 			);

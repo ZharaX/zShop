@@ -1,0 +1,10 @@
+﻿@page
+@model zShopWeb.Pages.Products.IndexModel
+@{
+	foreach (Service.DTO.ProductDTO product in Model.Products)
+	{
+		<div style="position: relative; display: inline-block; width: 20%; height: auto; margin: 10px; border: 2px solid darkgreen; border-radius: 8px;">
+			<partial name="_Product" model="@product" />
+		</div>
+	}
+}

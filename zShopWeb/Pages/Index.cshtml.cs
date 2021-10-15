@@ -22,10 +22,24 @@ namespace zShopWeb.Pages
 		public void OnGet()
 		{
 			//var customers = _sitefunctions.PerformAction<IQueryable>(Service.ActionType.Query, Service.FunctionName.Customer, null);
-			//Service.DTO.CustomerDTO cust = (Service.DTO.CustomerDTO)_sitefunctions.PerformAction(Service.ActionType.Retrieve, Service.FunctionName.Customer, 1);
+			Service.DTO.CustomerDTO customer = (Service.DTO.CustomerDTO)_sitefunctions.PerformAction(Service.ActionType.Retrieve, Service.FunctionName.Customer, 1);
+			List<Service.DTO.ProductDTO> products = (List<Service.DTO.ProductDTO>)_sitefunctions.PerformAction<List<Service.DTO.ProductDTO>>(Service.ActionType.Query, Service.FunctionName.Product, null);
 
 			//cust.FirstName = "Jens";
 			//bool t = (bool)_sitefunctions.PerformAction(Service.ActionType.Update, Service.FunctionName.Customer, cust);
+
+			Service.DTO.OrderDTO order = new Service.DTO.OrderDTO
+			{
+				Amount = 10,
+				Customer = customer,
+				Products = new List<Service.DTO.ProductDTO>()
+				{
+					products[0],
+					products[1]
+				}
+			};
+
+			_sitefunctions.PerformAction(Service.ActionType.Create, Service.FunctionName.Order, order);
 		}
 	}
 }
