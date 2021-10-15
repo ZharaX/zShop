@@ -63,7 +63,8 @@ namespace Data.DBManager
 					return _dbContext.SaveChanges() > 0;
 				}
 
-				return false;
+				this.Models.Update(model);
+				return this._dbContext.SaveChanges() > 0;
 			}
 			catch (DbUpdateException e)
 			{

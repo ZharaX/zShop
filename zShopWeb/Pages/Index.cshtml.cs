@@ -26,6 +26,17 @@ namespace zShopWeb.Pages
 
 			//cust.FirstName = "Jens";
 			//bool t = (bool)_sitefunctions.PerformAction(Service.ActionType.Update, Service.FunctionName.Customer, cust);
+
+			List<Service.DTO.ProductDTO> products = (List<Service.DTO.ProductDTO>)_sitefunctions.PerformAction<List<Service.DTO.ProductDTO>>(Service.ActionType.Query, Service.FunctionName.Product, null);
+
+			Service.DTO.OrderDTO order = new Service.DTO.OrderDTO
+			{
+				Amount = 10,
+				Customer = (Service.DTO.CustomerDTO)_sitefunctions.PerformAction(Service.ActionType.Retrieve, Service.FunctionName.Customer, 1),
+				Products = products
+			};
+
+			_sitefunctions.PerformAction(Service.ActionType.Create, Service.FunctionName.Order, order);
 		}
 	}
 }

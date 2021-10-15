@@ -29,71 +29,33 @@ namespace Data
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			// DEFINING PRODUCT REQUIREMENTS
-			modelBuilder.Entity<Models.Product>().Property(x => x.Name)
-				.IsRequired(true)
-				.HasMaxLength(50);
-
-			modelBuilder.Entity<Models.Product>().Property(x => x.Description)
-				.IsRequired(true)
-				.HasMaxLength(250);
-
-			modelBuilder.Entity<Models.Product>().Property(x => x.Image)
-				.IsRequired(true)
-				.HasMaxLength(50);
-
-			modelBuilder.Entity<Models.Product>().Property(x => x.Price)
-				.HasPrecision(8, 2);
+			modelBuilder.Entity<Models.Product>().HasKey("ID");
+			modelBuilder.Entity<Models.Product>().Property(p => p.Name).IsRequired().HasMaxLength(50);
+			modelBuilder.Entity<Models.Product>().Property(p => p.Description).IsRequired().HasMaxLength(250);
+			modelBuilder.Entity<Models.Product>().Property(p => p.Image).IsRequired().HasMaxLength(50);
+			modelBuilder.Entity<Models.Product>().Property(p => p.Price).HasPrecision(8, 2);
+			modelBuilder.Entity<Models.Product>().ToTable("Products");
 
 			// DEFINING ORDER REQUIREMENTS
-			modelBuilder.Entity<Models.Order>().Property(x => x.Amount)
-				.IsRequired(true);
-
-			modelBuilder.Entity<Models.Order>().Property(x => x.TotalPrice)
-				.HasPrecision(8, 2);
-
-			modelBuilder.Entity<Models.Order>().Property(x => x.Discount)
-				.HasPrecision(8, 2);
-
-			modelBuilder.Entity<Models.Order>().Property(x => x.Date)
-				.HasDefaultValueSql("GetDate()");
+			modelBuilder.Entity<Models.Order>().HasKey("ID");
+			modelBuilder.Entity<Models.Order>().Property(o => o.Amount).IsRequired();
+			modelBuilder.Entity<Models.Order>().Property(o => o.TotalPrice).HasPrecision(8, 2);
+			modelBuilder.Entity<Models.Order>().Property(o => o.Discount).HasPrecision(8, 2);
+			modelBuilder.Entity<Models.Order>().Property(o => o.Date).HasDefaultValueSql("getdate()");
+			modelBuilder.Entity<Models.Order>().ToTable("Order");
 
 			// DEFINING CUSTOMER REQUIREMENTS
-			modelBuilder.Entity<Models.Customer>() // MANY TO MANY
-				.HasMany(x => x.Orders)
-				.WithOne(x => x.Customer)
-				.HasForeignKey(x => x.ID);
-
-			modelBuilder.Entity<Models.Customer>().Property(x => x.FirstName)
-				.IsRequired(true)
-				.HasMaxLength(25);
-
-			modelBuilder.Entity<Models.Customer>().Property(x => x.LastName)
-				.IsRequired(true)
-				.HasMaxLength(25);
-
-			modelBuilder.Entity<Models.Customer>().Property(x => x.Address)
-				.IsRequired(true)
-				.HasMaxLength(50);
-
-			modelBuilder.Entity<Models.Customer>().Property(x => x.City)
-				.IsRequired(true)
-				.HasMaxLength(50);
-
-			modelBuilder.Entity<Models.Customer>().Property(x => x.Postal)
-				.IsRequired(true)
-				.HasMaxLength(8);
-
-			modelBuilder.Entity<Models.Customer>().Property(x => x.Country)
-				.IsRequired(true)
-				.HasMaxLength(25);
-
-			modelBuilder.Entity<Models.Customer>().Property(x => x.Phone)
-				.IsRequired(true)
-				.HasMaxLength(16);
-
-			modelBuilder.Entity<Models.Customer>().Property(x => x.Email)
-				.IsRequired(true)
-				.HasMaxLength(50);
+			modelBuilder.Entity<Models.Customer>().HasKey("ID");
+			modelBuilder.Entity<Models.Customer>().HasMany(c => c.Orders).WithOne(o => o.Customer).HasForeignKey(o => o.ID);
+			modelBuilder.Entity<Models.Customer>().Property(c => c.FirstName).IsRequired().HasMaxLength(25);
+			modelBuilder.Entity<Models.Customer>().Property(c => c.LastName).IsRequired().HasMaxLength(25);
+			modelBuilder.Entity<Models.Customer>().Property(c => c.Address).IsRequired().HasMaxLength(50);
+			modelBuilder.Entity<Models.Customer>().Property(c => c.City).IsRequired().HasMaxLength(50);
+			modelBuilder.Entity<Models.Customer>().Property(c => c.Postal).IsRequired().HasMaxLength(8);
+			modelBuilder.Entity<Models.Customer>().Property(c => c.Country).IsRequired().HasMaxLength(25);
+			modelBuilder.Entity<Models.Customer>().Property(c => c.Phone).IsRequired().HasMaxLength(16);
+			modelBuilder.Entity<Models.Customer>().Property(c => c.Email).IsRequired().HasMaxLength(50);
+			modelBuilder.Entity<Models.Customer>().ToTable("Customer");
 		}
 		#endregion
 

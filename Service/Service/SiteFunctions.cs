@@ -174,47 +174,90 @@ namespace Service
 		#region CREATE ORDER
 		private bool CreateOrder(DTO.OrderDTO order)
 		{
-			var newOrder = new Data.Models.Order
+			using (_dbManager.DBManager())
 			{
-				Amount = order.Amount,
-				TotalPrice = order.TotalPrice,
-				Discount = order.Discount,
-				Date = System.DateTime.Now,
-				Products = Querys.QueryManager.FromProductDTO(order.Products)
-			};
+				var customer = _dbManager.DBManager().Customers.AsNoTracking().Where(c => c.ID == 1).Single();
+				var existingOrders = _dbManager.DBManager().Orders.AsNoTracking().Include(o => o.Customer).Include(o => o.Products).Where(o => o.Customer == customer);
 
-			//using (var dbContext = new Data.ZShopContext())
+				System.Collections.Generic.List<Order> orders = new System.Collections.Generic.List<Order>();
+
+				if (existingOrders != null)
+				{
+					foreach (Order o in existingOrders)
+					{
+						orders.Add(o);
+					}
+				}
+
+				var newOrder = new Order
+				{
+					Amount = order.Amount,
+					TotalPrice = order.TotalPrice,
+					Discount = order.Discount,
+					Date = System.DateTime.Now,
+					Customer = customer
+				};
+
+				orders.Add(newOrder);
+				//customer.Orders = orders; <----- CREATES TRACKED ISSUE <-> WITHOUT IT ORDERS PK ISSUE
+				//_dbManager.DBManager().Customers.Attach(customer);
+				//_dbManager.DBManager().Customers.Add(customer);
+
+				System.Collections.Generic.List<Product> products = new System.Collections.Generic.List<Product>();
+
+				foreach (DTO.ProductDTO p in order.Products)
+				{
+					products.Add(new Product { ID = p.ProductID });
+				}
+				newOrder.Products = products;
+
+				//_dbManager.DBManager().Products.AttachRange(products);
+				//_dbManager.DBManager().Products.AddRange(products);
+				_dbManager.DBManager().Orders.Attach(newOrder);
+				_dbManager.DBManager().Orders.Add(newOrder);
+				return _dbManager.DBManager().SaveChanges() > 0;
+			}
+
+			//var customer = _dbManager.DBManager().Customers.AsNoTracking().Where(c => c.ID == 1).Single();
+			//var existingOrders = _dbManager.DBManager().Orders.AsNoTracking().Where(o => o.Customer == customer);
+
+			//System.Collections.Generic.List<Order> orders = new System.Collections.Generic.List<Order>();
+
+			//if (orders != null)
 			//{
-			//	//var customer = new DBManager<Customer>(dbContext);
-			//	//var orders = new DBManager<Order>(dbContext);
-			//	//var products = new DBManager<Product>(dbContext);
-
-			//	//var cust = customer.Table.Where(c => c.ID == 1).Include(c => c.Orders).ThenInclude(o => o.Products).AsNoTracking().Single();
-			//	//var o = orders.Table.Where(o => o.Customer == cust).AsNoTracking().ToList();
-
-			//	var cust = dbContext.Customers.Attach(dbContext.Customers.Where(c => c.ID == 1).Include(c => c.Orders).Single()).Entity;
-			//	//cust.Orders = dbContext.Orders.Where(o => o.Customer == cust).AsNoTracking().ToList();
-
-			//	newOrder.Customer = cust;
-
-			//	var products = dbContext.Products.Include(p => p.Orders).AsNoTracking().ToList();
-			//	foreach (var prod in newOrder.Products)
+			//	foreach (Order o in existingOrders)
 			//	{
-			//		prod.Orders = products.Where(p => p.ID == prod.ID).Select(p => p.Orders).Single();
-			//		prod.Orders.Add(newOrder);
-			//		dbContext.Entry<Product>(prod).State = EntityState.Modified;
+			//		orders.Add(new Order { ID = o.ID });
 			//	}
-
-			//	cust.Orders.Add(newOrder);
-			//	dbContext.Entry<Customer>(cust).State = EntityState.Modified;
-
-			//	//dbContext.Entry<Order>(newOrder).State = EntityState.Added;
-			//	dbContext.SaveChanges();
 			//}
-			
-			return false;
 
-			//return orders.Last();
+			//customer.Orders = orders;
+
+			//_dbManager.DBManager().Customers.Attach(customer);
+			//_dbManager.DBManager().Customers.Add(customer);
+
+			//var newOrder = new Order
+			//{
+			//	Amount = order.Amount,
+			//	TotalPrice = order.TotalPrice,
+			//	Discount = order.Discount,
+			//	Date = System.DateTime.Now,
+			//	Customer = customer,
+			//};
+
+			//System.Collections.Generic.List<Product> products = new System.Collections.Generic.List<Product>();
+
+			//foreach (DTO.ProductDTO p in order.Products)
+			//{
+			//	products.Add(new Product { ID = p.ProductID });
+			//}
+			//newOrder.Products = products;
+			//customer.Orders.Add(newOrder);
+
+
+			//_dbManager.DBManager().Orders.Attach(newOrder);
+			//_dbManager.DBManager().Orders.Add(newOrder);
+			//return _dbManager.DBManager().SaveChanges() > 0;
 		}
 		#endregion
 	}
