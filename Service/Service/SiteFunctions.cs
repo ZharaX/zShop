@@ -174,15 +174,27 @@ namespace Service
 		#region CREATE ORDER
 		private bool CreateOrder(DTO.OrderDTO order)
 		{
+			var cust = _customers.GetCustomers().Where(c => c.ID == 1).Include(c => c.Orders).Single();
+			cust.Orders = _orders.GetOrders().AsTracking().Where(o => o.Customer == cust).ToList();
+
 			var newOrder = new Data.Models.Order
 			{
 				Amount = order.Amount,
 				TotalPrice = order.TotalPrice,
 				Discount = order.Discount,
 				Date = System.DateTime.Now,
-				Customer = _customers.Retrieve(1),
-				Products = Querys.QueryManager.FromProductDTO(order.Products)
+				Customer = _dbManager.DBManager().Attach(cust).Entity,
 			};
+
+			System.Collections.Generic.List<Product> products = new System.Collections.Generic.List<Product>();
+
+			foreach (Service.DTO.ProductDTO prod in order.Products)
+			{
+				products.Add(new Product { ID = prod.ProductID });
+			}
+
+			_dbManager.DBManager().AttachRange(products);
+			newOrder.Products = products;
 
 			//var cust = _customers.GetCustomers().Where(c => c.ID == 1).Include(c => c.Orders).Single();
 			//cust.Orders = dbContext.Orders.Where(o => o.Customer == cust).AsNoTracking().ToList();
