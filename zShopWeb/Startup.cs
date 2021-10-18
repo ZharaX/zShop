@@ -22,7 +22,7 @@ namespace zShopWeb
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			string connectionString = Configuration.GetConnectionString("S21DMH3B11_zShopDBContext");
+			string connectionString = Configuration.GetConnectionString("S21DMH3B11_zShopDBContext2");
 			services.AddDbContext<Data.IZShopContext, Data.ZShopContext>(
 				options => options.UseSqlServer(connectionString)
 			);
@@ -35,11 +35,20 @@ namespace zShopWeb
 					options.AccessDeniedPath = "/Error";
 					options.Cookie.Name = "AuthCookie";
 					options.Cookie.HttpOnly = true;
-					options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+					options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 					options.LoginPath = "/Users/User";
 					options.ReturnUrlParameter = "ReturnUrl";
 					options.SlidingExpiration = true;
 				});
+
+			services.AddDistributedMemoryCache();
+
+			services.AddSession(options =>
+			{
+				options.IdleTimeout = TimeSpan.FromMinutes(2);
+				options.Cookie.HttpOnly = true;
+				options.Cookie.IsEssential = true;
+			});
 
 			services.AddRazorPages();
 		}
@@ -62,6 +71,8 @@ namespace zShopWeb
 			app.UseStaticFiles();
 
 			app.UseRouting();
+
+			app.UseSession();
 
 			app.UseAuthentication();
 			app.UseAuthorization();

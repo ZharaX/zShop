@@ -49,6 +49,7 @@ body {
 .top-container {
 	position: relative;
 	height: 8vh;
+	min-height: 80px;
 	display: flex;
 	align-items: center;
 	background-color: #111;
@@ -62,23 +63,23 @@ body {
 	left: 0;
 	width: 10%;
 	height: 100%;
-	background: url("../images/logo.png") no-repeat 100%/100%;
+	background: url("../images/logo.png") no-repeat 100%/100% 100%;
 }
 
 .top-menu {
 	display: block;
 	position: absolute;
-	top: 56%;
+	top: 59%;
 	left: 11.5%;
-	width: 50%;
+	width: 45%;
 }
 
 .top-cart {
 	position: absolute;
 	top: 56%;
 	display: block;
-	left: 62%;
-	width: 15%;
+	left: 57.5%;
+	width: 20%;
 	height: 32px;
 }
 
@@ -120,7 +121,7 @@ body {
 .top-user-menu {
 	display: block;
 	position: absolute;
-	top: 56%;
+	top: 59%;
 	right: 11.5%;
 	width: 10%;
 }
@@ -340,6 +341,7 @@ body {
 	position: relative;
 	display: inline-block;
 	width: 15%;
+	min-width: 64px;
 	margin: 0 5px 0 0;
 	padding: 0;
 }
@@ -422,4 +424,110 @@ body {
 .menu-column:hover .menu-button,
 .user-column:hover .user-button {
 	color: #b6ff00;
+}
+
+.block {
+	display: block;
+}
+
+.inline {
+	display: inline-block;
+}
+
+.center {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.login-window {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: block;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.5);
+	pointer-events: auto;
+	z-index: 1000;
+}
+
+	.login-window > .product-container {
+		box-shadow: 0 0 16px 4px firebrick;
+	}
+
+.login-header {
+	width: 100%;
+	height: 32px;
+	background-color: #600;
+	color: silver;
+	text-align: center;
+	line-height: 32px;
+	border-radius: 4px 4px 0 0;
+	border-bottom: 1px solid #A00;
+	margin-bottom: 8px;
+}
+
+.input-80 {
+	width: 80%;
+	height: 32px;
+	background-color: #100;
+	border: 2px ridge #300;
+	margin-bottom: 8px;
+	border-radius: 6px;
+	color: silver;
+	padding-left: 4px;
+}
+
+	.input-80:active,
+	.input-80:focus {
+		outline-width: 0;
+		border: 2px ridge #b6ff00;
+		border-radius: 6px;
+	}
+
+.btn-full,
+.btn-half {
+	height: 28px;
+	padding: 0;
+	font: bold Arial 1em/1em;
+	text-align: center;
+}
+
+.btn-full {
+	width: 80%;
+	border-radius: 4px;
+}
+
+.btn-half {
+	width: 49%;
+	margin: 1% 0;
+	border-radius: 4px;
+}
+
+.btn-green {
+	background-color: darkolivegreen;
+	border: 1px solid #300;
+}
+
+	.btn-green:hover {
+		background-color: lightgreen;
+		color: black;
+		border: 1px solid #0A0;
+	}
+
+
+.btn-red {
+	background-color: firebrick;
+	border: 1px solid #300;
+}
+
+	.btn-red:hover {
+		background-color: salmon;
+		color: black;
+		border: 1px solid #A00;
+	}
+
+.btn-blue {
+	background-color: #007bff;
+	border: 1px solid #300;
 }

@@ -42,7 +42,8 @@ namespace Service
 			// CHECK IF SID EXISTS ALREADY
 			if (_users.FirstOrDefault(c => c.SID == cred[0]) == null)
 			{
-				Data.Models.Customer cust = LoginCustomer(cred);
+				// IF USER IS NOT FOUND, CALL LOGIN
+				Data.Models.Customer cust = LoginCustomer(new string[] { cred[1], cred[2] });
 
 				// ADD TO USER STORE IF USER WAS LOGGED IN
 				if (cust != null)
@@ -51,7 +52,7 @@ namespace Service
 					ActiveUsers.UserData user = new ActiveUsers.UserData(cust.ID);
 					_users.Add(user);
 
-					// RETURN THE GENERATED SID USED FOR AUTHENTICATION
+					// RETURN THE GENERATED SID AND CUSTOMER DTO USED FOR AUTHENTICATION
 					return ReturnCustomerDTO(user.SID, cust);
 				}
 			}
@@ -68,8 +69,6 @@ namespace Service
 		private Data.Models.Customer LoginCustomer(string[] cred)
 		{
 			// GET CUSTOMER OBJECT
-			//Data.Models.Customer cust = _dbContext.LoginCustomer(cred);
-
 			Data.Models.Customer cust = (Data.Models.Customer)_siteFunctions.PerformAction(ActionType.Login, FunctionName.Customer, cred);
 
 			// RETURN CUSTOMER ID
@@ -104,7 +103,7 @@ namespace Service
 			return null; // NO CUSTOMER DATA TO TRANSFER
 		}
 		#endregion
-
+		#region UPDATE USER AUTO LOGOUT TIMER
 		/// <summary>
 		/// Finds a User with SessionID (Authorized)
 		/// </summary>
@@ -124,7 +123,7 @@ namespace Service
 
 			return false;
 		}
-
+		#endregion
 		#region TIMER FUNCTION FOR CHECKING EXPIRED USERS
 		public void CheckUserStatus()
 		{

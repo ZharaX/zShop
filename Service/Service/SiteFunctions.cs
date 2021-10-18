@@ -172,7 +172,7 @@ namespace Service
 				// CASE:
 				// ACTION -> RETRIEVE
 				case ActionType.Login:
-					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
+					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER LOGIN
 						return _dbManager.ZShopDBContext().LoginCustomer(data as string[]);
 
 					return null; // WE SHOULD EVEN NOT BE GETTING HERE

@@ -1,80 +1,12 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+	ViewData["Title"] = "Welcome To Z-Soft Shop";
 }
 
-<a asp-protocol="https" asp-host="eucsyd.dk">EUC SYD</a>
-<div class="text-center">
-	@{
-		var total = 7;
-		var myMessage = "Hello World";
-	}
-
-	<p>The value of your account is: @total </p>
-	<p>The value of myMessage is: @myMessage</p>
-
-	<!-- Multi-statement block -->
-	@{
-		var greeting = "Welcome to our site!";
-		var weekDay = DateTime.Now.DayOfWeek;
-		var greetingMessage = greeting + " Today is: " + weekDay;
-		<div>The greeting message is: @greetingMessage</div>
-	}
-
-	<p>The greeting message is: @greetingMessage</p>
-
-	<h1>SKUDÅR 2000 - 2022</h1>
-	@{
-		for (int y = 2000; y <= 2022; y++)
-		{
-			if (DateTime.IsLeapYear(y))
-			{
-				<p style="margin: 0; color: red">@(y + " var et skudår!")</p>
-			}
-			else
-			{
-				<p style="margin: 0; color: black">@(y + " ingen gevinst!!")</p>
-			}
-		}
-	}
-
-	<h1>NAVNE & EMAILS</h1>
-	@{
-		List<string> names = new List<string>
-{
-			"Jens B",
-			"Jens A",
-			"Niklas",
-			"Nikolai",
-			"Tobias",
-			"Jasmin",
-			"Mike",
-			"Lukas",
-			"Peter",
-			"Simon"
-		};
-
-		List<string> emails = new List<string>
-{
-			"J@B",
-			"J@A",
-			"N@M",
-			"N@H",
-			"T@N",
-			"J@N",
-			"M@M",
-			"L@P",
-			"P@H",
-			"S@A"
-		};
-
-		for (int n = 0; n < 10; n++)
-		{
-			<p style="margin: 0; color: red">@("NAVN: " + names[n] + " | EMAIL: ")</p>
-		}
-
-		@foreach (string s in emails)
-		{<span>@s</span>}
+<div>
+	@if (Model.DisplayLoginWindow)
+	{
+		<partial name="Users/_LoginWindow" model="@Model.Customer" />
 	}
 </div>
