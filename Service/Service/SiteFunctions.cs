@@ -31,7 +31,8 @@ namespace Service
 	{
 		#region CONTEXT DATA
 		// ACCESS TO SERVICE LAYER AND FUNCTIONS
-		private readonly Data.IDBManager _dbManager;
+		private readonly Data.IZShopContext _dbManager;
+		private readonly ICustomerHandler _authUser;
 		#endregion
 
 		// REFERENCES FOR MODEL DB CONTEXTS
@@ -51,14 +52,15 @@ namespace Service
 		/// Instantiates: DataTransferObjects Class
 		/// Instantiates: Model Contexts
 		/// </summary>
-		public SiteFunctions(Data.IDBManager dbContext)
+		public SiteFunctions(Data.IZShopContext dbContext)
 		{
 			_dbManager = dbContext;
+			_authUser = new CustomerHandler(this);
 
 			// CREATING INDIVIDUAL MODEL DBCONTEXTS
-			_customerContext = new DBManager<Customer>(_dbManager.DBManager());
-			_orderContext = new DBManager<Order>(_dbManager.DBManager());
-			_productContext = new DBManager<Product>(_dbManager.DBManager());
+			_customerContext = new DBManager<Customer>(_dbManager.ZShopDBContext());
+			_orderContext = new DBManager<Order>(_dbManager.ZShopDBContext());
+			_productContext = new DBManager<Product>(_dbManager.ZShopDBContext());
 
 			// ATTACHING DBCONTEXT TO CONCRETE SERVICE TYPES
 			_customers = new Concrete.CustomerService(_customerContext);
@@ -105,13 +107,14 @@ namespace Service
 				// ACTION -> RETRIEVE
 				case ActionType.Retrieve:
 					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
-						return Querys.QueryManager.ToCustomerDTO(_customers.GetCustomers().Where(c => c.ID == (int)(object)data)).FirstOrDefault();
+						return _authUser.AddUserForSession(data as string[]);
+					//return Querys.QueryManager.ToCustomerDTO(_customers.GetCustomers().Where(c => c.ID == (int)(object)data)).FirstOrDefault();
 
 					if (function == FunctionName.Order) // FUNCTION: ORDER
-						return Querys.QueryManager.ToOrderDTO(_orders.GetOrders(), _customers.Retrieve((int)(object)data)).FirstOrDefault();
+						return Querys.QueryManager.ToOrdersDTO(_dbManager.ZShopDBContext().OrderProducts, _customers.Retrieve((int)(object)data)).FirstOrDefault();
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return Querys.QueryManager.ToProductDTO(_products.GetProducts().Where(p => p.ID == (int)(object)data)).FirstOrDefault();
+						return Querys.QueryManager.ToProductDTO(_products.GetProducts().Where(p => p.ID == (int)(object)data));
 
 					//if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
 					//	return _dbContext.GetAllCategorys();
@@ -156,13 +159,21 @@ namespace Service
 				// ACTION -> RETRIEVE
 				case ActionType.Query:
 					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
-						return Querys.QueryManager.ToCustomerDTO(_customers.GetCustomers()).ToList();
+						return Querys.QueryManager.ToCustomerDTO(_customers.GetCustomers(), null).ToList();
 
 					if (function == FunctionName.Order) // FUNCTION: ORDER
-						return Querys.QueryManager.ToOrderDTO(_orders.GetOrders(), null);
+						return Querys.QueryManager.ToOrdersDTO(_dbManager.ZShopDBContext().OrderProducts, _customers.Retrieve(1));
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return Querys.QueryManager.ToProductDTO(_products.GetProducts()).ToList();
+						return Querys.QueryManager.ToProductDTO(_products.GetProducts());
+
+					return null; // WE SHOULD EVEN NOT BE GETTING HERE
+
+				// CASE:
+				// ACTION -> RETRIEVE
+				case ActionType.Login:
+					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
+						return _dbManager.ZShopDBContext().LoginCustomer(data as string[]);
 
 					return null; // WE SHOULD EVEN NOT BE GETTING HERE
 
@@ -179,56 +190,20 @@ namespace Service
 
 			var newOrder = new Data.Models.Order
 			{
-				Amount = order.Amount,
-				TotalPrice = order.TotalPrice,
 				Discount = order.Discount,
 				Date = System.DateTime.Now,
-				Customer = _dbManager.DBManager().Attach(cust).Entity,
+				Customer = _dbManager.ZShopDBContext().Attach(cust).Entity,
 			};
 
-			System.Collections.Generic.List<Product> products = new System.Collections.Generic.List<Product>();
+			System.Collections.Generic.List<OrderProduct> op = new System.Collections.Generic.List<OrderProduct>();
 
 			foreach (Service.DTO.ProductDTO prod in order.Products)
 			{
-				products.Add(new Product { ID = prod.ProductID });
+				op.Add(new OrderProduct { ProductID = prod.ProductID, ProductAmount = prod.Amount });
 			}
 
-			_dbManager.DBManager().AttachRange(products);
-			newOrder.Products = products;
-
-			//var cust = _customers.GetCustomers().Where(c => c.ID == 1).Include(c => c.Orders).Single();
-			//cust.Orders = dbContext.Orders.Where(o => o.Customer == cust).AsNoTracking().ToList();
-
-			//using (var dbContext = new Data.ZShopContext())
-			//{
-			//	//var customer = new DBManager<Customer>(dbContext);
-			//	//var orders = new DBManager<Order>(dbContext);
-			//	//var products = new DBManager<Product>(dbContext);
-
-			//	//var cust = customer.Table.Where(c => c.ID == 1).Include(c => c.Orders).ThenInclude(o => o.Products).AsNoTracking().Single();
-			//	//var o = orders.Table.Where(o => o.Customer == cust).AsNoTracking().ToList();
-
-			//	var cust = dbContext.Customers.Attach(dbContext.Customers.Where(c => c.ID == 1).Include(c => c.Orders).Single()).Entity;
-			//	//cust.Orders = dbContext.Orders.Where(o => o.Customer == cust).AsNoTracking().ToList();
-
-			//	newOrder.Customer = cust;
-
-			//	var products = dbContext.Products.Include(p => p.Orders).AsNoTracking().ToList();
-			//	foreach (var prod in newOrder.Products)
-			//	{
-			//		prod.Orders = products.Where(p => p.ID == prod.ID).Select(p => p.Orders).Single();
-			//		prod.Orders.Add(newOrder);
-			//		dbContext.Entry<Product>(prod).State = EntityState.Modified;
-			//	}
-
-			//	cust.Orders.Add(newOrder);
-			//	dbContext.Entry<Customer>(cust).State = EntityState.Modified;
-
-			//	//dbContext.Entry<Order>(newOrder).State = EntityState.Added;
-			//	dbContext.SaveChanges();
-			//}
-
-			//return false;
+			_dbManager.ZShopDBContext().AttachRange(op);
+			newOrder.Products = op;
 
 			return _orders.Create(newOrder);
 		}
@@ -244,7 +219,8 @@ namespace Service
 		Retrieve,
 		Update,
 		Delete,
-		Query
+		Query,
+		Login
 	}
 
 	/// <summary>

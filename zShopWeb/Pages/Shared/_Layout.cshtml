@@ -6,46 +6,80 @@
 	<title>@ViewData["Title"] - zShopWeb</title>
 	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="~/css/site.css" />
+	@RenderSection("Styles", false)
 </head>
 <body>
 	<header>
-		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-			<div class="container">
-				<a class="navbar-brand" asp-area="" asp-page="/Index">zShopWeb</a>
-				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-						aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
-				<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-					<ul class="navbar-nav flex-grow-1">
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-page="/Index">Hjem</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-page="/Customers/Index">Kunder</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-page="/Orders/Index">Ordre</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-page="/Products/Index">Produkter</a>
-						</li>
-					</ul>
+		<nav class="top-container">
+			<div class="top-logo">
+				<!-- LOGO IMAGE -->
+			</div>
+			<div class="top-menu">
+				<div class="menu-column">
+					<button class="menu-button">PRODUCTS</button>
+					<div class="menu-dropdown-content">
+						<a asp-page="/Products/Index" asp-page-handler="DisplayAllProducts">All Products</a>
+						<a asp-page="/Products/Index">AP 2</a>
+						<a asp-page="/Products/Index">AP 3</a>
+					</div>
+				</div>
+				<div class="menu-column">
+					<button class="menu-button">CAMPAIGNS</button>
+					<div class="menu-dropdown-content">
+						<a asp-page="/Index" asp-page-handler="">Current Offers</a>
+						<a asp-page="/Index" asp-page-handler="">CO 2</a>
+						<a asp-page="/Index" asp-page-handler="">CO 3</a>
+					</div>
+				</div>
+				<div class="menu-column">
+					<button class="menu-button">GAMES</button>
+					<div class="menu-dropdown-content">
+						<a asp-page="/Index" asp-page-handler="">All Games</a>
+						<a asp-page="/Index" asp-page-handler="">AG 2</a>
+						<a asp-page="/Index" asp-page-handler="">AG 3</a>
+					</div>
+				</div>
+			</div>
+			<div class="top-cart">
+				<div class="cart-icon"></div>
+				<div class="cart-info">
+					<div class="cart-products">
+						<label style="display: inline-block; width: 60%;">Products:</label>
+						<label style="display: inline-block; width: 38%;">1</label>
+					</div>
+					<div class="cart-price">
+						<label style="display: inline-block; width: 60%;">Price: </label>
+						<label style="display: inline-block; width: 38%;">0kr</label>
+					</div>
+				</div>
+			</div>
+			<div class="top-user-menu">
+				<div class="user-column">
+					<div style="display:block;">
+						<img src="~/images/icon_account.png" style="position: absolute; top: 1px; left: 4px; display:inline-block; width: 32px; height: 32px;" />
+						<button class="user-button">Jens</button>
+					</div>
+					
+					<div class="user-dropdown-content">
+						<a asp-page="/Customers/Details" asp-page-handler="DisplayAccount">Account</a>
+						<a asp-page="/Orders/History" asp-page-handler="DisplayHistory">History</a>
+						<a asp-page="/Index" asp-page-handler="Logout">Logout</a>
+					</div>
 				</div>
 			</div>
 		</nav>
 	</header>
-	<div class="container">
-		<br />
-		<br />
-		<main role="main" class="pb-3">
+	<div class="page-container">
+		<div class="left-container"></div>
+		<main role="main" class="main-container">
 			@RenderBody()
 		</main>
+		<div class="right-container"></div>
 	</div>
 
-	<footer class="border-top footer text-muted">
+	<footer class="footer">
 		<div class="container">
-			&copy; 2021 - zShopWeb - <a asp-area="" asp-page="/Index">Nada!</a>
+			&copy; 2021 &reg; Z-Soft Shop ----> <a asp-page="/Index">About Us!</a>
 		</div>
 	</footer>
 

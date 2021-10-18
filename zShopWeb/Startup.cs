@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace zShopWeb
 {
@@ -14,8 +15,6 @@ namespace zShopWeb
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
-			//var status = new Exception("TJEK DATABASE 1-MANGE KUNDE->ORDRE!!!");
-			//throw status;
 		}
 
 		public IConfiguration Configuration { get; }
@@ -23,12 +22,24 @@ namespace zShopWeb
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			string connectionString = Configuration.GetConnectionString("S21DMH3B11_zShopDBContext2");
-			services.AddDbContext<Data.IDBManager, Data.ZShopContext>(
+			string connectionString = Configuration.GetConnectionString("S21DMH3B11_zShopDBContext");
+			services.AddDbContext<Data.IZShopContext, Data.ZShopContext>(
 				options => options.UseSqlServer(connectionString)
 			);
 
 			services.AddScoped<Service.ISiteFunctions, Service.SiteFunctions>();
+
+			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+				.AddCookie("Cookies", options =>
+				{
+					options.AccessDeniedPath = "/Error";
+					options.Cookie.Name = "AuthCookie";
+					options.Cookie.HttpOnly = true;
+					options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+					options.LoginPath = "/Users/User";
+					options.ReturnUrlParameter = "ReturnUrl";
+					options.SlidingExpiration = true;
+				});
 
 			services.AddRazorPages();
 		}
@@ -52,6 +63,7 @@ namespace zShopWeb
 
 			app.UseRouting();
 
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>

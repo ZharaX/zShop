@@ -6,31 +6,39 @@ using System.Linq;
 
 namespace Data
 {
-	public interface IDBManager
+	public interface IZShopContext
 	{
-		ZShopContext DBManager();
+		ZShopContext ZShopDBContext();
 	}
 
 	/// <summary>
 	/// Main DB Contact Class
 	/// DONT USE THIS DIRECTLY! IMPLEMENT IDBMANAGER
 	/// </summary>
-	public class ZShopContext : DbContext, IDBManager
+	public class ZShopContext : DbContext, IZShopContext
 	{
-		public DbSet<Models.Product> Products { get; set; }
 		public DbSet<Models.Customer> Customers { get; set; }
+		public DbSet<Models.Product> Products { get; set; }
 		public DbSet<Models.Order> Orders { get; set; }
+		public DbSet<Models.OrderProduct> OrderProducts { get; set; }
 
 		public ZShopContext(DbContextOptions options) : base(options) { }
 
-		public ZShopContext DBManager() { return this; }
+		public ZShopContext ZShopDBContext() { return this; }
 
 		#region MODEL CREATION
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			// DEFINING ORDERPRODUCT JOIN TABLE REQUIREMENTS
+			modelBuilder.Entity<Models.OrderProduct>().HasKey(op => new { op.OrderID, op.ProductID });
+			modelBuilder.Entity<Models.OrderProduct>().HasOne(op => op.Order).WithMany(p => p.Products).HasForeignKey(o => o.OrderID);
+			modelBuilder.Entity<Models.OrderProduct>().HasOne(op => op.Product).WithMany(o => o.Orders).HasForeignKey(o => o.ProductID);
+			modelBuilder.Entity<Models.OrderProduct>().Property(o => o.ProductAmount).IsRequired();
+			modelBuilder.Entity<Models.OrderProduct>().ToTable("OrderProduct");
+
 			// DEFINING PRODUCT REQUIREMENTS
 			modelBuilder.Entity<Models.Product>().HasKey("ID");
-			modelBuilder.Entity<Models.Product>().HasMany(p => p.Orders).WithMany(o => o.Products);
+			//modelBuilder.Entity<Models.Product>().HasMany(p => p.Orders).WithMany(o => o.Products);
 			modelBuilder.Entity<Models.Product>().Property(p => p.Name).IsRequired().HasMaxLength(50);
 			modelBuilder.Entity<Models.Product>().Property(p => p.Description).IsRequired().HasMaxLength(250);
 			modelBuilder.Entity<Models.Product>().Property(p => p.Image).IsRequired().HasMaxLength(50);
@@ -39,9 +47,7 @@ namespace Data
 
 			// DEFINING ORDER REQUIREMENTS
 			modelBuilder.Entity<Models.Order>().HasKey("ID");
-			modelBuilder.Entity<Models.Order>().HasMany(o => o.Products).WithMany(p => p.Orders);
-			modelBuilder.Entity<Models.Order>().Property(o => o.Amount).IsRequired();
-			modelBuilder.Entity<Models.Order>().Property(o => o.TotalPrice).HasPrecision(8, 2);
+			//modelBuilder.Entity<Models.Order>().HasMany(o => o.Products).WithMany(p => p.Orders);
 			modelBuilder.Entity<Models.Order>().Property(o => o.Discount).HasPrecision(8, 2);
 			modelBuilder.Entity<Models.Order>().Property(o => o.Date).HasDefaultValueSql("getdate()");
 			modelBuilder.Entity<Models.Order>().ToTable("Orders");
@@ -117,5 +123,7 @@ namespace Data
 		{
 			return base.Set<TEntity>(); // TODO: IS THIS NEEDED???
 		}
+
+		public Models.Customer LoginCustomer(string[] cred) { return Customers.Find(1); } // TODO: 
 	}
 }

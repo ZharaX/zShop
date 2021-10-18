@@ -1,9 +1,18 @@
 ﻿@page
 @model zShopWeb.Pages.Products.IndexModel
+
+<form method="get" class="product-searchbar">
+	<div class="search-icon"></div>
+	<div class="search-input">
+		<input class="search-box" type="search" asp-for="@Model.SearchString" placeholder="search product..." />
+		<input class="search-button" type="submit" value="Search" />
+	</div>
+</form>
+
 @{
 	foreach (Service.DTO.ProductDTO product in Model.Products)
 	{
-		<div style="position: relative; display: inline-block; width: 20%; height: auto; margin: 10px; border: 2px solid darkgreen; border-radius: 8px;">
+		<div class="product-container">
 			<partial name="_Product" model="@product" />
 		</div>
 	}

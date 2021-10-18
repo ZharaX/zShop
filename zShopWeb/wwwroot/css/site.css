@@ -1,71 +1,425 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+﻿/* HTML & BODY SETUP */
+html, body {
+	width: 100vw;
+	height: 100vh;
+	max-width: 1920px;
+	-ms-text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
 }
 
-/* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
-}
-
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
-
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
-
-/* Sticky footer styles
--------------------------------------------------- */
 html {
-  font-size: 14px;
+	font-size: 20px;
 }
+
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+	html {
+		font-size: 16px;
+	}
 }
 
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+/* BODY STANDARDS */
+body {
+	position: relative;
+	color: black;
+	background-color: #000000;
+	font: bold 1em 'Arial';
 }
 
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+.page-container {
+	display: block;
+	width: 98%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.main-container {
+	display: inline-block;
+	width: 80%;
+}
+
+.left-container,
+.right-container {
+	display: inline-block;
+	width: 9.5%;
+}
+
+.top-container {
+	position: relative;
+	height: 8vh;
+	display: flex;
+	align-items: center;
+	background-color: #111;
+	border-bottom: 2px ridge #A00;
+}
+
+.top-logo {
+	display: block;
+	position: relative;
+	top: 0;
+	left: 0;
+	width: 10%;
+	height: 100%;
+	background: url("../images/logo.png") no-repeat 100%/100%;
+}
+
+.top-menu {
+	display: block;
+	position: absolute;
+	top: 56%;
+	left: 11.5%;
+	width: 50%;
+}
+
+.top-cart {
+	position: absolute;
+	top: 56%;
+	display: block;
+	left: 62%;
+	width: 15%;
+	height: 32px;
+}
+
+.cart-icon {
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+	background: url("../images/icon_cart.png") no-repeat 100%/100%;
+}
+
+.cart-info {
+	display: inline-block;
+	width: calc(100% - 40px);
+	height: 100%;
+}
+
+.cart-products {
+	display: block;
+	margin: 0;
+	color: #b2ff00;
+	font-size: .75em;
+	position: absolute;
+	top: 1px;
+	width: 60%;
+	height: 16px;
+}
+
+.cart-price {
+	display: block;
+	margin: 0;
+	color: #b2ff00;
+	font-size: .75em;
+	position: absolute;
+	bottom: 1px;
+	width: 60%;
+	height: 16px;
+}
+
+.top-user-menu {
+	display: block;
+	position: absolute;
+	top: 56%;
+	right: 11.5%;
+	width: 10%;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+	outline: none;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+	position: relative;
+	min-height: 100%;
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+	/* Margin bottom by footer height */
+	margin-bottom: 60px;
 }
+
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	background-color: #111;
+	color: #007bff;
+	white-space: nowrap;
+	line-height: 60px; /* Vertically center the text there */
+	border-top: 2px ridge #A00;
+	z-index: 100;
+}
+
+.product-searchbar {
+	position: relative;
+	display: block;
+	width: 95%;
+	height: 48px;
+	background-color: #100;
+	margin-top: 1%;
+	margin-left: auto;
+	margin-right: auto;
+	border: 2px ridge firebrick;
+	border-radius: 8px;
+}
+
+.search-icon {
+	display: inline-block;
+	width: 44px;
+	height: 44px;
+	background-color: #200;
+	background: url("../images/icon-search.png") no-repeat 100%/100%;
+	border-radius: 4px;
+}
+
+.search-input {
+	position: absolute;
+	top: 2px;
+	left: 48px;
+	display: inline-block;
+	width: calc(90% - 51px);
+	height: calc(100% - 4px);
+}
+
+	.search-input > .search-box {
+		position: absolute;
+		left: 1%;
+		width: 100%;
+		height: 100%;
+		background-color: #100;
+		border: none;
+		padding-left: 8px;
+		color: silver;
+		border: 2px solid transparent;
+	}
+		.search-input > .search-box:active,
+		.search-input > .search-box:focus {
+			outline-width: 0;
+			border: 2px ridge #b6ff00;
+			border-radius: 0 6px 6px 0;
+		}
+
+	.search-input > .search-button {
+		position: absolute;
+		right: -11.7%;
+		height: 100%;
+		width: 10%;
+		background-color: darkolivegreen;
+		color: aquamarine;
+		font: normal 1em/1em Arial;
+		border: 1px solid #300;
+		border-radius: 4px;
+	}
+
+.product-container {
+	display: inline-block;
+	position: relative;
+	width: 18%;
+	height: auto;
+	margin: calc(1% - 2px);
+	margin-top: 2%;
+	margin-bottom: 3%;
+	border: 2px ridge firebrick;
+	border-radius: 8px;
+}
+	.product-container:hover {
+		box-shadow: 0 0 16px 4px firebrick;
+	}
+
+.product-header {
+	display: block;
+	width: 100%;
+	height: 3vh;
+	background-color: #600;
+	color: silver;
+	text-align: center;
+	line-height: 3vh;
+	border-bottom: 1px solid #A00;
+	border-radius: 4px 4px 0 0;
+}
+
+.product-image {
+	display: block;
+	height: 20vh;
+	background-color: black;
+}
+
+.product-description {
+	display: block;
+	width: 100%;
+	background-color: #500;
+	text-align: center;
+	padding: 5%;
+}
+
+.product-footer {
+	display: block;
+	width: 100%;
+	height: 4vh;
+	background-color: darkred;
+}
+
+.product-price {
+	display: block;
+	width: 40%;
+	height: 100%;
+	color: lightsalmon;
+	text-align: center;
+	font: normal 1em/5vh Consolas;
+}
+
+.product-buy-button {
+	position: absolute;
+	right: 2%;
+	bottom: 1%;
+	width: 30%;
+	height: 8%;
+	background-color: darkolivegreen;
+	color: aquamarine;
+	font: normal 1em/1em Arial;
+	border: 1px solid #300;
+	border-radius: 4px;
+}
+
+	.product-buy-button:hover {
+		background-color: lime;
+		color: darkgreen;
+		border: 1px solid #300;
+		border-radius: 4px;
+	}
+
+/* TOP NAVIGATION VERTICAL MENU */
+.vertical-menu {
+	margin-top: 5px;
+	margin-bottom: 0;
+	list-style: none;
+}
+
+	.vertical-menu > li {
+		position: relative;
+		display: inline-block;
+	}
+
+		.vertical-menu > li > a {
+			position: relative;
+			display: block;
+			padding: 10px 15px;
+			line-height: 20px;
+		}
+
+			.vertical-menu > li > a:hover,
+			.vertical-menu > li > a:focus {
+				background-color: transparent;
+			}
+
+		.vertical-menu > li.disabled > a {
+			background-color: transparent;
+		}
+
+			.vertical-menu > li.disabled > a:hover,
+			.vertical-menu > li.disabled > a:focus {
+				background-color: transparent;
+			}
+
+/* TOP NAVIGATION DROPDOWN MENUS CONTAINER */
+.menu-dropdown-main {
+	display: flex;
+	position: relative;
+	width: 100%;
+}
+
+/* DROPDOWN SINGLE MENU POINT CONTAINER */
+.menu-column,
+.user-column {
+	position: relative;
+	display: inline-block;
+	width: 15%;
+	margin: 0 5px 0 0;
+	padding: 0;
+}
+
+.user-column {
+	width: 100%;
+}
+
+/* DROPDOWN MENU BUTTONS */
+.menu-button,
+.user-button {
+	width: 100%;
+	height: 100%;
+	background-color: #222;
+	text-align: center;
+	font: bold 14px Consolas;
+	color: salmon;
+	margin: 0;
+	padding: 8px 0 6px 0;
+	border: 1px solid firebrick;
+	border-bottom: 2px ridge #A00;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+}
+
+/* DROPDOWN MENU CONTENT CONTAINER */
+.menu-dropdown-content,
+.user-dropdown-content {
+	display: none;
+	width: 100%;
+	background-color: #010124;
+	border: 1px solid firebrick;
+	box-shadow: 0 4px 16px 4px firebrick;
+	z-index: 1000; /* TOP MOST TO BE SURE THEY STAY ONTOP OF EVERTYTHING ELSE! */
+}
+
+	/* A HREF STYLE */
+	.menu-dropdown-content a,
+	.user-dropdown-content a {
+		font: bold 14px Consolas;
+		display: block;
+		height: 48px;
+		line-height: 48px;
+		padding: 0 8px 0 8px;
+		text-decoration: none;
+		color: salmon;
+	}
+		/* A HREF HOVER STYLE */
+		.menu-dropdown-content a:hover,
+		.user-dropdown-content a:hover {
+			background-color: #240101;
+			color: #b6ff00;
+		}
+
+/* */
+.user-link-button {
+	display: block;
+	width: 100%;
+	padding: 5px 8px 4px 8px;
+	background-color: transparent;
+	border: none;
+	text-align: left;
+}
+
+	.user-link-button:hover {
+		background-color: #240101;
+	}
+
+/* DISPLAY DROPDOWN CONTENT ON HOVER */
+.menu-column:hover .menu-dropdown-content,
+.user-column:hover .user-dropdown-content {
+	position: absolute;
+	display: block;
+	width: 100%;
+	background-color: #000;
+	white-space: nowrap;
+}
+
+/* CHANGES TEXT COLOR ON HOVERED BUTTON */
+.menu-column:hover .menu-button,
+.user-column:hover .user-button {
+	color: #b6ff00;
 }

@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "zShop_UnitTester", "xUnitTest\zShop_UnitTester\zShop_UnitTester.csproj", "{C21A1467-0F22-4514-85B7-D63C17DBC637}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zShopWeb", "zShopWeb\zShopWeb.csproj", "{8A9BC8CC-92D1-45BA-A8DF-B5D93CA2B18C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "zShopWeb", "zShopWeb\zShopWeb.csproj", "{8A9BC8CC-92D1-45BA-A8DF-B5D93CA2B18C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

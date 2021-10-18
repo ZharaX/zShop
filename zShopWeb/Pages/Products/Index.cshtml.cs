@@ -16,11 +16,19 @@ namespace zShopWeb.Pages.Products
 		#endregion
 
 		public List<Service.DTO.ProductDTO> Products { get; private set; }
+		[BindProperty(SupportsGet = true)]
+		public string SearchString { get; set; }
 
 		public IndexModel(ISiteFunctions siteFunctions) { _siteFunctions = siteFunctions; LoadProducts(); }
 
 		public void OnGet()
 		{
+			Products = (List<Service.DTO.ProductDTO>)_siteFunctions.PerformAction<List<Service.DTO.ProductDTO>>(ActionType.Query, FunctionName.Product, null);
+
+			if(!string.IsNullOrEmpty(SearchString))
+			{
+				Products = Products.Where(p => p.Name.Contains(SearchString) || p.Description.Contains(SearchString)).ToList();
+			}
 		}
 
 

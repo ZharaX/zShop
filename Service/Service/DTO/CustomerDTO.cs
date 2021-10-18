@@ -14,5 +14,7 @@
 		public string Email { get; set; }
 
 		public System.Collections.Generic.List<OrderDTO> Orders { get; set; }
+
+		public CustomerDTO(string sID) { SID = sID; }
 	}
 }

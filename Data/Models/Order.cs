@@ -9,8 +9,6 @@ namespace Data.Models
 	/// </summary>
 	public class Order : BaseModel
 	{
-		public int Amount { get; set; }
-		public decimal TotalPrice { get; set; }
 		public decimal Discount { get; set; }
 
 		public DateTime Date { get; set; }
@@ -22,6 +20,6 @@ namespace Data.Models
 		public Customer Customer { get; set; }
 
 		// PRODUCTS COLLECTION NAVIGATION FOR THIS ORDER
-		public virtual ICollection<Product> Products { get; set; }
+		public virtual ICollection<OrderProduct> Products { get; set; }
 	}
 }

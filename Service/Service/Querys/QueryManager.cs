@@ -1,4 +1,5 @@
 ﻿using Service.DTO;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Service.Querys
@@ -14,10 +15,10 @@ namespace Service.Querys
 		/// </summary>
 		/// <param name="customer">Data Customer Model</param>
 		/// <returns>CustomerDTO</returns>
-		public static IQueryable<CustomerDTO> ToCustomerDTO(this IQueryable<Data.Models.Customer> customer)
+		public static IQueryable<CustomerDTO> ToCustomerDTO(this IQueryable<Data.Models.Customer> customer, string sID)
 		{
 			return customer
-				.Select(c => new CustomerDTO
+				.Select(c => new CustomerDTO(sID)
 				{
 					FirstName = c.FirstName,
 					LastName = c.LastName,
@@ -31,33 +32,60 @@ namespace Service.Querys
 		}
 
 		/// <summary>
-		/// Maps Data Order -> DTO Order
-		/// <para>Also attaches ProductDTO(s) to OrderDTO</para>
+		/// Builds List of OrderDTO from Data OrderProduct found for specific customer
+		/// <para>Also attaches ProductDTO(s)</para>
 		/// </summary>
-		/// <param name="order">Data Order Model</param>
-		/// <param name="customer">Data Customer Model</param>
-		/// <returns>OrderDTO</returns>
-		public static IQueryable<OrderDTO> ToOrderDTO(this IQueryable<Data.Models.Order> order, Data.Models.Customer customer)
+		/// <param name="orderProduct">Query DB OrderProduct</param>
+		/// <param name="customer">For Customer?</param>
+		/// <returns>List of OrderDTO</returns>
+		public static List<OrderDTO> ToOrdersDTO(this IQueryable<Data.Models.OrderProduct> orderProduct, Data.Models.Customer customer)
 		{
-			foreach(Data.Models.Product prod in order.SelectMany(o => o.Products))
+			// QUERY CUSTOMER ORDERS
+			// TODO: IF CUSTOMER IS NULL RETURN COMPLETE LIST OF ORDERS (ADMIN)
+			var customerOrders = orderProduct.Where(op => op.Order.Customer == customer).Select(o => o.Order).Distinct().ToList();
+
+			// CUSTOMER ORDERS
+			List<OrderDTO> orders = new List<OrderDTO>();
+
+			// LOOP ORDERS -> CREATE NEW ORDER DTO -> ATTACH PRODUCTS AS DTO
+			foreach (var o in customerOrders)
 			{
-				order.Select(o => new ProductDTO
-				{ 
-					ProductID = prod.ID,
-					Name = prod.Name,
-					Description = prod.Description,
-					Price = prod.Price,
-					Image = prod.Image,
-					Category = prod.Category.Name
-				});
+				var orderProducts = orderProduct.Where(op => op.OrderID == o.ID).Select(p => p.Product);
+
+				orders.Add(new OrderDTO(o.ID, o.Discount, o.Date, o.CompletedOn, o.IsProcessed, ToProductDTO(orderProducts)));
 			}
 
-			System.Collections.Generic.List<ProductDTO> pr = new System.Collections.Generic.List<ProductDTO>();
-			pr = ToProductDTO(order.SelectMany(o => o.Products).AsQueryable()).ToList();
+			// ASSIGN PRODUCT AMOUNT
+			foreach (OrderDTO o in orders)
+			{
+				foreach (ProductDTO p in o.Products)
+				{
+					p.Amount = orderProduct.Where(op => op.OrderID == o.OrderID && op.ProductID == p.ProductID).Select(p => p.ProductAmount).First();
+				}
+			}
 
+			// RETURN ORDER(S)
+			return orders;
+		}
+
+		/// <summary>
+		/// Maps Data Order -> DTO Order
+		/// </summary>
+		/// <param name="order">Data Order Model</param>
+		/// <param name="products">DTO Products for Order</param>
+		/// <returns>OrderDTO</returns>
+		public static OrderDTO ToOrderDTO(this IQueryable<Data.Models.Order> order, List<ProductDTO> products)
+		{
 			return order
-				.Where(o => o.Customer == customer)
-				.Select(o => new OrderDTO(o.ID, o.Amount, o.Discount, o.Date, o.CompletedOn, o.IsProcessed, pr));
+				.Select(o => new OrderDTO(
+					o.ID,
+					o.Discount,
+					o.Date,
+					o.CompletedOn,
+					o.IsProcessed,
+					products
+				))
+				.Single();
 		}
 
 		/// <summary>
@@ -65,7 +93,7 @@ namespace Service.Querys
 		/// </summary>
 		/// <param name="product">Data Product Model</param>
 		/// <returns>ProductDTO</returns>
-		public static IQueryable<ProductDTO> ToProductDTO(this IQueryable<Data.Models.Product> product)
+		public static List<ProductDTO> ToProductDTO(this IQueryable<Data.Models.Product> product)
 		{
 			return product
 				.Select(p => new ProductDTO
@@ -77,7 +105,8 @@ namespace Service.Querys
 					Stock = p.Stock,
 					Image = p.Image,
 					Category = p.Category.Name
-				});
+				})
+				.ToList();
 		}
 		#endregion
 		#region FROM DTO CONVERSION
@@ -114,7 +143,6 @@ namespace Service.Querys
 		{
 			return new Data.Models.Order
 			{
-				Amount = order.Amount,
 				Discount = order.Discount,
 				Date = order.Date,
 				CompletedOn = order.CompletedOn,
@@ -127,26 +155,20 @@ namespace Service.Querys
 		/// Maps Data Product -> DTO Product
 		/// </summary>
 		/// <param name="product">Data Product Model</param>
-		/// <returns>ProductDTO</returns>
-		public static System.Collections.Generic.List<Data.Models.Product> FromProductDTO(System.Collections.Generic.List<ProductDTO> product)
+		/// <returns>List of OrderProducts</returns>
+		public static System.Collections.Generic.List<Data.Models.OrderProduct> FromProductDTO(System.Collections.Generic.List<ProductDTO> product)
 		{
-			System.Collections.Generic.List<Data.Models.Product> p = new System.Collections.Generic.List<Data.Models.Product>();
+			System.Collections.Generic.List<Data.Models.OrderProduct> op = new System.Collections.Generic.List<Data.Models.OrderProduct>();
 
-			foreach(ProductDTO pdto in product)
+			foreach (ProductDTO pdto in product)
 			{
-				p.Add(new Data.Models.Product
+				op.Add(new Data.Models.OrderProduct
 				{
-					ID = pdto.ProductID,
-					Name = pdto.Name,
-					Description = pdto.Description,
-					Price = pdto.Price,
-					Stock = pdto.Stock,
-					Image = pdto.Image
-					//Category = p.Category.Name
+					ProductID = pdto.ProductID
 				});
 			}
 
-			return p;
+			return op;
 		}
 		#endregion
 	}
