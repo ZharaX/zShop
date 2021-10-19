@@ -64,7 +64,7 @@ body {
 	left: 0;
 	width: 10%;
 	height: 100%;
-	background: url("../images/logo.png") no-repeat 100%/100% 100%;
+	background: url("../images/logo.png") no-repeat 100%/100%;
 }
 
 .top-menu {
@@ -117,6 +117,39 @@ body {
 	bottom: 1px;
 	width: 60%;
 	height: 16px;
+}
+
+.cart-accept {
+	position: absolute;
+	left: 60%;
+	width: 30px;
+	height: 30px;
+	color: #b2ff00;
+	margin: 1px 0 0 0;
+	padding: 0;
+	background: #111;
+	border: 2px ridge #b2ff00;
+	border-radius: 32px;
+}
+	.cart-accept:hover {
+		filter: brightness(2);
+	}
+
+.cart-details-container {
+	position: absolute;
+	width: 30%;
+	height: auto;
+	top: 30%;
+	left: 40%;
+}
+
+.cart-details-window {
+	position: absolute;
+	min-width: 400px;
+	min-height: 400px;
+	border: 2px ridge firebrick;
+	border-radius: 8px;
+	margin-top: -120%;
 }
 
 .top-user-menu {

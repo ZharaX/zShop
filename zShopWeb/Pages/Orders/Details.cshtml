@@ -1,0 +1,39 @@
+﻿@page "/Orders/Details/{handler?}"
+@model zShopWeb.Pages.Orders.OrdersModel
+
+@{
+	ViewData["Title"] = "Order Details";
+}
+
+<div class="block center cart-details-container" style="z-index: 20">
+	<partial name="_Orders" model="@Model.Customer" />
+
+	<!-- EDIT ORDER CART DETAILS -->
+	<div id="cartDetails" class="cart-details-window" style="display: none; width: 100%; margin-top: -150%">
+		<div class="login-header">Viewing Order Details</div>
+		<form method="post">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			@*@{ 
+				foreach(int pID in Model.NewOrder.)
+			}
+			<div class="customer-edit-group">
+				<label asp-for="NewOrder." class="customer-labels"></label>
+				<input asp-for="FirstName" class="customer-input" />
+				<span asp-validation-for="FirstName" class="text-danger"></span>
+			</div>*@
+			<div class="block customer-edit-group" style="margin-bottom: 1%">
+				<input type="submit" value="Save" class="block center btn-blue btn-full" />
+			</div>
+		</form>
+
+		@section Scripts {
+			@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+		}
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		displayingCartOrder = '@(Model.DisplayOrder)' === '@true';
+	</script>
+}

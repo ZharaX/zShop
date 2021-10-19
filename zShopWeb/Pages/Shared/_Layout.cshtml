@@ -40,19 +40,39 @@
 					</div>
 				</div>
 			</div>
+			@{
+
+				int productCount = 0;
+				string productTotals = "";
+
+				if (TempData.ContainsKey("NewOrder"))
+				{
+					if (TempData.Get<Models.NewOrder>("NewOrder").OrderProducts != null)
+					{
+						Models.NewOrder newOrder = TempData.Get<Models.NewOrder>("NewOrder");
+
+						productCount = newOrder.OrderProducts.Count();
+						productTotals = newOrder.OrderTotalPrice.ToString("C2");
+
+						TempData.Set("NewOrder", newOrder);
+					}
+				}
+			}
 			<div class="top-cart">
 				<div class="cart-icon"></div>
 				<div class="cart-info">
 					<div class="cart-products">
 						<label style="display: inline-block; width: 40%;">Products:</label>
-						<label style="display: inline-block; width: 38%;">1</label>
+						<label id="cartItems" style="display: inline-block; width: 38%;">@productCount</label>
 					</div>
 					<div class="cart-price">
 						<label style="display: inline-block; width: 40%;">Price: </label>
-						<label style="display: inline-block; width: 38%;">0kr</label>
+						<label style="display: inline-block; width: 38%;">@productTotals</label>
 					</div>
+					<input id="cartAccept" class="cart-accept" type="button" value="✓" />
 				</div>
 			</div>
+
 			@if (User.Identity.IsAuthenticated)
 			{
 				<div class="top-user-menu">

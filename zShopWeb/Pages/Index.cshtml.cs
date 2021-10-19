@@ -60,6 +60,8 @@ namespace zShopWeb.Pages
 			Customer = TempData.Get<Service.DTO.CustomerDTO>("Customer");
 			TempData.Set("Customer", Customer);
 
+			//TempData.Remove("NewOrder");
+
 			#region TO BE REMOVED (H3 ASSIGNMENTS)
 			TempData.Set("Test", "Hello TempData");
 
