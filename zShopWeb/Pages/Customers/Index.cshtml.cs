@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 using Service;
 
 namespace S21DMH3B11_zShop.Pages.Customer
 {
+	[Authorize(Roles = "Admin")]
 	public class IndexModel : PageModel
 	{
 		#region CONTEXT DATA

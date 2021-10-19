@@ -27,7 +27,7 @@ namespace zShopWeb.Pages.Products
 
 			if(!string.IsNullOrEmpty(SearchString))
 			{
-				Products = Products.Where(p => p.Name.Contains(SearchString) || p.Description.Contains(SearchString)).ToList();
+				Products = Products.Where(p => p.Name.ToLower().Contains(SearchString.ToLower()) || p.Description.ToLower().Contains(SearchString.ToLower())).ToList();
 			}
 		}
 

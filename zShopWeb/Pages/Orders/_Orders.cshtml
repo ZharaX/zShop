@@ -1,0 +1,57 @@
+﻿@model List<Service.DTO.OrderDTO>
+<!-- EDIT INFORMATION -->
+<div id="orderDetails" class="customer-window" style="display: block; width: 100%; margin-top: 10%">
+	<div class="login-header">Order Details</div>
+	@{
+		foreach (Service.DTO.OrderDTO order in Model)
+		{
+			order.CalculateTotalPrice();
+
+			<div class="block center" style="width: 100%; height: 30%">
+					<dl class="">
+						<dt class="customer-labels">
+							Date:
+						</dt>
+						<dd class="customer-values">
+							@order.Date.ToString("dd/MM-yyyy hh:mm")
+						</dd>
+						<dt class="customer-labels">
+							Completed:
+						</dt>
+						<dd class="customer-values">
+							@order.CompletedOn.ToString("dd/MM-yyyy hh:mm")
+						</dd>
+
+						<dt class="customer-labels">
+							Billing:
+						</dt>
+						<dd class="customer-values">
+							@order.TotalPrice.ToString("C2")
+						</dd>
+						<dt class="customer-labels">
+							Discount:
+						</dt>
+						<dd class="customer-values">
+							@order.Discount
+						</dd>
+
+						@foreach (Service.DTO.ProductDTO product in order.Products)
+						{
+							<!-- PRODUCT NAME -->
+							<div class="inline" style="width: 35%; background-color: #111; border-radius: 4px; margin-left: 1%; margin-bottom: 4px; font: normal .75em/20px Arial; color: sandybrown">
+								@(" " + product.Name)
+							</div>
+							<!-- PRODUCT AMOUNT -->
+							<div class="inline" style="width: 7%; background-color: #111; border-radius: 4px; margin-left: 2px; margin-bottom: 4px; font: normal .75em/20px Arial; color: sandybrown">
+								@(" " + product.Amount+"x")
+							</div>
+							<!-- PRODUCTS PRICE -->
+							<div class="inline" style="width: 52%; background-color: #111; border-radius: 4px; margin-left: 2px; margin-bottom: 4px; font: normal .75em/20px Arial; color: sandybrown">
+								@(" " + (product.Amount * product.Price).ToString("C2"))
+							</div>
+						}
+					</dl>
+			</div>
+		}
+	}
+</div>

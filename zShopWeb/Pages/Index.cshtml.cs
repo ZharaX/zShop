@@ -57,6 +57,9 @@ namespace zShopWeb.Pages
 		/// </summary>
 		public async Task<IActionResult> OnGetAsync(string returnUrl = null, bool userAction = true, bool doLogin = false)
 		{
+			Customer = TempData.Get<Service.DTO.CustomerDTO>("Customer");
+			TempData.Set("Customer", Customer);
+
 			#region TO BE REMOVED (H3 ASSIGNMENTS)
 			TempData.Set("Test", "Hello TempData");
 
@@ -103,6 +106,7 @@ namespace zShopWeb.Pages
 			returnUrl ??= Url.Content("~/");
 
 			Customer = (Service.DTO.CustomerDTO)_siteFunctions.PerformAction(Service.ActionType.Retrieve, Service.FunctionName.Customer, new string[] { "", username, userpass });
+			TempData.Set("Customer", Customer);
 
 			if (Customer == null)
 			{

@@ -111,7 +111,7 @@ namespace Service
 					//return Querys.QueryManager.ToCustomerDTO(_customers.GetCustomers().Where(c => c.ID == (int)(object)data)).FirstOrDefault();
 
 					if (function == FunctionName.Order) // FUNCTION: ORDER
-						return Querys.QueryManager.ToOrdersDTO(_dbManager.ZShopDBContext().OrderProducts, _customers.Retrieve((int)(object)data)).FirstOrDefault();
+						return Querys.QueryManager.ToOrdersDTO(_dbManager.ZShopDBContext().OrderProducts, _customers.Retrieve((int)(object)data)).ToList();
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
 						return Querys.QueryManager.ToProductDTO(_products.GetProducts().Where(p => p.ID == (int)(object)data));

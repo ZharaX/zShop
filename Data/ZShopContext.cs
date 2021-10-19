@@ -78,14 +78,13 @@ namespace Data
 					Image = "1.png",
 					Active = true
 				},
-
 				new Models.Product
 				{
 					ID = 2,
 					Name = "Test 2",
 					Description = "Test Description 2",
 					Price = 25.00m,
-					Stock = 500,
+					Stock = 200,
 					Image = "2.png",
 					Active = true
 				},
@@ -95,8 +94,179 @@ namespace Data
 					Name = "Test 3",
 					Description = "Test Description 3",
 					Price = 99.00m,
-					Stock = 1000,
+					Stock = 300,
 					Image = "3.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 4,
+					Name = "Test 4",
+					Description = "Test Description 4",
+					Price = 129.00m,
+					Stock = 400,
+					Image = "4.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 5,
+					Name = "Test 5",
+					Description = "Test Description 5",
+					Price = 149.00m,
+					Stock = 500,
+					Image = "5.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 6,
+					Name = "Test 6",
+					Description = "Test Description 6",
+					Price = 199.00m,
+					Stock = 600,
+					Image = "6.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 7,
+					Name = "Test 7",
+					Description = "Test Description 7",
+					Price = 249.00m,
+					Stock = 700,
+					Image = "7.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 8,
+					Name = "Test 8",
+					Description = "Test Description 8",
+					Price = 299.00m,
+					Stock = 800,
+					Image = "8.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 9,
+					Name = "Test 9",
+					Description = "Test Description 9",
+					Price = 399.00m,
+					Stock = 900,
+					Image = "9.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 10,
+					Name = "Test 10",
+					Description = "Test Description 10",
+					Price = 599.00m,
+					Stock = 1000,
+					Image = "10.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 11,
+					Name = "Test 11",
+					Description = "Test Description 11",
+					Price = 2.50m,
+					Stock = 1100,
+					Image = "11.png",
+					Active = true
+				},
+
+				new Models.Product
+				{
+					ID = 12,
+					Name = "Test 12",
+					Description = "Test Description 12",
+					Price = 5.00m,
+					Stock = 1200,
+					Image = "12.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 13,
+					Name = "Test 13",
+					Description = "Test Description 13",
+					Price = 7.50m,
+					Stock = 1300,
+					Image = "13.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 14,
+					Name = "Test 14",
+					Description = "Test Description 14",
+					Price = 10.00m,
+					Stock = 1400,
+					Image = "14.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 15,
+					Name = "Test 15",
+					Description = "Test Description 15",
+					Price = 50.00m,
+					Stock = 1500,
+					Image = "15.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 16,
+					Name = "Test 16",
+					Description = "Test Description 16",
+					Price = 5.00m,
+					Stock = 1600,
+					Image = "16.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 17,
+					Name = "Test 17",
+					Description = "Test Description 17",
+					Price = 7.50m,
+					Stock = 1700,
+					Image = "17.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 18,
+					Name = "Test 18",
+					Description = "Test Description 18",
+					Price = 18.00m,
+					Stock = 1800,
+					Image = "18.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 19,
+					Name = "Test 19",
+					Description = "Test Description 19",
+					Price = 1.00m,
+					Stock = 1900,
+					Image = "19.png",
+					Active = true
+				},
+				new Models.Product
+				{
+					ID = 20,
+					Name = "Test 20",
+					Description = "Test Description 20",
+					Price = 2.00m,
+					Stock = 2000,
+					Image = "20.png",
 					Active = true
 				}
 			);
