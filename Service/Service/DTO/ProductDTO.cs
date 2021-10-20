@@ -1,4 +1,6 @@
-﻿namespace Service.DTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Service.DTO
 {
 	/// <summary>
 	/// DTO Product Class
@@ -6,6 +8,8 @@
 	public class ProductDTO
 	{
 		public int ProductID { get; set; }
+
+		[Required(ErrorMessage = "!")]
 		public int Amount { get; set; }
 		public string Name { get; set; }
 		public string Description { get; set; }
@@ -15,12 +19,11 @@
 		public bool Active { get; set; }
 		public string Category { get; set; }
 
-
 		public override string ToString()
 		{
 			string price = Price.ToString("C2");
 			price = price.Replace(" ", "");
-			return price.Remove(price.Length-1, 1);
+			return price.Remove(price.Length - 1, 1);
 		}
 	}
 }

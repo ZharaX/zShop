@@ -219,9 +219,9 @@ namespace Service
 
 					p.Stock -= op2.ProductAmount;
 					_products.Update(p);
-
-					return true; // DONE!
 				}
+
+				return true; // DONE!
 			}
 
 			return false; // SOMETHING WENT WRONG!

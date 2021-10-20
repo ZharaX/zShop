@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service;
+using Service.DTO;
 
 namespace zShopWeb.Pages.Orders
 {
@@ -33,7 +34,6 @@ namespace zShopWeb.Pages.Orders
 
 		// DISPLAY BOOLS
 		public bool DisplayOrder { get; set; }
-
 
 		/// <summary>
 		/// OnGet checks if user is logged in, if not he shouldn't even be on this page.

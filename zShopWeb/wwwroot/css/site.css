@@ -130,9 +130,13 @@ body {
 	background: #111;
 	border: 2px ridge #b2ff00;
 	border-radius: 32px;
+	text-align: center;
+	padding: 2px;
+	padding-right: 3px;
 }
 	.cart-accept:hover {
 		filter: brightness(2);
+		text-decoration: none;
 	}
 
 .cart-details-container {
@@ -541,6 +545,14 @@ body {
 	color: #b6ff00;
 }
 
+.relative {
+	position: relative;
+}
+
+.absolute {
+	position: absolute;
+}
+
 .block {
 	display: block;
 }
@@ -647,8 +659,26 @@ body {
 	border: 1px solid #300;
 }
 
+input[type=search],
+input[type=number] {
+	background-color: #100;
+	color: silver;
+	padding-left: 8px;
+	border: 2px solid transparent;
+}
+
+	input[type=search]:active,
+	input[type=number]:active,
+	input[type=search]:focus,
+	input[type=number]:focus {
+		outline-width: 0;
+		border: 2px ridge #b6ff00;
+		border-radius: 0 6px 6px 0;
+	}
+
 input[type=number] {
 	font: bold 1.5em Consolas;
+	padding: 0;
 	text-align: center;
 }
 	/* REMOVES THE ARROWS INSIDE NUMBER FIELD */
@@ -657,6 +687,22 @@ input[type=number] {
 		-webkit-appearance: none;
 	}
 
+	input[type=number]:invalid {
+		outline-width: 0;
+		border: 2px ridge #A00;
+		border-radius: 4px;
+	}
+
 input[type=number] {
 	-moz-appearance: textfield;
+}
+
+.remove {
+	width: 28px;
+	height: 28px;
+	margin-left: 3%;
+	background-color: transparent;
+	color: red;
+	border: 1px solid darkred;
+	border-radius: 32px;
 }

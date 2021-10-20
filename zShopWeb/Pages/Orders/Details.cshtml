@@ -15,14 +15,15 @@
 				for(int i = 0; i < Model.OrderProducts.Count; i++)
 				{
 					<input type="hidden" asp-for="@Model.OrderProducts[i].ProductID" />
-					<div class="block">
-						<div class="inline customer-edit-group">
-							<input type="number" class="opn" asp-for="@Model.OrderProducts[i].Amount" value="@Model.OrderProducts[i].Amount" style="width: 48px; height: 28px; margin-left: 3%;" />
-							<span asp-validation-for="@Model.OrderProducts[i].Amount" class="text-danger"></span>
+					<div class="relative block" style="margin-bottom: 3%;">
+						<div class="inline customer-edit-group" style="width: 25%;">
+							<input type="button" class="inline remove" value="X" />
+							<span id="prod_val_@i" asp-validation-for="@Model.OrderProducts[i].Amount" class="inline text-danger" hidden></span>
+							<input type="number" class="inline opn" asp-for="@Model.OrderProducts[i].Amount" value="@Model.OrderProducts[i].Amount" max="@Model.OrderProducts[i].Stock" style="width: 48px; height: 32px; margin-left: 2%;" />
 						</div>
 
-						<img src="@Model.OrderProducts[i].Image" style="width: 28px; height: 28px; margin-bottom: 2%;" />
-						<label class="customer-values" style="vertical-align: middle; margin-bottom: 2%">@Model.OrderProducts[i].Name</label>
+						<img src="@Model.OrderProducts[i].Image" style="width: 28px; height: 28px;" />
+						<label class="customer-values">@Model.OrderProducts[i].Name</label>
 					</div>
 				}
 			}
