@@ -34,7 +34,7 @@ namespace Service
 		private readonly Data.IZShopContext _dbManager;
 		private readonly ICustomerHandler _authUser;
 		#endregion
-
+		#region MODEL REFERENCES
 		// REFERENCES FOR MODEL DB CONTEXTS
 		internal readonly IDBManager<Customer> _customerContext;
 		internal readonly IDBManager<Order> _orderContext;
@@ -44,13 +44,11 @@ namespace Service
 		internal readonly Concrete.ICustomer _customers;
 		internal readonly Concrete.IOrder _orders;
 		internal readonly Concrete.IProduct _products;
-
-		//private readonly ICustomerHandler _customerHandler;
+		#endregion
 
 		/// <summary>
 		/// Constructor: Supplying ConnectionString for DBContext
-		/// Instantiates: DataTransferObjects Class
-		/// Instantiates: Model Contexts
+		/// Instantiates: Models Services Contexts using same DBContext
 		/// </summary>
 		public SiteFunctions(Data.IZShopContext dbContext)
 		{
@@ -66,9 +64,6 @@ namespace Service
 			_customers = new Concrete.CustomerService(_customerContext);
 			_orders = new Concrete.OrderService(_orderContext);
 			_products = new Concrete.ProductService(_productContext);
-
-			// SETTING DTO HANDLER CLASS REFERENCE
-			//DataTransferObjects.SiteRepository = _siteRepository;
 		}
 
 		#region FUNCTION HANDLER
@@ -185,9 +180,11 @@ namespace Service
 		#region CREATE ORDER
 		private bool CreateOrder(DTO.OrderDTO order)
 		{
+			// GET CUSTOMER AND EXISTING ORDERS
 			var cust = _customers.GetCustomers().Where(c => c.ID == 1).Include(c => c.Orders).Single();
 			cust.Orders = _orders.GetOrders().AsTracking().Where(o => o.Customer == cust).ToList();
 
+			// CREATE THE NEW ORDER OBJECT
 			var newOrder = new Data.Models.Order
 			{
 				Discount = order.Discount,
@@ -195,23 +192,45 @@ namespace Service
 				Customer = _dbManager.ZShopDBContext().Attach(cust).Entity,
 			};
 
+			// NEW JOIN TABLE LIST
 			System.Collections.Generic.List<OrderProduct> op = new System.Collections.Generic.List<OrderProduct>();
 
+			// LOOP PRODUCTS TO BE ORDERED
 			foreach (Service.DTO.ProductDTO prod in order.Products)
 			{
-				op.Add(new OrderProduct { ProductID = prod.ProductID, ProductAmount = prod.Amount });
+				// CHECKS IF THE STOCK AMOUNT EVEN HAVE THE AMOUNT REQUESTED, IF NOT RETURN FALSE (NO ORDER CREATE)
+				if (_products.Retrieve(prod.ProductID).Stock - prod.Amount < 0) return false;
+				else
+					// GO AHEAD ADD PRODUCT TO ORDER
+					op.Add(new OrderProduct { ProductID = prod.ProductID, ProductAmount = prod.Amount });
 			}
 
+			// ATTACH ORDERPRODUCT -> ADD TO NEW ORDER
 			_dbManager.ZShopDBContext().AttachRange(op);
 			newOrder.Products = op;
 
-			return _orders.Create(newOrder);
+			// GO AHEAD CREATE NEW ORDER
+			if (_orders.Create(newOrder))
+			{
+				// UPDATE PRODUCT STOCK WITH NEW VALUES
+				foreach(OrderProduct op2 in newOrder.Products)
+				{
+					Product p = _products.Retrieve(op2.ProductID);
+
+					p.Stock -= op2.ProductAmount;
+					_products.Update(p);
+
+					return true; // DONE!
+				}
+			}
+
+			return false; // SOMETHING WENT WRONG!
 		}
 		#endregion
 	}
 
 	/// <summary>
-	/// CRUD IMPLEMENTER ENUM
+	/// CRUD IMPLEMENTER ENUM + MODEL QUERYS & SEPARATE LOGIN FUNCTION
 	/// </summary>
 	public enum ActionType
 	{
@@ -224,7 +243,7 @@ namespace Service
 	}
 
 	/// <summary>
-	/// PERFORM ACTION ON WHAT FUNCTION
+	/// PERFORM ACTION ON WHAT FUNCTIONALITY
 	/// </summary>
 	public enum FunctionName
 	{

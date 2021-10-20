@@ -149,7 +149,7 @@ body {
 	min-height: 400px;
 	border: 2px ridge firebrick;
 	border-radius: 8px;
-	margin-top: -120%;
+	/*margin-top: -120%;*/
 }
 
 .top-user-menu {
@@ -401,6 +401,15 @@ body {
 		border-radius: 4px;
 	}
 
+	.product-buy-button:disabled {
+		background-color: darkgrey;
+		color: black;
+		border: 1px solid #300;
+		border-radius: 4px;
+		cursor: not-allowed;
+	}
+
+
 /* TOP NAVIGATION VERTICAL MENU */
 .vertical-menu {
 	margin-top: 5px;
@@ -636,4 +645,18 @@ body {
 .btn-blue {
 	background-color: #007bff;
 	border: 1px solid #300;
+}
+
+input[type=number] {
+	font: bold 1.5em Consolas;
+	text-align: center;
+}
+	/* REMOVES THE ARROWS INSIDE NUMBER FIELD */
+	input[type=number]::-webkit-outer-spin-button,
+	input[type=number]::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+	}
+
+input[type=number] {
+	-moz-appearance: textfield;
 }

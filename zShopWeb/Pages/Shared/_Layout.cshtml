@@ -18,7 +18,7 @@
 				<div class="menu-column">
 					<button class="menu-button">PRODUCTS</button>
 					<div class="menu-dropdown-content">
-						<a asp-page="/Products/Index" asp-page-handler="DisplayAllProducts">All Products</a>
+						<a asp-page="/Products/Index">All Products</a>
 						<a asp-page="/Products/Index">AP 2</a>
 						<a asp-page="/Products/Index">AP 3</a>
 					</div>
@@ -69,7 +69,7 @@
 						<label style="display: inline-block; width: 40%;">Price: </label>
 						<label style="display: inline-block; width: 38%;">@productTotals</label>
 					</div>
-					<input id="cartAccept" class="cart-accept" type="button" value="✓" />
+					<a asp-page="/Orders/Details" class="cart-accept" type="button">✓</a>
 				</div>
 			</div>
 
@@ -84,12 +84,12 @@
 						<div class="user-dropdown-content">
 							@if (User.IsInRole("Admin"))
 							{
-								<a asp-page="Customers/Index">Admin Customers</a>
-								<a asp-page="Customers/Index">Admin Orders</a>
-								<a asp-page="Customers/Index">Admin Products</a>
+								<a asp-page="/Customers/Index">Admin Customers</a>
+								<a asp-page="/Customers/Index">Admin Orders</a>
+								<a asp-page="/Customers/Index">Admin Products</a>
 							}
-							<a asp-page="Customers/Details">Account</a>
-							<a asp-page="Orders/History" asp-page-handler="DisplayHistory">History</a>
+							<a asp-page="/Customers/Details">Account</a>
+							<a asp-page="/Orders/History" asp-page-handler="DisplayHistory">History</a>
 							<a asp-page="/Index" asp-page-handler="Logout">Logout</a>
 						</div>
 					</div>
