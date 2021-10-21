@@ -294,6 +294,6 @@ namespace Data
 			return base.Set<TEntity>(); // TODO: IS THIS NEEDED???
 		}
 
-		public Models.Customer LoginCustomer(string[] cred) { return Customers.Find(1); } // TODO: 
+		public Models.Customer LoginCustomer(string[] cred) { return Customers.Find(1); } // TODO: THIS IS NO GOOD, BUT NESSACERY SINCE WE HAVE NO USERS TABLE YET
 	}
 }

@@ -12,12 +12,14 @@
 		<form method="post">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 			@{
-				for(int i = 0; i < Model.OrderProducts.Count; i++)
+				if (Model.OrderProducts != null)
 				{
+					for (int i = 0; i < Model.OrderProducts.Count; i++)
+					{
 					<input type="hidden" asp-for="@Model.OrderProducts[i].ProductID" />
 					<div class="relative block" style="margin-bottom: 3%;">
 						<div class="inline customer-edit-group" style="width: 25%;">
-							<input type="button" class="inline remove" value="X" />
+							<input id="btnCartRemove_@Model.OrderProducts[i].ProductID" type="button" class="rfc inline remove" value="X" />
 							<span id="prod_val_@i" asp-validation-for="@Model.OrderProducts[i].Amount" class="inline text-danger" hidden></span>
 							<input type="number" class="inline opn" asp-for="@Model.OrderProducts[i].Amount" value="@Model.OrderProducts[i].Amount" max="@Model.OrderProducts[i].Stock" style="width: 48px; height: 32px; margin-left: 2%;" />
 						</div>
@@ -25,8 +27,9 @@
 						<img src="@Model.OrderProducts[i].Image" style="width: 28px; height: 28px;" />
 						<label class="customer-values">@Model.OrderProducts[i].Name</label>
 					</div>
+						}
+					}
 				}
-			}
 
 			<div class="block customer-edit-group" style="margin-bottom: 1%">
 				<input id="btnCartSubmit" type="submit" value="Continue" class="block center btn-blue btn-full" />

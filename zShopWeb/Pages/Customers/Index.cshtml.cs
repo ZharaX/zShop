@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using Service;
 
-namespace S21DMH3B11_zShop.Pages.Customer
+namespace zShopWeb.Pages.Customer
 {
 	[Authorize(Roles = "Admin")]
 	public class IndexModel : PageModel

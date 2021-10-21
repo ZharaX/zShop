@@ -92,7 +92,7 @@ namespace zShopWeb.Pages
 		/// </summary>
 		/// <param name="returnUrl">Index</param>
 		/// <returns>Redirect to Index</returns>
-		public async Task<IActionResult> OnGetLogoutAsync(string returnUrl)
+		public async Task<IActionResult> OnGetLogoutAsync(string returnUrl = null)
 		{
 			// IF NO SUCH USER ID WAS FOUND -> SEND BACK TO LOGIN PAGE
 			returnUrl ??= Url.Content("/");

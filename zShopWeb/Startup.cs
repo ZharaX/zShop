@@ -22,7 +22,7 @@ namespace zShopWeb
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			string connectionString = Configuration.GetConnectionString("S21DMH3B11_zShopDBContext");
+			string connectionString = Configuration.GetConnectionString("S21DMH3B11_zShopDBContext2");
 			services.AddDbContext<Data.IZShopContext, Data.ZShopContext>(
 				options => options.UseSqlServer(connectionString)
 			);

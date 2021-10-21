@@ -42,8 +42,11 @@ namespace zShopWeb.Pages.Customer
 			if(Customer == null)
 				Customer = (Service.DTO.CustomerDTO)_siteFunctions.PerformAction(ActionType.Retrieve, FunctionName.Customer, sID);
 
-
-			if (Customer == null) await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+			if (Customer == null)
+			{
+				await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+				return RedirectToPage("/Index", "Logout");
+			}
 
 			TempData.Set("Customer", Customer);
 			return Page();
@@ -82,12 +85,14 @@ namespace zShopWeb.Pages.Customer
 			if (TempData.ContainsKey("Customer"))
 				Customer = TempData.Get<Service.DTO.CustomerDTO>("Customer");
 
-			Customer = (Service.DTO.CustomerDTO)_siteFunctions.PerformAction(ActionType.Retrieve, FunctionName.Customer, Customer.SID);
+			if (Customer == null)
+			{
+				await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+				return RedirectToPage("/Index", "Logout");
+			}
 				
 			if(Customer != null)
 				Orders = (List<Service.DTO.OrderDTO>)_siteFunctions.PerformAction(ActionType.Retrieve, FunctionName.Order, 1);
-
-			if (Customer == null) await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
 			TempData.Set("Customer", Customer);
 			DisplayDetails = true;

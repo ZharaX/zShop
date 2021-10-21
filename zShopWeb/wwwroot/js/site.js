@@ -69,6 +69,11 @@ $(document).ready(function () {
 		$("#cartDetails").animate({ marginTop: "30%" }, { duration: 500 });
 	});
 
+	/* .rfc (remove from cart) button click -> calls ajax function */
+	$(".rfc").click(function () {
+		removeFromCart($(this).attr("id").slice(14))
+	});
+
 	if ($("#message").is(":hidden")) {
 		$("#message").fadeIn({
 			duration: 2000,
@@ -101,6 +106,22 @@ function addToCart(productID) {
 		data: { id: productID },
 		success: function (data) {
 			$("body").html(data);
+			window.location.reload();
+		},
+		error: function (e) {
+			alert(this.url);
+		}
+	});
+}
+
+function removeFromCart(productID) {
+	console.log("ProductID Removed From Cart: " + productID);
+
+	$.ajax({
+		url: "/Orders/Details/RemoveFromCart",
+		type: "GET",
+		data: { id: productID },
+		success: function (data) {
 			window.location.reload();
 		},
 		error: function (e) {

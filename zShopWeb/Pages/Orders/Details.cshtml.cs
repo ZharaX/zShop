@@ -20,21 +20,23 @@ namespace zShopWeb.Pages.Orders
 		private readonly ISiteFunctions _siteFunctions;
 		#endregion
 
-		public OrdersModel(ISiteFunctions siteFunctions) { _siteFunctions = siteFunctions; }
+		public List<Service.DTO.OrderDTO> Orders { get; set; }  // LIST OF  ALL ORDERS
 
-
-		public Service.DTO.CustomerDTO Customer { get; set; }	// CUSTOMER
-		public List<Service.DTO.OrderDTO> Orders { get; set; }  // LIST OF ORDERS
+		#region NEW ORDER PROPERTIES
+		public Service.DTO.CustomerDTO Customer { get; set; }   // CUSTOMER
 
 		[BindProperty]
 		public Service.DTO.OrderDTO NewOrder { get; set; }      // THIS NEW ORDER
 
 		[BindProperty]
 		public List<Service.DTO.ProductDTO> OrderProducts { get; set; }// THIS NEW ORDERS PRODUCTS
-
+		#endregion
 
 		// DISPLAY BOOLS
 		public bool DisplayOrder { get; set; }
+
+
+		public OrdersModel(ISiteFunctions siteFunctions) { _siteFunctions = siteFunctions; }
 
 		/// <summary>
 		/// OnGet checks if user is logged in, if not he shouldn't even be on this page.
@@ -154,6 +156,49 @@ namespace zShopWeb.Pages.Orders
 
 			TempData.Set("Customer", Customer);
 			DisplayOrder = true;
+			return Page();
+		}
+
+		/// <summary>
+		/// OnGetOrders user wants to display Orders associated
+		/// Redirect to Index
+		/// </summary>
+		/// <param name="sID">SessionID</param>
+		public IActionResult OnGetRemoveFromCart(int id)
+		{
+			Models.NewOrder newOrder = null;
+
+			if (TempData.ContainsKey("NewOrder"))
+				newOrder = TempData.Get<Models.NewOrder>("NewOrder");
+
+			if (id != 0)
+			{
+				var productList = (List<Service.DTO.ProductDTO>)_siteFunctions.PerformAction<List<Service.DTO.ProductDTO>>(ActionType.Query, FunctionName.Product, null);
+				var total = 0.00m;
+
+				newOrder.OrderProducts.RemoveAll(p => p.Equals(id));
+
+				foreach (int idx in newOrder.OrderProducts)
+				{
+					total += productList.Where(p => p.ProductID == idx).Select(p => p.Price).Single();
+				}
+
+				newOrder.OrderTotalPrice = total;
+			}
+
+			TempData.Set("NewOrder", newOrder);
+			OnGetAsync("");
+
+			OrderProducts.RemoveAll(p => p.ProductID == id);
+			DisplayOrder = true;
+
+			if(OrderProducts.Count == 0)
+			{
+				DisplayOrder = false;
+				TempData.Remove("NewOrder");
+				RedirectToPage("/Index");
+			}
+
 			return Page();
 		}
 	}

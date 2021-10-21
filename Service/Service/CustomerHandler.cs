@@ -67,7 +67,6 @@ namespace Service
 		/// <summary>
 		/// Finds a Customer with SessionID (Authorized)
 		/// </summary>
-		/// <param name="sID">SessionID</param>
 		/// <returns>Data.Models.Customer Object</returns>
 		private Data.Models.Customer LoginCustomer(string[] cred)
 		{
