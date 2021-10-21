@@ -105,7 +105,7 @@ namespace Service
 						return _authUser.AddUserForSession(data as string[]);
 					//return Querys.QueryManager.ToCustomerDTO(_customers.GetCustomers().Where(c => c.ID == (int)(object)data)).FirstOrDefault();
 
-					if (function == FunctionName.Order) // FUNCTION: ORDER
+					if (function == FunctionName.Order) // FUNCTION: ORDER TODO: THE HARDCODED ID NEEDS TO BE OBTAINED FROM ADDUSERFORSESSION
 						return Querys.QueryManager.ToOrdersDTO(_dbManager.ZShopDBContext().OrderProducts, _customers.Retrieve((int)(object)data)).ToList();
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT

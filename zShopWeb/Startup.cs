@@ -22,7 +22,7 @@ namespace zShopWeb
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			string connectionString = Configuration.GetConnectionString("S21DMH3B11_zShopDBContext2");
+			string connectionString = Configuration.GetConnectionString("S21DMH3B11_zShopDBContext");
 			services.AddDbContext<Data.IZShopContext, Data.ZShopContext>(
 				options => options.UseSqlServer(connectionString)
 			);
@@ -51,7 +51,11 @@ namespace zShopWeb
 				options.Cookie.IsEssential = true;
 			});
 
-			services.AddRazorPages();
+			services.AddRazorPages()
+				.AddRazorPagesOptions(options =>
+				{
+					options.Conventions.AddPageRoute("/Index", "{*url}");
+				});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

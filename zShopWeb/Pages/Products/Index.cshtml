@@ -2,6 +2,7 @@
 @model zShopWeb.Pages.Products.IndexModel
 @{
 	ViewData["Title"] = "Showing Products";
+	TempData.Set("returnUrl", RouteData.Values["page"]);
 }
 
 <form method="get" class="product-searchbar">

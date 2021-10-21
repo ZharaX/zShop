@@ -39,6 +39,9 @@ namespace Service
 		#region USER / CUSTOMER AUTHENTICATION
 		public DTO.CustomerDTO AddUserForSession(string[] cred)
 		{
+			if (cred == null)
+				return null;
+
 			// CHECK IF SID EXISTS ALREADY
 			if (_users.FirstOrDefault(c => c.SID == cred[0]) == null)
 			{

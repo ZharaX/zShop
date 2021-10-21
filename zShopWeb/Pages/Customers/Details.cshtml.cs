@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service;
@@ -41,7 +43,7 @@ namespace zShopWeb.Pages.Customer
 				Customer = (Service.DTO.CustomerDTO)_siteFunctions.PerformAction(ActionType.Retrieve, FunctionName.Customer, sID);
 
 
-			if (Customer == null) return RedirectToPage("/Index");
+			if (Customer == null) await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
 			TempData.Set("Customer", Customer);
 			return Page();
@@ -61,8 +63,10 @@ namespace zShopWeb.Pages.Customer
 
 			if ((bool)_siteFunctions.PerformAction(ActionType.Update, FunctionName.Customer, Customer))
 			{
+				TempData.Set("Message", "Details Updated");
 				User.AddUpdateClaim("name", Customer.FirstName);
-				RedirectToPage("./Details");
+				DisplayDetails = true;
+				return Page();
 			}
 
 			return RedirectToPage("/Index");
@@ -78,18 +82,24 @@ namespace zShopWeb.Pages.Customer
 			if (TempData.ContainsKey("Customer"))
 				Customer = TempData.Get<Service.DTO.CustomerDTO>("Customer");
 
-			if (Customer == null)
-				Customer = (Service.DTO.CustomerDTO)_siteFunctions.PerformAction(ActionType.Retrieve, FunctionName.Customer, Customer.SID);
+			Customer = (Service.DTO.CustomerDTO)_siteFunctions.PerformAction(ActionType.Retrieve, FunctionName.Customer, Customer.SID);
 				
 			if(Customer != null)
 				Orders = (List<Service.DTO.OrderDTO>)_siteFunctions.PerformAction(ActionType.Retrieve, FunctionName.Order, 1);
 
-			if (Customer == null) return RedirectToPage("/Index");
+			if (Customer == null) await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
 			TempData.Set("Customer", Customer);
 			DisplayDetails = true;
 			DisplayOrders = true;
 			return Page();
+		}
+
+
+		public async Task<IActionResult> OnGetDisplayOrder(int id)
+		{
+			TempData.Set("Order#", id.ToString());
+			return await OnGetOrdersAsync();
 		}
 	}
 }

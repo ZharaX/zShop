@@ -5,13 +5,13 @@
 	ViewData["Title"] = "Personal Information";
 }
 
-<div id="detailsContainer" class="block center customer-details-container" style="z-index: 20">
+<div id="detailsContainer" class="block center customer-details-container" style="display:none; z-index: 20">
 	<partial name="_Customer" model="@Model.Customer" />
 </div>
 
 @if (Model.DisplayOrders)
 {
-	<div id="ordersContainer" class="block center customer-details-container" style="z-index: 10">
+	<div id="ordersContainer" class="block center customer-details-container" style="display: none; z-index: 10">
 		<partial name="./Orders/_Orders" model="@Model.Orders" />
 	</div>
 }
@@ -20,5 +20,6 @@
 	<script>
 		displayingDetails = '@(Model.DisplayDetails)' === '@true';
 		displayingOrders = '@(Model.DisplayOrders)' === '@true';
+		updateOrders = '@(TempData.ContainsKey("Order#"))' === '@true';
 	</script>
 }

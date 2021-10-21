@@ -40,6 +40,7 @@ namespace zShopWeb.Pages.Products
 
 			if(!string.IsNullOrEmpty(SearchString))
 			{
+				TempData.Set("query", SearchString);
 				Products = Products.Where(p => p.Name.ToLower().Contains(SearchString.ToLower()) || p.Description.ToLower().Contains(SearchString.ToLower())).ToList();
 			}
 		}

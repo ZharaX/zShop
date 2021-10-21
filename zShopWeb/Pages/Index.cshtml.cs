@@ -118,6 +118,9 @@ namespace zShopWeb.Pages
 			{
 				if (userpass == "12345") // TODO: HARD CODED SO FAR -> NO USER DB ATTACHED
 				{
+					if (TempData.ContainsKey("returnUrl"))
+						returnUrl = TempData.Get<string>("returnUrl");
+
 					var claims = new List<Claim>
 					{
 						new Claim(ClaimTypes.NameIdentifier, Customer.SID),
@@ -136,7 +139,9 @@ namespace zShopWeb.Pages
 				}
 				else
 				{
-					returnUrl = "/Index";
+					if (TempData.ContainsKey("returnUrl"))
+						returnUrl = TempData.Get<string>("returnUrl");
+
 					var claims = new List<Claim>
 					{
 						new Claim(ClaimTypes.NameIdentifier, ""),
@@ -155,7 +160,7 @@ namespace zShopWeb.Pages
 				}
 			}
 
-			return LocalRedirect(returnUrl);
+			return Redirect(returnUrl);
 		}
 		#endregion
 		#region H# ASSIGNMENTS (TO BE REMOVED)

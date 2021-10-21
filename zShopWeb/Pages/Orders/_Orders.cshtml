@@ -1,7 +1,28 @@
 ﻿@model List<Service.DTO.OrderDTO>
-<!-- EDIT INFORMATION -->
-<div id="orderDetails" class="customer-window" style="display: block; width: 100%; margin-top: 10%">
-	<div class="login-header">Order Details</div>
+@{
+	int OrderCount = Model.Count();
+	int CurrentOrder = 1;
+
+	if (TempData.ContainsKey("Order#"))
+	{
+		CurrentOrder = System.Convert.ToInt32(TempData.Get<string>("Order#"));
+	}
+}
+<!-- ORDER WINDOW -->
+<div id="orderDetails" class="customer-window" style="display: block; width: 100%; height: 400px; margin-top: 10%; overflow: hidden;">
+	<div class="login-header">
+		Order Details
+		<div style="float: right; height: 32px;">
+			@for (int i = 1; i < OrderCount+1; i++)
+			{
+				<form asp-page-handler="DisplayOrder" method="get" class="inline">
+					<button type="submit" name="id" value="@i" class="order-item @(i == CurrentOrder ? "active" : "")">
+						@i
+					</button>
+				</form>
+			}
+		</div>
+	</div>
 	@{
 		if (Model == null || Model.Count == 0)
 		{
@@ -9,56 +30,113 @@
 				You have no Orders to display!
 			</div>
 		}
-
-		foreach (Service.DTO.OrderDTO order in Model)
+		else
 		{
-			order.CalculateTotalPrice();
 
-			<div class="block center" style="width: 100%; height: 30%">
+			Model[CurrentOrder-1].CalculateTotalPrice();
+
+			<div class="block center" style="width: 100%; text-align: left; padding-left: 2%; color: sandybrown; margin-bottom: 2%;">Order #@CurrentOrder</div>
+			<div class="block center" style="width: 100%;">
 				<dl class="">
 					<dt class="customer-labels">
 						Date:
 					</dt>
 					<dd class="customer-values">
-						@order.Date.ToString("dd/MM-yyyy HH:mm")
+						@Model[CurrentOrder-1].Date.ToString("dd/MM-yyyy HH:mm")
 					</dd>
 					<dt class="customer-labels">
 						Completed:
 					</dt>
 					<dd class="customer-values">
-						@order.CompletedOn.ToString("dd/MM-yyyy HH:mm")
+						@Model[CurrentOrder-1].CompletedOn.ToString("dd/MM-yyyy HH:mm")
 					</dd>
 
 					<dt class="customer-labels">
 						Billing:
 					</dt>
 					<dd class="customer-values">
-						@order.TotalPrice.ToString("C2")
+						@Model[CurrentOrder-1].TotalPrice.ToString("C2")
 					</dd>
 					<dt class="customer-labels">
 						Discount:
 					</dt>
 					<dd class="customer-values">
-						@order.Discount
+						@Model[CurrentOrder-1].Discount.ToString("C2")
 					</dd>
 
-					@foreach (Service.DTO.ProductDTO product in order.Products)
+					<div class="block center" style="width: 100%; text-align: left; padding-left: 2%; color: sandybrown; margin: 3% 0;">Products in Order</div>
+					@foreach (Service.DTO.ProductDTO product in Model[CurrentOrder-1].Products)
 					{
 						<!-- PRODUCT NAME -->
-						<div class="inline" style="width: 35%; background-color: #111; border-radius: 4px; margin-left: 1%; margin-bottom: 4px; font: normal .75em/20px Arial; color: sandybrown">
-							@(" " + product.Name)
+						<div class="inline" style="width: 55%; background-color: #111; padding-left: 1%; border-radius: 4px; margin-left: 1%; margin-bottom: 4px; font: normal .75em/20px Arial; color: sandybrown">
+							<a class="order-product-link" asp-page="/Products/Index" asp-route-SearchString="@product.Name" >@(" " + product.Name)</a>
 						</div>
 						<!-- PRODUCT AMOUNT -->
-						<div class="inline" style="width: 7%; background-color: #111; border-radius: 4px; margin-left: 2px; margin-bottom: 4px; font: normal .75em/20px Arial; color: sandybrown">
-							@(" " + product.Amount+"x")
+						<div class="inline" style="width: 12.5%; background-color: #111; padding-right: 1%; border-radius: 4px; margin-left: 2px; margin-bottom: 4px; font: normal .75em/20px Consolas; color: sandybrown; text-align: right;">
+							@(product.Amount + " x ")
 						</div>
 						<!-- PRODUCTS PRICE -->
-						<div class="inline" style="width: 52%; background-color: #111; border-radius: 4px; margin-left: 2px; margin-bottom: 4px; font: normal .75em/20px Arial; color: sandybrown">
+						<div class="inline" style="width: 27%; background-color: #111; padding-left: 1%; border-radius: 4px; margin-left: 2px; margin-bottom: 4px; font: normal .75em/20px Consolas; color: sandybrown">
 							@(" " + (product.Amount * product.Price).ToString("C2"))
 						</div>
 					}
 				</dl>
 			</div>
 		}
+	}
+	<!--int idx = 1;
+	foreach (Service.DTO.OrderDTO order in Model)
+	{
+		order.CalculateTotalPrice();
+
+		<div class="block center" style="width: 100%; text-align: left; padding-left: 2%; color: sandybrown; margin-bottom: 2%;">Order #@idx</div>
+		<div class="block center" style="width: 100%;">
+			<dl class="">
+				<dt class="customer-labels">
+					Date:
+				</dt>
+				<dd class="customer-values">
+					@order.Date.ToString("dd/MM-yyyy HH:mm")
+				</dd>
+				<dt class="customer-labels">
+					Completed:
+				</dt>
+				<dd class="customer-values">
+					@order.CompletedOn.ToString("dd/MM-yyyy HH:mm")
+				</dd>
+
+				<dt class="customer-labels">
+					Billing:
+				</dt>
+				<dd class="customer-values">
+					@order.TotalPrice.ToString("C2")
+				</dd>
+				<dt class="customer-labels">
+					Discount:
+				</dt>
+				<dd class="customer-values">
+					@order.Discount.ToString("C2")
+				</dd>
+
+				<div class="block center" style="width: 100%; text-align: left; padding-left: 2%; color: sandybrown; margin: 3% 0;">Products in Order</div>
+				@foreach (Service.DTO.ProductDTO product in order.Products)
+				{-->
+	<!-- PRODUCT NAME -->
+	<!--<div class="inline" style="width: 60%; background-color: #111; padding-left: 1%; border-radius: 4px; margin-left: 1%; margin-bottom: 4px; font: normal .75em/20px Arial; color: sandybrown">
+		@(" " + product.Name)
+	</div>-->
+	<!-- PRODUCT AMOUNT -->
+	<!--<div class="inline" style="width: 7%; background-color: #111; padding-right: 1%; border-radius: 4px; margin-left: 2px; margin-bottom: 4px; font: normal .75em/20px Arial; color: sandybrown; text-align: right;">
+		@(product.Amount + " x ")
+	</div>-->
+	<!-- PRODUCTS PRICE -->
+	<!--<div class="inline" style="width: 27%; background-color: #111; padding-left: 1%; border-radius: 4px; margin-left: 2px; margin-bottom: 4px; font: normal .75em/20px Arial; color: sandybrown">
+						@(" " + (product.Amount * product.Price).ToString("C2"))
+					</div>
+				}
+			</dl>
+		</div>
+		idx++;
+	}-->
 	}
 </div>

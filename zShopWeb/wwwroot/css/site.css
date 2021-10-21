@@ -327,7 +327,6 @@ body {
 	height: auto;
 	margin: calc(1% - 2px);
 	margin-top: 2%;
-	margin-bottom: 3%;
 	border: 2px ridge firebrick;
 	border-radius: 8px;
 }
@@ -706,3 +705,59 @@ input[type=number] {
 	border: 1px solid darkred;
 	border-radius: 32px;
 }
+
+.success {
+	display: none;
+	top: 4%;
+	left: 20%;
+	width: 60%;
+	height: 40px;
+	background-color: limegreen;
+	color: darkgreen;
+	border: 2px solid green;
+	border-radius: 32px 4px 4px 32px
+}
+
+.success-image {
+	width: 40px;
+	height: 40px;
+	top: -2px;
+	left: -2px;
+	font: bold 32px/40px Consolas;
+	color: darkgreen;
+	text-align: center;
+	border: 2px ridge green;
+	border-radius: 32px;
+}
+
+.order-item {
+	width: 22px;
+	height: 22px;
+	border: 1px solid #300;
+	background-color: darkolivegreen;
+	color: black;
+	border-radius: 6px;
+	line-height: 22px;
+}
+
+.active {
+	width: 22px;
+	height: 22px;
+	border: 1px solid darkolivegreen;
+	background-color: limegreen;
+	color: black;
+	border-radius: 6px;
+	line-height: 22px;
+}
+
+.order-product-link {
+	text-decoration: none;
+	font: normal 1.1em/20px Arial;
+	color: sandybrown;
+}
+
+	.order-product-link:hover {
+		text-decoration: none;
+		font: normal 1.1em/20px Arial;
+		color: #b6ff00;
+	}

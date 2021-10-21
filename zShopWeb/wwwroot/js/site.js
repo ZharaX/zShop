@@ -1,41 +1,61 @@
-﻿var displayingDetails = false;
+﻿var updateOrders = false;
+var displayingDetails = false;
 var displayingOrders = false;
 var displayingCartOrder = false;
 
 $(document).ready(function () {
 	onlyPositiveNumbers();
 
-	/* .atc (add to cart) button click -> calls ajax function */
-	$(".atc").click(function () {
-		addToCart($(this).attr("id").slice(5))
-	});
-
 	/* Slide Customer Details window down */
 	if (!displayingDetails) {
+		$("#detailsContainer").show();
 		slideBoxDown($("#customerDetails"));
 	}
 
-	if (displayingOrders) {
+	if (updateOrders) {
+		$("#detailsContainer").show();
 		$("#customerDetails").css("margin-top", "10%");
-		$("#detailsContainer").animate({ marginLeft: "19%" },
-			{
-				duration: 250
-			});
-		$("#ordersContainer").animate({ marginLeft: "51%" },
-			{
-				duration: 250
-			});
-	}
+		$("#detailsContainer").css("margin-left", "19%");
 
-	$("#btnEditCustomer").click(function () {
-		$("#customerDetails").animate({ marginTop: "-150%" },
-			{
-				duration: 250,
-				complete: function () {
-					$("#customerEdit").show();
-					slideBoxDown($("#customerEdit"));
-				}
-			});
+		$("#ordersContainer").show();
+		$("#ordersContainer").css("margin-top", "10%");
+		$("#ordersContainer").css("margin-left", "51%");
+	}
+	else {
+		if (displayingDetails) {
+			$("#detailsContainer").show();
+		}
+		if (displayingOrders) {
+			$("#detailsContainer").show();
+			$("#customerDetails").css("margin-top", "10%");
+			$("#detailsContainer").animate({ marginLeft: "19%" },
+				{
+					duration: 250
+				});
+			$("#ordersContainer").show();
+			$("#ordersContainer").animate({ marginLeft: "51%" },
+				{
+					duration: 250
+				});
+		}
+
+		$("#btnEditCustomer").click(function () {
+			$("#detailsContainer").show();
+			$("#customerDetails").animate({ marginTop: "-150%" },
+				{
+					duration: 250,
+					complete: function () {
+						$("#customerEdit").show();
+						slideBoxDown($("#customerEdit"));
+					}
+				});
+		});
+	}
+	
+
+	/* .atc (add to cart) button click -> calls ajax function */
+	$(".atc").click(function () {
+		addToCart($(this).attr("id").slice(5))
 	});
 
 	$("#cartAccept").click(function () {
@@ -48,6 +68,19 @@ $(document).ready(function () {
 
 		$("#cartDetails").animate({ marginTop: "30%" }, { duration: 500 });
 	});
+
+	if ($("#message").is(":hidden")) {
+		$("#message").fadeIn({
+			duration: 2000,
+			complete: function () {
+				// IF NO ACTION IS MADE ON NOTIFICATION -> REMOVES ITSELF AFTER 7½ SECS
+				var messageDelay = setTimeout(function () {
+					$("#message").fadeOut();
+					$("#message").remove();
+				}, 5000);
+			}
+		});
+	};
 });
 
 function slideBoxDown(container) {
@@ -90,9 +123,9 @@ function onlyPositiveNumbers() {
 		$(this).val($(this).val().replace(/[^0-9]/g, ""));
 
 		// GET MIN/MAX VALIDATION VALUES
-		let max = parseInt($(this).attr("data-val-range-max"));
+		let max = parseInt($(this).attr("max"));
 		let min = parseInt($(this).attr("data-val-range-min"));
-
+		
 		// NO NEGATIVE NUMBERS
 		if ($(this).val() < min) {
 			$(this).val(0);
@@ -108,7 +141,7 @@ function onlyPositiveNumbers() {
 			$(this).val(max);
 		}
 
-		if ($(this).val() == 0) {
+		if ($(this).val() == 0 || $(this).val() > max) {
 			$("#btnCartSubmit").attr("disabled", true);
 		}
 		else {

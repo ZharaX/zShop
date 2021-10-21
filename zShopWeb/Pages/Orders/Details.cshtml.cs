@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service;
-using Service.DTO;
 
 namespace zShopWeb.Pages.Orders
 {
@@ -51,7 +52,7 @@ namespace zShopWeb.Pages.Orders
 				Customer = (Service.DTO.CustomerDTO)_siteFunctions.PerformAction(ActionType.Retrieve, FunctionName.Customer, sID);
 
 			// IF CUSTOMER IS STILL NULL, HE CANNOT STAY ON THIS PAGE -> REDIRECT TO /INDEX
-			if (Customer == null) return RedirectToPage("/Index");
+			if (Customer == null) await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
 			// CUSTOMER WAS FOUND SOMEHOW, SAVE HIM
 			TempData.Set("Customer", Customer);
@@ -149,7 +150,7 @@ namespace zShopWeb.Pages.Orders
 			if(Customer != null)
 				Orders = (List<Service.DTO.OrderDTO>)_siteFunctions.PerformAction(ActionType.Retrieve, FunctionName.Order, 1);
 
-			if (Customer == null) return RedirectToPage("/Index");
+			if (Customer == null) await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
 			TempData.Set("Customer", Customer);
 			DisplayOrder = true;
