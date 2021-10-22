@@ -15,9 +15,4 @@
     <ProjectReference Include="..\Service\Service\Service.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages\Products\" />
-    <Folder Include="Pages\Orders\" />
-  </ItemGroup>
-
 </Project>

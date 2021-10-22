@@ -1,0 +1,74 @@
+﻿@page "/Orders/Details/{handler?}"
+@model zShopWeb.Pages.Orders.OrdersModel
+
+@{
+	ViewData["Title"] = "Order Details";
+}
+
+@if (Model.OrderProducts != null && Model.OrderProducts.Count > 0)
+{
+	<div class="block center cart-details-container" style="z-index: 20">
+		<!-- EDIT ORDER CART DETAILS -->
+		<div id="cartDetails" class="cart-details-window">
+			<div class="login-header">Viewing Order Details</div>
+			<form method="post">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				@{
+					if (Model.OrderProducts != null)
+					{
+						decimal totals = 0.00m;
+						decimal subTotal = 0.00m;
+						for (int i = 0; i < Model.OrderProducts.Count; i++)
+						{
+							subTotal = Model.OrderProducts[i].Price * Model.OrderProducts[i].Amount;
+							totals += subTotal;
+							<input type="hidden" asp-for="@Model.OrderProducts[i].ProductID" />
+							<div class="relative block" style="margin-bottom: 3%;">
+								<div class="inline customer-edit-group" style="width: 25%;">
+									<input id="btnCartRemove_@Model.OrderProducts[i].ProductID" type="button" class="rfc inline remove" value="X" />
+									<span id="prod_val_@i" asp-validation-for="@Model.OrderProducts[i].Amount" class="inline text-danger" hidden></span>
+									<input type="number" class="inline opn" asp-for="@Model.OrderProducts[i].Amount" value="@Model.OrderProducts[i].Amount" max="@Model.OrderProducts[i].Stock" style="width: 48px; height: 32px; margin-left: 2%;" />
+								</div>
+
+								<img src="@Model.OrderProducts[i].Image" style="width: 28px; height: 28px;" />
+								<label class="customer-values">@Model.OrderProducts[i].Name</label>
+								<label class="absolute" style="color: salmon; right: 5%; bottom: -10%; text-align: right;">@subTotal.ToString("C2")</label>
+							</div>
+							subTotal = 0.00m;
+						}
+						<label class="absolute" style="border-bottom: 1px double silver; color: salmon; right: 4%; bottom: 45%; text-align: right;">@totals.ToString("C2")</label>
+					}
+				}
+
+				@if (User.Identity.IsAuthenticated)
+				{
+					<div class="block customer-edit-group" style="margin-bottom: 1%">
+						<input id="btnCartConfirm" type="button" value="Confirm" class="block center btn-blue btn-full" />
+					</div>
+
+					<div id="creditCard" class="block customer-edit-group" style="display:none; margin-bottom: 1%">
+						<section class="creditcard">
+							<header>
+								@Model.Customer.FirstName @Model.Customer.LastName
+							</header>
+							<article>
+								<img src="credie.png">
+							</article>
+							<footer>
+								<p>XXXX-XXXX-XXXX-XXXX <span>XXX</span></p>
+							</footer>
+						</section>
+						<input id="btnCartSubmit" type="submit" value="Continue" class="block center btn-blue btn-full" style="display: none;" />
+					</div>
+				}
+				else
+				{
+					<label class="absolute block center btn-blue" style="left: 10%; width: 80%; height: 32px; line-height: 32px; text-align:center; margin-top: 40%;">You need to be logged in to continue!</label>
+				}
+			</form>
+		</div>
+	</div>
+}
+@section Scripts {
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

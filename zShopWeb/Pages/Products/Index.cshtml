@@ -1,0 +1,26 @@
+﻿@page "/Products/{handler?}"
+@model zShopWeb.Pages.Products.IndexModel
+@{
+	ViewData["Title"] = "Showing Products";
+	TempData.Set("returnUrl", RouteData.Values["page"]);
+}
+
+<form method="get" class="product-searchbar">
+	<div class="search-icon"></div>
+	<div class="search-input">
+		<input class="search-box" type="search" asp-for="@Model.SearchString" placeholder="search product..." />
+		<input class="search-button" type="submit" value="Search" />
+	</div>
+	<select id="pageSize" asp-for="@Model.PageSize" asp-items="Html.GetEnumSelectList<PageSizeEnum>()" class="search-page-count">
+		<option value="">#</option>
+	</select>
+</form>
+
+@{
+	foreach (Service.DTO.ProductDTO product in Model.Products)
+	{
+		<div class="product-container">
+			<partial name="_Product" model="@product" />
+		</div>
+	}
+}

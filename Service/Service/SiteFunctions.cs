@@ -31,9 +31,10 @@ namespace Service
 	{
 		#region CONTEXT DATA
 		// ACCESS TO SERVICE LAYER AND FUNCTIONS
-		private readonly Data.IDBManager _dbManager;
+		private readonly Data.IZShopContext _dbManager;
+		private readonly ICustomerHandler _authUser;
 		#endregion
-
+		#region MODEL REFERENCES
 		// REFERENCES FOR MODEL DB CONTEXTS
 		internal readonly IDBManager<Customer> _customerContext;
 		internal readonly IDBManager<Order> _orderContext;
@@ -43,30 +44,28 @@ namespace Service
 		internal readonly Concrete.ICustomer _customers;
 		internal readonly Concrete.IOrder _orders;
 		internal readonly Concrete.IProduct _products;
-
-		//private readonly ICustomerHandler _customerHandler;
+		#endregion
 
 		/// <summary>
 		/// Constructor: Supplying ConnectionString for DBContext
-		/// Instantiates: DataTransferObjects Class
-		/// Instantiates: Model Contexts
+		/// Instantiates: Models Services Contexts using same DBContext
 		/// </summary>
-		public SiteFunctions(Data.IDBManager dbContext)
+		public SiteFunctions(Data.IZShopContext dbContext)
 		{
 			_dbManager = dbContext;
+			_authUser = new CustomerHandler(this);
 
+			#region DBCONTEXT SERVICES & CONCRETENESS
 			// CREATING INDIVIDUAL MODEL DBCONTEXTS
-			_customerContext = new DBManager<Customer>(_dbManager.DBManager());
-			_orderContext = new DBManager<Order>(_dbManager.DBManager());
-			_productContext = new DBManager<Product>(_dbManager.DBManager());
+			_customerContext = new DBManager<Customer>(_dbManager.ZShopDBContext());
+			_orderContext = new DBManager<Order>(_dbManager.ZShopDBContext());
+			_productContext = new DBManager<Product>(_dbManager.ZShopDBContext());
 
 			// ATTACHING DBCONTEXT TO CONCRETE SERVICE TYPES
 			_customers = new Concrete.CustomerService(_customerContext);
 			_orders = new Concrete.OrderService(_orderContext);
 			_products = new Concrete.ProductService(_productContext);
-
-			// SETTING DTO HANDLER CLASS REFERENCE
-			//DataTransferObjects.SiteRepository = _siteRepository;
+			#endregion
 		}
 
 		#region FUNCTION HANDLER
@@ -94,7 +93,7 @@ namespace Service
 						return CreateOrder(data as DTO.OrderDTO);
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return _products.Create(data as Product);
+						return _products.Create(Querys.QueryManager.FromProductDTO(data as DTO.ProductDTO));
 
 					//if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
 					//	return _dbContext.CreateCategory(data as string);
@@ -105,13 +104,14 @@ namespace Service
 				// ACTION -> RETRIEVE
 				case ActionType.Retrieve:
 					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
-						return Querys.QueryManager.ToCustomerDTO(_customers.GetCustomers().Where(c => c.ID == (int)(object)data)).FirstOrDefault();
+						return _authUser.AddUserForSession(data as string[]);
+					//return Querys.QueryManager.ToCustomerDTO(_customers.GetCustomers().Where(c => c.ID == (int)(object)data)).FirstOrDefault();
 
-					if (function == FunctionName.Order) // FUNCTION: ORDER
-						return Querys.QueryManager.ToOrderDTO(_orders.GetOrders(), _customers.Retrieve((int)(object)data)).FirstOrDefault();
+					if (function == FunctionName.Order) // FUNCTION: ORDER TODO: THE HARDCODED ID NEEDS TO BE OBTAINED FROM ADDUSERFORSESSION
+						return Querys.QueryManager.ToOrdersDTO(_dbManager.ZShopDBContext().OrderProducts, _customers.Retrieve((int)(object)data)).ToList();
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return Querys.QueryManager.ToProductDTO(_products.GetProducts().Where(p => p.ID == (int)(object)data)).FirstOrDefault();
+						return Querys.QueryManager.ToProductDTO(_products.GetProducts("").Where(p => p.ID == (int)(object)data));
 
 					//if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
 					//	return _dbContext.GetAllCategorys();
@@ -128,7 +128,7 @@ namespace Service
 						return _orders.Update(data as Order);
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return _products.Update(data as Product);
+						return _products.Update(Querys.QueryManager.FromProductDTO(data as DTO.ProductDTO));
 
 					//if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
 					//	return _dbContext.UpdateCategory(data as string);
@@ -145,7 +145,7 @@ namespace Service
 						return _orders.Delete(data as Order);
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return _products.Delete(data as Product);
+						return _products.Delete(_products.Retrieve((int)(object)data));
 
 				//	if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
 				//		return _dbContext.DeleteCategory(data as int[]);
@@ -156,13 +156,21 @@ namespace Service
 				// ACTION -> RETRIEVE
 				case ActionType.Query:
 					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
-						return Querys.QueryManager.ToCustomerDTO(_customers.GetCustomers()).ToList();
+						return Querys.QueryManager.ToCustomerDTO(_customers.GetCustomers(), null).ToList();
 
 					if (function == FunctionName.Order) // FUNCTION: ORDER
-						return Querys.QueryManager.ToOrderDTO(_orders.GetOrders(), null);
+						return Querys.QueryManager.ToOrdersDTO(_dbManager.ZShopDBContext().OrderProducts, _customers.Retrieve(1));
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return Querys.QueryManager.ToProductDTO(_products.GetProducts()).ToList();
+						return Querys.QueryManager.ToProductDTO(_products.GetProducts(data as string));
+
+					return null; // WE SHOULD EVEN NOT BE GETTING HERE
+
+				// CASE:
+				// ACTION -> RETRIEVE
+				case ActionType.Login:
+					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER LOGIN
+						return _dbManager.ZShopDBContext().LoginCustomer(data as string[]);
 
 					return null; // WE SHOULD EVEN NOT BE GETTING HERE
 
@@ -174,53 +182,57 @@ namespace Service
 		#region CREATE ORDER
 		private bool CreateOrder(DTO.OrderDTO order)
 		{
+			// GET CUSTOMER AND EXISTING ORDERS
+			var cust = _customers.GetCustomers().Where(c => c.ID == 1).Include(c => c.Orders).Single();
+			cust.Orders = _orders.GetOrders().AsTracking().Where(o => o.Customer == cust).ToList();
+
+			// CREATE THE NEW ORDER OBJECT
 			var newOrder = new Data.Models.Order
 			{
-				Amount = order.Amount,
-				TotalPrice = order.TotalPrice,
 				Discount = order.Discount,
 				Date = System.DateTime.Now,
-				Products = Querys.QueryManager.FromProductDTO(order.Products)
+				Customer = _dbManager.ZShopDBContext().Attach(cust).Entity,
 			};
 
-			//using (var dbContext = new Data.ZShopContext())
-			//{
-			//	//var customer = new DBManager<Customer>(dbContext);
-			//	//var orders = new DBManager<Order>(dbContext);
-			//	//var products = new DBManager<Product>(dbContext);
+			// NEW JOIN TABLE LIST
+			System.Collections.Generic.List<OrderProduct> op = new System.Collections.Generic.List<OrderProduct>();
 
-			//	//var cust = customer.Table.Where(c => c.ID == 1).Include(c => c.Orders).ThenInclude(o => o.Products).AsNoTracking().Single();
-			//	//var o = orders.Table.Where(o => o.Customer == cust).AsNoTracking().ToList();
+			// LOOP PRODUCTS TO BE ORDERED
+			foreach (Service.DTO.ProductDTO prod in order.Products)
+			{
+				// CHECKS IF THE STOCK AMOUNT EVEN HAVE THE AMOUNT REQUESTED, IF NOT RETURN FALSE (NO ORDER CREATE)
+				if (_products.Retrieve(prod.ProductID).Stock - prod.Amount < 0) return false;
+				else
+					// GO AHEAD ADD PRODUCT TO ORDER
+					op.Add(new OrderProduct { ProductID = prod.ProductID, ProductAmount = prod.Amount });
+			}
 
-			//	var cust = dbContext.Customers.Attach(dbContext.Customers.Where(c => c.ID == 1).Include(c => c.Orders).Single()).Entity;
-			//	//cust.Orders = dbContext.Orders.Where(o => o.Customer == cust).AsNoTracking().ToList();
+			// ATTACH ORDERPRODUCT -> ADD TO NEW ORDER
+			_dbManager.ZShopDBContext().AttachRange(op);
+			newOrder.Products = op;
 
-			//	newOrder.Customer = cust;
+			// GO AHEAD CREATE NEW ORDER
+			if (_orders.Create(newOrder))
+			{
+				// UPDATE PRODUCT STOCK WITH NEW VALUES
+				foreach(OrderProduct op2 in newOrder.Products)
+				{
+					Product p = _products.Retrieve(op2.ProductID);
 
-			//	var products = dbContext.Products.Include(p => p.Orders).AsNoTracking().ToList();
-			//	foreach (var prod in newOrder.Products)
-			//	{
-			//		prod.Orders = products.Where(p => p.ID == prod.ID).Select(p => p.Orders).Single();
-			//		prod.Orders.Add(newOrder);
-			//		dbContext.Entry<Product>(prod).State = EntityState.Modified;
-			//	}
+					p.Stock -= op2.ProductAmount;
+					_products.Update(p);
+				}
 
-			//	cust.Orders.Add(newOrder);
-			//	dbContext.Entry<Customer>(cust).State = EntityState.Modified;
+				return true; // DONE!
+			}
 
-			//	//dbContext.Entry<Order>(newOrder).State = EntityState.Added;
-			//	dbContext.SaveChanges();
-			//}
-			
-			return false;
-
-			//return orders.Last();
+			return false; // SOMETHING WENT WRONG!
 		}
 		#endregion
 	}
 
 	/// <summary>
-	/// CRUD IMPLEMENTER ENUM
+	/// CRUD IMPLEMENTER ENUM + MODEL QUERYS & SEPARATE LOGIN FUNCTION
 	/// </summary>
 	public enum ActionType
 	{
@@ -228,11 +240,12 @@ namespace Service
 		Retrieve,
 		Update,
 		Delete,
-		Query
+		Query,
+		Login
 	}
 
 	/// <summary>
-	/// PERFORM ACTION ON WHAT FUNCTION
+	/// PERFORM ACTION ON WHAT FUNCTIONALITY
 	/// </summary>
 	public enum FunctionName
 	{

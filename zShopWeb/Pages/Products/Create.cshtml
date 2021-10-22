@@ -1,0 +1,61 @@
+﻿@page
+@model zShopWeb.Pages.Products.CreateProductModel
+
+@{
+	ViewData["Title"] = "Registrér Kunde";
+}
+
+<div id="detailsContainer" class="block center customer-details-container" style="display:none; z-index: 20">
+	<div id="customerDetails" class="customer-window">
+		<div class="block login-header">New Product</div>
+		<form method="post">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="customer-edit-group">
+				<label asp-for="Product.Name" class="customer-labels"></label>
+				<input asp-for="Product.Name" class="customer-input" />
+				<span asp-validation-for="Product.Name" class="text-danger"></span>
+			</div>
+			<div class="customer-edit-group">
+				<label asp-for="Product.Description" class="customer-labels"></label>
+				<input asp-for="Product.Description" class="customer-input" />
+				<span asp-validation-for="Product.Description" class="text-danger"></span>
+			</div>
+			<div class="customer-edit-group">
+				<label asp-for="Product.Price" class="customer-labels"></label>
+				<input asp-for="Product.Price" class="customer-input" />
+				<span asp-validation-for="Product.Price" class="text-danger"></span>
+			</div>
+			<div class="customer-edit-group">
+				<label asp-for="Product.Stock" class="customer-labels"></label>
+				<input asp-for="Product.Stock" class="customer-input" />
+				<span asp-validation-for="Product.Stock" class="text-danger"></span>
+			</div>
+			<div class="customer-edit-group">
+				<label asp-for="Product.Image" class="customer-labels"></label>
+				<input asp-for="Product.Image" class="customer-input" />
+				<span asp-validation-for="Product.Image" class="text-danger"></span>
+			</div>
+			<div class="customer-edit-group">
+				<label asp-for="Product.Active" class="customer-labels"></label>
+				<input type="checkbox" asp-for="Product.Active" class="customer-input" />
+				<span asp-validation-for="Product.Active" class="text-danger"></span>
+			</div>
+			<div class="customer-edit-group">
+				<label asp-for="Product.Category" class="customer-labels"></label>
+				<input asp-for="Product.Category" class="customer-input" />
+				<span asp-validation-for="Product.Category" class="text-danger"></span>
+			</div>
+			<div class="customer-edit-group">
+				<input type="submit" value="Create" class="block center btn-blue" />
+			</div>
+		</form>
+	</div>
+
+	<div>
+		<a asp-page="./List">Back to List</a>
+	</div>
+
+	@section Scripts {
+		@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	}
+</div>

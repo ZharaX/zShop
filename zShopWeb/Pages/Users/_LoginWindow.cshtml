@@ -1,0 +1,15 @@
+﻿@model zShopWeb.Pages.IndexModel
+
+<div class="login-window">
+	<form id="formCreateOwner" asp-page-handler="LoginUser" method="post" class="product-container" style="position: absolute; top: 30%; left: 40%;">
+		<div class="login-header">LOGIN</div>
+		<input id="username" name="username" type="text" class="block center input-80" placeholder="username.." asp-for="UserName" />
+		<input id="userpass" name="userpass" type="password" class="block center input-80" placeholder="password.." asp-for="Password" />
+		<br />
+		<div class="block center" style="width: 80%;">
+			<input id="btnContinue" name="btnContinue" type="submit" value="Continue" class="btn-half btn-green inline" />
+			<input id="btnCancel" name="btnCancel" type="submit" value="Cancel" class="btn-half btn-red inline" />
+		</div>
+		<br />
+	</form>
+</div>

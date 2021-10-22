@@ -18,6 +18,6 @@ namespace Data.Models
 		public string Email { get; set; }
 		
 		// COLLECTION NAVIGATION
-		public ICollection<Order> Orders { get; set; }
+		public virtual ICollection<Order> Orders { get; set; }
 	}
 }

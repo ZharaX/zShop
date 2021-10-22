@@ -14,42 +14,49 @@ namespace Service
 		/// </summary>
 		/// <param name="cred">SID[0] | User[1] | Pass[2]</param>
 		/// <returns>SESSION ID (GUID)</returns>
-		///string AddUserForSession(string[] cred);
+		DTO.CustomerDTO AddUserForSession(string[] cred);
 
 		/// <summary>
 		/// When user is Authenticated, user will have an SID to validate against.
 		/// </summary>
 		/// <param name="sID">SESSION ID</param>
 		/// <returns>CustomerDTO Object</returns>
-		//DTO.CustomerDTO ReturnCustomerDTO(string sID);
+		DTO.CustomerDTO ReturnCustomerDTO(string sID, Data.Models.Customer cust);
+
+		bool UpdateUserTimer(string sID, bool userAction);
 	}
 
 	public class CustomerHandler : ICustomerHandler
 	{
-		// REFERENCE FOR DB MANAGER
-		//private readonly Data.IDBHandler _dbContext;
+		private readonly ISiteFunctions _siteFunctions;
+
 		private List<ActiveUsers.UserData> _users = new List<ActiveUsers.UserData>();
 
 		// ON INSTANTIATION: Starts Timer Event which checks for user activity (Auto-Logout Functionality)
-		//public CustomerHandler(Data.IDBHandler dbContext) { _dbContext = dbContext; CheckUserStatus(); }
+		public CustomerHandler(ISiteFunctions siteFunctions) { _siteFunctions = siteFunctions; CheckUserStatus(); }
+
 
 		#region USER / CUSTOMER AUTHENTICATION
-		public string AddUserForSession(string[] cred)
+		public DTO.CustomerDTO AddUserForSession(string[] cred)
 		{
+			if (cred == null)
+				return null;
+
 			// CHECK IF SID EXISTS ALREADY
 			if (_users.FirstOrDefault(c => c.SID == cred[0]) == null)
 			{
-				int cID = 0; //LoginCustomer(cred);
+				// IF USER IS NOT FOUND, CALL LOGIN
+				Data.Models.Customer cust = LoginCustomer(new string[] { cred[1], cred[2] });
 
 				// ADD TO USER STORE IF USER WAS LOGGED IN
-				if (cID != -1)
+				if (cust != null)
 				{
 					// USER WAS AUTHENTICATED -> ADD TO STORE
-					ActiveUsers.UserData user = new ActiveUsers.UserData(cID);
+					ActiveUsers.UserData user = new ActiveUsers.UserData(cust.ID);
 					_users.Add(user);
 
-					// RETURN THE GENERATED SID USED FOR AUTHENTICATION
-					return user.SID;
+					// RETURN THE GENERATED SID AND CUSTOMER DTO USED FOR AUTHENTICATION
+					return ReturnCustomerDTO(user.SID, cust);
 				}
 			}
 
@@ -60,49 +67,64 @@ namespace Service
 		/// <summary>
 		/// Finds a Customer with SessionID (Authorized)
 		/// </summary>
-		/// <param name="sID">SessionID</param>
 		/// <returns>Data.Models.Customer Object</returns>
-		//private int LoginCustomer(string[] cred)
-		//{
-		//	// GET CUSTOMER OBJECT
-		//	//Data.Models.Customer cust = _dbContext.LoginCustomer(cred);
+		private Data.Models.Customer LoginCustomer(string[] cred)
+		{
+			// GET CUSTOMER OBJECT
+			Data.Models.Customer cust = (Data.Models.Customer)_siteFunctions.PerformAction(ActionType.Login, FunctionName.Customer, cred);
 
-		//	Data.Models.Customer cust = _dbContext.GetCustomer(1);
+			// RETURN CUSTOMER ID
+			if (cust != null) return cust;
 
-		//	// RETURN CUSTOMER ID
-		//	if (cust != null) return cust.ID;
-
-		//	return -1; // NO CUSTOMER LOGIN
-		//}
+			return null; // NO CUSTOMER LOGIN
+		}
 
 		/// <summary>
 		/// Finds a Customer with SessionID (Authorized)
 		/// </summary>
 		/// <param name="sID">SessionID</param>
 		/// <returns>Data.Models.Customer Object</returns>
-		//public DTO.CustomerDTO ReturnCustomerDTO(string sID)
-		//{
-		//	// GET CUSTOMER OBJECT
-		//	//Data.Models.Customer cust = _dbContext.GetCustomer(_users.FirstOrDefault(c => c.SID == sID).CID);
+		public DTO.CustomerDTO ReturnCustomerDTO(string sID, Data.Models.Customer cust)
+		{
+			// NEEDED FOR NOW FOR TEST PRESENTATION -> ABOVE IS THE ACTUAL IMPLEMENTATION
+			DTO.CustomerDTO custDTO = new DTO.CustomerDTO(sID);
 
-		//	// NEEDED FOR NOW FOR TEST PRESENTATION -> ABOVE IS THE ACTUAL IMPLEMENTATION
-		//	Data.Models.Customer cust = _dbContext.GetCustomer(1);
+			// RETURN CUSTOMER ID
+			if (cust != null) return new DTO.CustomerDTO(sID)
+			{
+				FirstName = cust.FirstName,
+				LastName = cust.LastName,
+				Address = cust.Address,
+				City = cust.City,
+				Postal = cust.Postal,
+				Country = cust.Country,
+				Phone = cust.Phone,
+				Email = cust.Email
+			};
 
-		//	// RETURN CUSTOMER ID
-		//	if (cust != null) return new DTO.CustomerDTO
-		//	{
-		//		FirstName = cust.FirstName,
-		//		LastName = cust.LastName,
-		//		Address = cust.Address,
-		//		City = cust.City,
-		//		Postal = cust.Postal,
-		//		Country = cust.Country,
-		//		Phone = cust.Phone,
-		//		Email = cust.Email
-		//	};
+			return null; // NO CUSTOMER DATA TO TRANSFER
+		}
+		#endregion
+		#region UPDATE USER AUTO LOGOUT TIMER
+		/// <summary>
+		/// Finds a User with SessionID (Authorized)
+		/// </summary>
+		/// <param name="sID">SessionID</param>
+		/// <returns>Data.Storage.StorageData Object</returns>
+		public bool UpdateUserTimer(string sID, bool userAction)
+		{
+			if (_users.Exists(u => u.SID == sID))
+			{
+				ActiveUsers.UserData user = _users.Find(u => u.SID == sID);
 
-		//	return null; // NO CUSTOMER DATA TO TRANSFER
-		//}
+				if (userAction)
+					user.Expires = System.DateTime.Now.AddMinutes(5);
+
+				return true;
+			}
+
+			return false;
+		}
 		#endregion
 		#region TIMER FUNCTION FOR CHECKING EXPIRED USERS
 		public void CheckUserStatus()

@@ -9,7 +9,6 @@ namespace Service.DTO
 	public class OrderDTO
 	{
 		public int OrderID { get; private set; }
-		public int Amount { get; set; }
 		public decimal TotalPrice { get; private set; }
 		public decimal Discount { get; private set; }
 
@@ -25,10 +24,9 @@ namespace Service.DTO
 		public List<ProductDTO> Products { get; set; }
 
 		public OrderDTO() { }
-		public OrderDTO(int oID, int amount, decimal discount, DateTime date, DateTime completed, bool isProcessed, List<ProductDTO> prod)
+		public OrderDTO(int oID, decimal discount, DateTime date, DateTime completed, bool isProcessed, List<ProductDTO> prod)
 		{
 			OrderID = oID;
-			Amount = amount;
 			Discount = discount;
 			Date = date;
 			CompletedOn = completed;
@@ -38,7 +36,10 @@ namespace Service.DTO
 
 		public void CalculateTotalPrice()
 		{
-			foreach (ProductDTO p in Products) { TotalPrice += p.Price; }
+			foreach (ProductDTO p in Products)
+			{
+				TotalPrice += p.Amount * p.Price;
+			}
 		}
 	}
 }

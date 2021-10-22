@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -5,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace zShopWeb
 {
@@ -20,14 +22,40 @@ namespace zShopWeb
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			string connectionString = Configuration.GetConnectionString("S21DMH3B11_zShopDBContext");
-			services.AddDbContext<Data.IDBManager, Data.ZShopContext>(
+			string connectionString = Configuration.GetConnectionString("S21DMH3B11_zShopDBContext2");
+			services.AddDbContext<Data.IZShopContext, Data.ZShopContext>(
 				options => options.UseSqlServer(connectionString)
 			);
 
 			services.AddScoped<Service.ISiteFunctions, Service.SiteFunctions>();
 
-			services.AddRazorPages();
+			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+				.AddCookie("Cookies", options =>
+				{
+					options.AccessDeniedPath = "/Error";
+					options.Cookie.Name = "AuthCookie";
+					options.Cookie.HttpOnly = true;
+					options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+					options.LoginPath = "/Users/User";
+					options.ReturnUrlParameter = "ReturnUrl";
+					options.SlidingExpiration = true;
+				});
+
+			services.AddDistributedMemoryCache();
+
+			services.AddSession(options =>
+			{
+				options.IdleTimeout = TimeSpan.FromMinutes(2);
+				options.Cookie.HttpOnly = true;
+				options.Cookie.Name = "User.SessionData";
+				options.Cookie.IsEssential = true;
+			});
+
+			services.AddRazorPages()
+				.AddRazorPagesOptions(options =>
+				{
+					options.Conventions.AddPageRoute("/Index", "{*url}");
+				});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +77,9 @@ namespace zShopWeb
 
 			app.UseRouting();
 
+			app.UseSession();
+
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>

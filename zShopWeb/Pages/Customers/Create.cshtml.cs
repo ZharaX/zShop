@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Service;
 
-namespace S21DMH3B11_zShop.Pages.Customer
+namespace zShopWeb.Pages.Customer
 {
 	public class CreateCustomerModel : PageModel
 	{

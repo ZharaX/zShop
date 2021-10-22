@@ -1,0 +1,87 @@
+﻿@model List<Service.DTO.OrderDTO>
+@{
+	int OrderCount = Model.Count();
+	int CurrentOrder = 1;
+
+	if (TempData.ContainsKey("Order#"))
+	{
+		CurrentOrder = System.Convert.ToInt32(TempData.Get<string>("Order#"));
+	}
+}
+<!-- ORDER WINDOW -->
+<div id="orderDetails" class="customer-window" style="display: block; width: 100%; height: 400px; margin-top: 10%; overflow: hidden;">
+	<div class="login-header">
+		Order Details
+		<div style="float: right; height: 32px;">
+			@for (int i = 1; i < OrderCount+1; i++)
+			{
+				<form asp-page-handler="DisplayOrder" method="get" class="inline">
+					<button type="submit" name="id" value="@i" class="order-item @(i == CurrentOrder ? "active" : "")">
+						@i
+					</button>
+				</form>
+			}
+		</div>
+	</div>
+	@{
+		if (Model == null || Model.Count == 0)
+		{
+			<div class="block" style="width: 98%; background-color: #111; border-radius: 4px; margin-left: 1%; font: bold 1em/32px Arial; color: sandybrown">
+				You have no Orders to display!
+			</div>
+		}
+		else
+		{
+
+			Model[CurrentOrder-1].CalculateTotalPrice();
+
+			<div class="block center" style="width: 100%; text-align: left; padding-left: 2%; color: sandybrown; margin-bottom: 2%;">Order #@CurrentOrder</div>
+			<div class="block center" style="width: 100%;">
+				<dl class="">
+					<dt class="customer-labels">
+						Date:
+					</dt>
+					<dd class="customer-values">
+						@Model[CurrentOrder-1].Date.ToString("dd/MM-yyyy HH:mm")
+					</dd>
+					<dt class="customer-labels">
+						Completed:
+					</dt>
+					<dd class="customer-values">
+						@Model[CurrentOrder-1].CompletedOn.ToString("dd/MM-yyyy HH:mm")
+					</dd>
+
+					<dt class="customer-labels">
+						Billing:
+					</dt>
+					<dd class="customer-values">
+						@Model[CurrentOrder-1].TotalPrice.ToString("C2")
+					</dd>
+					<dt class="customer-labels">
+						Discount:
+					</dt>
+					<dd class="customer-values">
+						@Model[CurrentOrder-1].Discount.ToString("C2")
+					</dd>
+
+					<div class="block center" style="width: 100%; text-align: left; padding-left: 2%; color: sandybrown; margin: 3% 0;">Products in Order</div>
+					@foreach (Service.DTO.ProductDTO product in Model[CurrentOrder-1].Products)
+					{
+						<!-- PRODUCT NAME -->
+						<div class="inline" style="width: 55%; background-color: #111; padding-left: 1%; border-radius: 4px; margin-left: 1%; margin-bottom: 4px; font: normal .75em/20px Arial; color: sandybrown">
+							<a class="order-product-link" asp-page="/Products/Index" asp-route-SearchString="@product.Name" >@(" " + product.Name)</a>
+						</div>
+						<!-- PRODUCT AMOUNT -->
+						<div class="inline" style="width: 12.5%; background-color: #111; padding-right: 1%; border-radius: 4px; margin-left: 2px; margin-bottom: 4px; font: normal .75em/20px Consolas; color: sandybrown; text-align: right;">
+							@(product.Amount + " x ")
+						</div>
+						<!-- PRODUCTS PRICE -->
+						<div class="inline" style="width: 27%; background-color: #111; padding-left: 1%; border-radius: 4px; margin-left: 2px; margin-bottom: 4px; font: normal .75em/20px Consolas; color: sandybrown">
+							@(" " + (product.Amount * product.Price).ToString("C2"))
+						</div>
+					}
+				</dl>
+			</div>
+		}
+	}
+</div>

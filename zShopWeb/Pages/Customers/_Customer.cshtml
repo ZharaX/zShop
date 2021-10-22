@@ -1,0 +1,138 @@
+﻿@model Service.DTO.CustomerDTO
+@{
+	string posWindow = "";
+}
+
+<!-- MESSAGE BOX -->
+@if (TempData.ContainsKey("Message"))
+{
+<div id="message" class="absolute block center success">
+	<div class="absolute success-image">✓</div>
+	<div class="absolute" style="width: calc(100% - 32px); color: #030; height: 40px; font: bold 20px/36px Jokerman, Arial; text-align: center; left: 36px;">@(TempData.Get<string>("Message"))</div>
+</div>
+	posWindow = "margin-top: 10%";
+}
+
+<!-- DETAILS CONTAINER -->
+<div id="customerDetails" class="customer-window" style="@posWindow">
+	<div class="block login-header">
+		<div class="inline">Your Details</div>
+		<form method="get" asp-page-handler="Orders" style="float: right; height: 31px; width: 30%;">
+			<input type="submit" value="History" class="btn-green inline" style="width: 100%; height: 31px; border-radius: 0 6px 0 0; text-align: center; cursor: pointer;" />
+		</form>
+	</div>
+	<dl class="">
+		<dt class="customer-labels">
+			@Html.DisplayNameFor(model => model.FirstName)
+		</dt>
+		<dd class="customer-values">
+			@Html.DisplayFor(model => model.FirstName)
+		</dd>
+		<dt class="customer-labels">
+			@Html.DisplayNameFor(model => model.LastName)
+		</dt>
+		<dd class="customer-values">
+			@Html.DisplayFor(model => model.LastName)
+		</dd>
+		<dt class="customer-labels">
+			@Html.DisplayNameFor(model => model.Address)
+		</dt>
+		<dd class="customer-values">
+			@Html.DisplayFor(model => model.Address)
+		</dd>
+		<dt class="customer-labels">
+			@Html.DisplayNameFor(model => model.Postal)
+		</dt>
+		<dd class="customer-values">
+			@Html.DisplayFor(model => model.Postal)
+		</dd>
+		<dt class="customer-labels">
+			@Html.DisplayNameFor(model => model.City)
+		</dt>
+		<dd class="customer-values">
+			@Html.DisplayFor(model => model.City)
+		</dd>
+		<dt class="customer-labels">
+			@Html.DisplayNameFor(model => model.Country)
+		</dt>
+		<dd class="customer-values">
+			@Html.DisplayFor(model => model.Country)
+		</dd>
+		<dt class="customer-labels">
+			@Html.DisplayNameFor(model => model.Phone)
+		</dt>
+		<dd class="customer-values">
+			@Html.DisplayFor(model => model.Phone)
+		</dd>
+		<dt class="customer-labels">
+			@Html.DisplayNameFor(model => model.Email)
+		</dt>
+		<dd class="customer-values">
+			@Html.DisplayFor(model => model.Email)
+		</dd>
+	</dl>
+	<div>
+		<a id="btnEditCustomer" class="block center btn-full btn-blue" style="margin-bottom: 1%;">Edit</a>
+		<a asp-page="/Index" class="block center btn-full btn-red" style="text-decoration: none; color: black; margin-bottom: 2%;">Back</a>
+	</div>
+</div>
+
+<!-- EDIT INFORMATION -->
+<div id="customerEdit" class="customer-window" style="display: none; width: 100%; margin-top: -150%">
+	<div class="login-header">Change Details</div>
+	<form method="post">
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<input type="hidden" asp-for="SID" />
+		<div class="customer-edit-group">
+			<label asp-for="FirstName" class="customer-labels"></label>
+			<input asp-for="FirstName" class="customer-input" />
+			<span asp-validation-for="FirstName" class="text-danger"></span>
+		</div>
+		<div class="customer-edit-group">
+			<label asp-for="LastName" class="customer-labels"></label>
+			<input asp-for="LastName" class="customer-input" />
+			<span asp-validation-for="LastName" class="text-danger"></span>
+		</div>
+		<div class="customer-edit-group">
+			<label asp-for="Address" class="customer-labels"></label>
+			<input asp-for="Address" class="customer-input" />
+			<span asp-validation-for="Address" class="text-danger"></span>
+		</div>
+		<div class="customer-edit-group">
+			<label asp-for="Postal" class="customer-labels"></label>
+			<input asp-for="Postal" class="customer-input" />
+			<span asp-validation-for="Postal" class="text-danger"></span>
+		</div>
+		<div class="customer-edit-group">
+			<label asp-for="City" class="customer-labels"></label>
+			<input asp-for="City" class="customer-input" />
+			<span asp-validation-for="City" class="text-danger"></span>
+		</div>
+		<div class="customer-edit-group">
+			<label asp-for="Country" class="customer-labels"></label>
+			<input asp-for="Country" class="customer-input" />
+			<span asp-validation-for="Country" class="text-danger"></span>
+		</div>
+		<div class="customer-edit-group">
+			<label asp-for="Phone" class="customer-labels"></label>
+			<input asp-for="Phone" class="customer-input" />
+			<span asp-validation-for="Phone" class="text-danger"></span>
+		</div>
+		<div class="customer-edit-group" style="margin-bottom: 3%;">
+			<label asp-for="Email" class="customer-labels"></label>
+			<input asp-for="Email" class="customer-input" />
+			<span asp-validation-for="Email" class="text-danger"></span>
+		</div>
+		<div class="block customer-edit-group" style="margin-bottom: 1%">
+			<input type="submit" value="Save" class="block center btn-blue btn-full" />
+		</div>
+	</form>
+
+	<div class="block customer-edit-group" style="margin-bottom: 2%">
+		<a asp-page="./Details" class="block center btn-red btn-full" style="text-decoration: none; color: black">Cancel</a>
+	</div>
+
+	@section Scripts {
+		@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	}
+</div>

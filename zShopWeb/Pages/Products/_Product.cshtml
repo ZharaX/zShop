@@ -1,0 +1,37 @@
+﻿@model Service.DTO.ProductDTO
+
+<!-- HEADER -->
+<div class="product-header">
+	<label>@Model.Name</label>
+</div>
+<!-- IMAGE -->
+<div class="product-image">
+	<img src="~/images/@Model.Image" />
+	@if (Model.Stock == 0)
+	{
+		<img src="~/images/sold-out.png" style="position: absolute; left: -1%; width: 100%; top: 0;" />
+	}
+</div>
+<!-- DESCRIPTION -->
+<div class="product-description">
+	<label>@Model.Description</label>
+</div>
+
+<div class="product-footer">
+	<!-- PRICE -->
+	<div class="product-price">
+		<label>@Model.ToString()</label>
+	</div>
+
+	<!-- CONTROLS -->
+	@{
+		if (Model.Stock == 0)
+		{
+			<input type="button" value="Køb" class="product-buy-button" disabled="disabled" />
+		}
+		else
+		{
+			<input id="prod_@Model.ProductID" type="button" value="Køb" class="atc product-buy-button" />
+		}
+	}
+</div>
