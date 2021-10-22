@@ -222,7 +222,7 @@ body {
 	top: 2px;
 	left: 48px;
 	display: inline-block;
-	width: calc(90% - 51px);
+	width: calc(85% - 51px);
 	height: calc(100% - 4px);
 }
 
@@ -246,7 +246,7 @@ body {
 
 	.search-input > .search-button {
 		position: absolute;
-		right: -11.7%;
+		right: -12%;
 		height: 100%;
 		width: 10%;
 		background-color: darkolivegreen;
@@ -255,6 +255,18 @@ body {
 		border: 1px solid #300;
 		border-radius: 4px;
 	}
+
+.search-page-count {
+	position: absolute;
+	right: 0;
+	width: 5%;
+	height: 44px;
+	background-color: #200;
+	border-radius: 4px;
+	border: none;
+	color: silver;
+	font: bold 1em/44px Arial;
+}
 
 .customer-details-container {
 	position: relative;
@@ -658,6 +670,18 @@ body {
 	border: 1px solid #300;
 }
 
+	.btn-blue:hover {
+		background-color: #469fff;
+		border: 1px solid #300;
+		cursor: pointer;
+	}
+
+	.btn-blue:disabled {
+		background-color: #101f2f;
+		border: 1px solid #300;
+		cursor: not-allowed;
+	}
+
 input[type=search],
 input[type=number] {
 	background-color: #100;
@@ -760,4 +784,58 @@ input[type=number] {
 		text-decoration: none;
 		font: normal 1.1em/20px Arial;
 		color: #b6ff00;
+	}
+
+.creditcard {
+	width: 60%;
+	height: 120px;
+	margin: 10% auto;
+	background-color: bisque;
+	border: 2px ridge #A00;
+	border-radius: 16px;
+}
+
+/* CARD HEADER & FOOTER COLORING */
+	.creditcard > header {
+		display: block;
+		height: 32px;
+		font: bold 1.25em/32px Arial;
+		margin-left: 8px;
+	}
+
+	.creditcard > article {
+		display: block;
+		height: 50%;
+	}
+
+/* CARD ARTICLE ELEMENTS */
+	.creditcard > article > img {
+		display: block;
+		width: 48px;
+		height: 48px;
+		background-color: beige;
+		border: 1px solid black;
+		border-radius: 8px;
+		margin: 8px;
+	}
+
+/* CARD FOOTER FONT */
+	.creditcard > footer > p {
+		display: inline-block;
+		width: 100%;
+		font: bold 1em/20px Consolas;
+		margin: 4px;
+		padding-left: 8px;
+	}
+		.creditcard > footer > p > span {
+			display: inline-block;
+			background-color: aliceblue;
+			font: bold 0.9em/20px Consolas;
+		}
+
+/* CARD HEADER & FOOTER SIZE */
+	.creditcard > header,
+	.creditcard > footer {
+		display: block;
+		height: 20%;
 	}

@@ -86,6 +86,15 @@ $(document).ready(function () {
 			}
 		});
 	};
+
+	$("#btnCartConfirm").click(function () {
+		$("#creditCard").show();
+		$("#btnCartSubmit").show();
+	});
+
+	//$("#pageSize").change(function () {
+	//	updatePageCount($(this).val());
+	//});
 });
 
 function slideBoxDown(container) {
@@ -130,6 +139,19 @@ function removeFromCart(productID) {
 	});
 }
 
+//function updatePageCount(size) {
+//	$.ajax({
+//		url: "/Products",
+//		type: "GET",
+//		data: { size: size },
+//		success: function (data) {
+//		},
+//		error: function (e) {
+//			alert(this.url);
+//		}
+//	});
+//}
+
 function onlyPositiveNumbers() {
 	// NASTY HACK FOR WIERD VALIDATION ISSUE
 	$(".opn").keyup(function () {
@@ -164,9 +186,11 @@ function onlyPositiveNumbers() {
 
 		if ($(this).val() == 0 || $(this).val() > max) {
 			$("#btnCartSubmit").attr("disabled", true);
+			$("#btnCartConfirm").attr("disabled", true);
 		}
 		else {
 			$("#btnCartSubmit").attr("disabled", false);
+			$("#btnCartConfirm").attr("disabled", false);
 		}
 	});
 

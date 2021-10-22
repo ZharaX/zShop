@@ -4,7 +4,7 @@ namespace Service.Concrete
 {
 	public interface IProduct
 	{
-		System.Linq.IQueryable<Data.Models.Product> GetProducts();
+		IQueryable<Data.Models.Product> GetProducts(string searchString);
 		bool Create(Data.Models.Product product);
 		Data.Models.Product Retrieve(int id);
 		bool Update(Data.Models.Product product);
@@ -17,9 +17,16 @@ namespace Service.Concrete
 
 		public ProductService(Data.DBManager.IDBManager<Data.Models.Product> product) { productHandler = product; }
 
-		public IQueryable<Data.Models.Product> GetProducts()
+		public IQueryable<Data.Models.Product> GetProducts(string searchString)
 		{
-			return productHandler.Table;
+			var query = productHandler.Table;
+			query = searchString != null ? query
+				.Where(p => p.Name.ToLower()
+				.Contains(searchString.ToLower()) || p.Description.ToLower()
+				.Contains(searchString.ToLower()))
+				.OrderBy(r => r.Name) : query;
+
+			return query;
 		}
 		public bool Create(Data.Models.Product product) { return productHandler.Create(product); }
 

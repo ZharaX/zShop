@@ -156,9 +156,9 @@ namespace Service.Querys
 		/// </summary>
 		/// <param name="product">Data Product Model</param>
 		/// <returns>List of OrderProducts</returns>
-		public static System.Collections.Generic.List<Data.Models.OrderProduct> FromProductDTO(System.Collections.Generic.List<ProductDTO> product)
+		public static List<Data.Models.OrderProduct> FromProductDTO(List<ProductDTO> product)
 		{
-			System.Collections.Generic.List<Data.Models.OrderProduct> op = new System.Collections.Generic.List<Data.Models.OrderProduct>();
+			List<Data.Models.OrderProduct> op = new List<Data.Models.OrderProduct>();
 
 			foreach (ProductDTO pdto in product)
 			{
@@ -169,6 +169,22 @@ namespace Service.Querys
 			}
 
 			return op;
+		}
+
+		public static Data.Models.Product FromProductDTO(ProductDTO product)
+		{
+			Data.Models.Product p = new Data.Models.Product
+			{
+				ID = product.ProductID,
+				Name = product.Name,
+				Description = product.Description,
+				Price = product.Price,
+				Stock = product.Stock,
+				Image = product.Image,
+				Active = product.Active
+			};
+
+			return p;
 		}
 		#endregion
 	}

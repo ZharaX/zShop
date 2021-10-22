@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -16,19 +17,35 @@ namespace zShopWeb.Pages.Products
 		#region CONTEXT DATA
 		// ACCESS TO SERVICE LAYER AND FUNCTIONS
 		private readonly ISiteFunctions _siteFunctions;
+		private readonly Service.Querys.IProductFilter _productFilter;
 		#endregion
-
-		public List<Service.DTO.ProductDTO> Products { get; private set; }
-
+		#region SEARCH N FILTER
 		[BindProperty(SupportsGet = true)]
 		public string SearchString { get; set; }
 
+		[BindProperty(SupportsGet = true)]
+		public int CurrentPage { get; set; } = 1;
+
+		[BindProperty(SupportsGet = true)]
+		public int PageSize { get; set; } = 10;
+
+		public int Count { get; set; }
+
+		public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
+		#endregion
+
+		public List<Service.DTO.ProductDTO> Products { get; private set; }
+		
 		public Models.NewOrder NewOrder { get; set; }
 
 
-		public IndexModel(ISiteFunctions siteFunctions) { _siteFunctions = siteFunctions; LoadProducts(); }
+		public IndexModel(ISiteFunctions siteFunctions)
+		{ 
+			_siteFunctions = siteFunctions;
+			_productFilter = new Service.Querys.ProductFilterService(_siteFunctions);
+		}
 
-		public void OnGet()
+		public IActionResult OnGet()
 		{
 			if (TempData.ContainsKey("NewOrder"))
 			{
@@ -36,15 +53,14 @@ namespace zShopWeb.Pages.Products
 				TempData.Set("NewOrder", NewOrder);
 			}
 
-			Products = (List<Service.DTO.ProductDTO>)_siteFunctions.PerformAction<List<Service.DTO.ProductDTO>>(ActionType.Query, FunctionName.Product, null);
+			Products = _productFilter.GetProductsContainingString(SearchString, CurrentPage, PageSize, Service.Querys.OrderBy.Descending, Service.Querys.FilterBy.Price);
 
-			if(!string.IsNullOrEmpty(SearchString))
-			{
-				TempData.Set("query", SearchString);
-				Products = Products.Where(p => p.Name.ToLower().Contains(SearchString.ToLower()) || p.Description.ToLower().Contains(SearchString.ToLower())).ToList();
-			}
+			if (!string.IsNullOrEmpty(SearchString)) { TempData.Set("query", SearchString); }
+
+			return Page();
 		}
 
+		#region ADD TO CART
 		public IActionResult OnGetAddToCart(int? id)
 		{
 			if (TempData.ContainsKey("NewOrder"))
@@ -72,10 +88,16 @@ namespace zShopWeb.Pages.Products
 
 			return RedirectToPage();
 		}
+		#endregion
+	}
 
-		private void LoadProducts()
-		{
-			Products = (List<Service.DTO.ProductDTO>)_siteFunctions.PerformAction<List<Service.DTO.ProductDTO>>(ActionType.Query, FunctionName.Product, null);
-		}
+	public enum PageSizeEnum
+	{
+		[Display(Name = "2")]
+		_2 = 2,
+		[Display(Name = "5")]
+		_5 = 5,
+		[Display(Name = "10")]
+		_10 = 10,
 	}
 }

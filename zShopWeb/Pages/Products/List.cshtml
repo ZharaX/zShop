@@ -1,0 +1,65 @@
+﻿@page
+@model zShopWeb.Pages.Products.ListModel
+
+@{
+	ViewData["Title"] = "Edit Products";
+}
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Products[0].Name)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Products[0].Description)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Products[0].Price)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Products[0].Stock)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Products[0].Image)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Products[0].Active)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var prod in Model.Products)
+		{
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => prod.Name)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => prod.Description)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => prod.Price)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => prod.Stock)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => prod.Image)
+			</td>
+			<td>
+				@Html.DisplayFor(modelItem => prod.Active)
+			</td>
+			<td>
+				<a asp-page="./Edit" asp-route-id="@prod.ProductID">Edit</a> |
+				<form asp-page-handler="Delete" method="post">
+					<input type="hidden" name="pID" value="@prod.ProductID" />
+
+					<input type="submit" value="Delete" />
+				</form>
+			</td>
+		</tr>
+		}
+	</tbody>
+</table>

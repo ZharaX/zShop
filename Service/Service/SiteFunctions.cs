@@ -91,7 +91,7 @@ namespace Service
 						return CreateOrder(data as DTO.OrderDTO);
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return _products.Create(data as Product);
+						return _products.Create(Querys.QueryManager.FromProductDTO(data as DTO.ProductDTO));
 
 					//if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
 					//	return _dbContext.CreateCategory(data as string);
@@ -109,7 +109,7 @@ namespace Service
 						return Querys.QueryManager.ToOrdersDTO(_dbManager.ZShopDBContext().OrderProducts, _customers.Retrieve((int)(object)data)).ToList();
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return Querys.QueryManager.ToProductDTO(_products.GetProducts().Where(p => p.ID == (int)(object)data));
+						return Querys.QueryManager.ToProductDTO(_products.GetProducts("").Where(p => p.ID == (int)(object)data));
 
 					//if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
 					//	return _dbContext.GetAllCategorys();
@@ -126,7 +126,7 @@ namespace Service
 						return _orders.Update(data as Order);
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return _products.Update(data as Product);
+						return _products.Update(Querys.QueryManager.FromProductDTO(data as DTO.ProductDTO));
 
 					//if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
 					//	return _dbContext.UpdateCategory(data as string);
@@ -143,7 +143,7 @@ namespace Service
 						return _orders.Delete(data as Order);
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return _products.Delete(data as Product);
+						return _products.Delete(_products.Retrieve((int)(object)data));
 
 				//	if (function == FunctionName.Categorys) // FUNCTION: CATEGORY
 				//		return _dbContext.DeleteCategory(data as int[]);
@@ -160,7 +160,7 @@ namespace Service
 						return Querys.QueryManager.ToOrdersDTO(_dbManager.ZShopDBContext().OrderProducts, _customers.Retrieve(1));
 
 					if (function == FunctionName.Product) // FUNCTION: PRODUCT
-						return Querys.QueryManager.ToProductDTO(_products.GetProducts());
+						return Querys.QueryManager.ToProductDTO(_products.GetProducts(data as string));
 
 					return null; // WE SHOULD EVEN NOT BE GETTING HERE
 
