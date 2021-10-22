@@ -1,51 +1,53 @@
 ﻿@page
 @model zShopWeb.Pages.Products.EditModel
 
-<div class="block center customer-window" style="width: 400px; margin-top: 10%">
-	<div class="login-header">Update Product</div>
-	<form method="post">
-		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-		<input type="hidden" asp-for="Product.ProductID" />
-		<div class="customer-edit-group">
-			<label asp-for="Product.Name" class="customer-labels"></label>
-			<input asp-for="Product.Name" class="customer-input" />
-			<span asp-validation-for="Product.Name" class="text-danger"></span>
-		</div>
-		<div class="customer-edit-group">
-			<label asp-for="Product.Description" class="customer-labels"></label>
-			<input asp-for="Product.Description" class="customer-input" />
-			<span asp-validation-for="Product.Description" class="text-danger"></span>
-		</div>
-		<div class="customer-edit-group">
-			<label asp-for="Product.Price" class="customer-labels"></label>
-			<input asp-for="Product.Price" class="customer-input" />
-			<span asp-validation-for="Product.Price" class="text-danger"></span>
-		</div>
-		<div class="customer-edit-group">
-			<label asp-for="Product.Stock" class="customer-labels"></label>
-			<input asp-for="Product.Stock" class="customer-input" />
-			<span asp-validation-for="Product.Stock" class="text-danger"></span>
-		</div>
-		<div class="customer-edit-group">
-			<label asp-for="Product.Image" class="customer-labels"></label>
-			<input asp-for="Product.Image" class="customer-input" />
-			<span asp-validation-for="Product.Image" class="text-danger"></span>
-		</div>
-		<div class="customer-edit-group">
-			<label asp-for="Product.Category" class="customer-labels"></label>
-			<input asp-for="Product.Category" class="customer-input" />
-			<span asp-validation-for="Product.Category" class="text-danger"></span>
-		</div>
-		<div class="block customer-edit-group" style="margin-bottom: 1%">
-			<input type="submit" value="Save" class="block center btn-blue btn-full" />
-		</div>
-	</form>
+<div class="block center customer-details-container" style="margin-top: 10%; z-index: 20">
+	<div class="block center customer-window" style="width: 400px; margin-top: 10%">
+		<div class="login-header">Update Product</div>
+		<form method="post">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" asp-for="Product.ProductID" />
+			<div class="customer-edit-group">
+				<label asp-for="Product.Name" class="customer-labels"></label>
+				<input asp-for="Product.Name" class="customer-input" />
+				<span asp-validation-for="Product.Name" class="text-danger"></span>
+			</div>
+			<div class="customer-edit-group">
+				<label asp-for="Product.Description" class="customer-labels"></label>
+				<input asp-for="Product.Description" class="customer-input" />
+				<span asp-validation-for="Product.Description" class="text-danger"></span>
+			</div>
+			<div class="customer-edit-group">
+				<label asp-for="Product.Price" class="customer-labels"></label>
+				<input asp-for="Product.Price" class="customer-input" />
+				<span asp-validation-for="Product.Price" class="text-danger"></span>
+			</div>
+			<div class="customer-edit-group">
+				<label asp-for="Product.Stock" class="customer-labels"></label>
+				<input asp-for="Product.Stock" class="customer-input" style="border: 1px solid silver; background-color: #111" />
+				<span asp-validation-for="Product.Stock" class="text-danger"></span>
+			</div>
+			<div class="customer-edit-group">
+				<label asp-for="Product.Image" class="customer-labels"></label>
+				<input asp-for="Product.Image" class="customer-input" />
+				<span asp-validation-for="Product.Image" class="text-danger"></span>
+			</div>
+			<div class="customer-edit-group">
+				<label asp-for="Product.Category" class="customer-labels"></label>
+				<input asp-for="Product.Category" class="customer-input" />
+				<span asp-validation-for="Product.Category" class="text-danger"></span>
+			</div>
+			<div class="block customer-edit-group" style="margin-top: 3%; margin-bottom: 2%">
+				<input type="submit" value="Save" class="block center btn-blue btn-full" />
+			</div>
+		</form>
 
-	<div class="block customer-edit-group" style="margin-bottom: 2%">
-		<a asp-page="./Details" class="block center btn-red btn-full" style="text-decoration: none; color: black">Cancel</a>
+		<div class="block customer-edit-group" style="margin-bottom: 2%">
+			<a asp-page="/Products/List" class="block center btn-red btn-full" style="text-decoration: none; color: black">Cancel</a>
+		</div>
+
+		@section Scripts {
+			@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+		}
 	</div>
-
-	@section Scripts {
-		@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-	}
 </div>

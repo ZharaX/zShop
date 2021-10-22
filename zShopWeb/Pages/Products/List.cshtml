@@ -52,11 +52,12 @@
 				@Html.DisplayFor(modelItem => prod.Active)
 			</td>
 			<td>
-				<a asp-page="./Edit" asp-route-id="@prod.ProductID">Edit</a> |
-				<form asp-page-handler="Delete" method="post">
+				<a style="width: 30%; color: black; text-align: center; text-decoration: none;" class="block inline btn-blue" asp-page="./Edit" asp-route-id="@prod.ProductID">Edit</a>
+				<a style="width: 30%; color: black; text-align: center; text-decoration: none;" class="block inline btn-blue" asp-page="./Create">Create</a>
+				<form class="inline" asp-page-handler="Delete" method="post">
 					<input type="hidden" name="pID" value="@prod.ProductID" />
 
-					<input type="submit" value="Delete" />
+					<input class="block inline btn-red" type="submit" value="Delete" />
 				</form>
 			</td>
 		</tr>
