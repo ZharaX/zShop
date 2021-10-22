@@ -136,11 +136,6 @@ namespace zShopWeb.Pages.Orders
 			return RedirectToPage("/Index");
 		}
 
-		/// <summary>
-		/// OnGetOrders user wants to display Orders associated
-		/// Redirect to Index
-		/// </summary>
-		/// <param name="sID">SessionID</param>
 		public async Task<IActionResult> OnGetOrdersAsync()
 		{
 			if (TempData.ContainsKey("Customer"))
@@ -159,11 +154,6 @@ namespace zShopWeb.Pages.Orders
 			return Page();
 		}
 
-		/// <summary>
-		/// OnGetOrders user wants to display Orders associated
-		/// Redirect to Index
-		/// </summary>
-		/// <param name="sID">SessionID</param>
 		public IActionResult OnGetRemoveFromCart(int id)
 		{
 			Models.NewOrder newOrder = null;
@@ -196,7 +186,6 @@ namespace zShopWeb.Pages.Orders
 			{
 				DisplayOrder = false;
 				TempData.Remove("NewOrder");
-				RedirectToPage("/Index");
 			}
 
 			return Page();

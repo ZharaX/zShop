@@ -55,6 +55,7 @@ namespace Service
 			_dbManager = dbContext;
 			_authUser = new CustomerHandler(this);
 
+			#region DBCONTEXT SERVICES & CONCRETENESS
 			// CREATING INDIVIDUAL MODEL DBCONTEXTS
 			_customerContext = new DBManager<Customer>(_dbManager.ZShopDBContext());
 			_orderContext = new DBManager<Order>(_dbManager.ZShopDBContext());
@@ -64,6 +65,7 @@ namespace Service
 			_customers = new Concrete.CustomerService(_customerContext);
 			_orders = new Concrete.OrderService(_orderContext);
 			_products = new Concrete.ProductService(_productContext);
+			#endregion
 		}
 
 		#region FUNCTION HANDLER

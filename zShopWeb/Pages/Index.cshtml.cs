@@ -71,6 +71,11 @@ namespace zShopWeb.Pages
 			SessionInfo_EndTime = HttpContext.Session.GetString(SessionKeyEndTime);
 			#endregion
 
+			// TESTING
+			var customers = _siteFunctions.PerformAction<List<Service.DTO.CustomerDTO>>(Service.ActionType.Query, Service.FunctionName.Customer, null);
+			var orders = _siteFunctions.PerformAction<List<Service.DTO.OrderDTO>>(Service.ActionType.Query, Service.FunctionName.Order, null);
+			var products = _siteFunctions.PerformAction<List<Service.DTO.ProductDTO>>(Service.ActionType.Query, Service.FunctionName.Product, null);
+
 			// CUSTOMER CLICKED LOGIN BUTTON -> DISPLAY PARTIAL
 			DisplayLoginWindow = doLogin;
 
