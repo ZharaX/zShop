@@ -45,7 +45,7 @@ namespace zShopWeb.Pages.Products
 			_productFilter = new Service.Querys.ProductFilterService(_siteFunctions);
 		}
 
-		public IActionResult OnGet()
+		public async Task<IActionResult> OnGet()
 		{
 			if (TempData.ContainsKey("NewOrder"))
 			{
@@ -53,7 +53,7 @@ namespace zShopWeb.Pages.Products
 				TempData.Set("NewOrder", NewOrder);
 			}
 
-			Products = _productFilter.GetProductsContainingString(SearchString, CurrentPage, PageSize, Service.Querys.OrderBy.Descending, Service.Querys.FilterBy.Price);
+			Products = await _productFilter.GetProductsContainingString(SearchString, CurrentPage, PageSize, Service.Querys.OrderBy.Descending, Service.Querys.FilterBy.Price);
 
 			if (!string.IsNullOrEmpty(SearchString)) { TempData.Set("query", SearchString); }
 

@@ -2,6 +2,7 @@
 using Data.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Service
 {
@@ -180,10 +181,10 @@ namespace Service
 		}
 		#endregion
 		#region CREATE ORDER
-		private bool CreateOrder(DTO.OrderDTO order)
+		private async Task<bool> CreateOrder(DTO.OrderDTO order)
 		{
 			// GET CUSTOMER AND EXISTING ORDERS
-			var cust = _customers.GetCustomers().Where(c => c.ID == 1).Include(c => c.Orders).Single();
+			var cust = await _customers.GetCustomers().Where(c => c.ID == 1).Include(c => c.Orders).SingleAsync();
 			cust.Orders = _orders.GetOrders().AsTracking().Where(o => o.Customer == cust).ToList();
 
 			// CREATE THE NEW ORDER OBJECT
