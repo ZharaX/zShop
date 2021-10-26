@@ -51,10 +51,10 @@ namespace Service
 		/// Constructor: Supplying ConnectionString for DBContext
 		/// Instantiates: Models Services Contexts using same DBContext
 		/// </summary>
-		public SiteFunctions(Data.IZShopContext dbContext)
+		public SiteFunctions(Data.IZShopContext dbContext, ICustomerHandler auth)
 		{
 			_dbManager = dbContext;
-			_authUser = new CustomerHandler(this);
+			_authUser = auth;
 
 			#region DBCONTEXT SERVICES & CONCRETENESS
 			// CREATING INDIVIDUAL MODEL DBCONTEXTS
@@ -88,7 +88,7 @@ namespace Service
 				// ACTION -> CREATE
 				case ActionType.Create:
 					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
-						return _customers.Create(Querys.QueryManager.FromCustomerDTO(data as DTO.CustomerDTO));
+						return _customers.Create(Querys.QueryManager.FromCustomerDTO(data as DTO.CustomerDTO, 0));
 
 					if (function == FunctionName.Order) // FUNCTION: PRODUCT
 						return CreateOrder(data as DTO.OrderDTO);
@@ -105,7 +105,7 @@ namespace Service
 				// ACTION -> RETRIEVE
 				case ActionType.Retrieve:
 					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
-						return _authUser.AddUserForSession(data as string[]);
+						return _authUser.AddUserForSession(data as string[], _dbManager.ZShopDBContext());
 					//return Querys.QueryManager.ToCustomerDTO(_customers.GetCustomers().Where(c => c.ID == (int)(object)data)).FirstOrDefault();
 
 					if (function == FunctionName.Order) // FUNCTION: ORDER TODO: THE HARDCODED ID NEEDS TO BE OBTAINED FROM ADDUSERFORSESSION
@@ -123,7 +123,7 @@ namespace Service
 				// ACTION -> UPDATE
 				case ActionType.Update:
 					if (function == FunctionName.Customer) // FUNCTION: CUSTOMER
-						return _customers.Update(Querys.QueryManager.FromCustomerDTO(data as DTO.CustomerDTO));
+						return _customers.Update(Querys.QueryManager.FromCustomerDTO(data as DTO.CustomerDTO, CID((data as DTO.CustomerDTO).SID)));
 
 					if (function == FunctionName.Order) // FUNCTION: ORDER
 						return _orders.Update(data as Order);
@@ -229,6 +229,9 @@ namespace Service
 
 			return false; // SOMETHING WENT WRONG!
 		}
+		#endregion
+		#region CID RETURN
+		private int CID(string sID) { return _authUser.ReturnCustomerID(sID); }
 		#endregion
 	}
 

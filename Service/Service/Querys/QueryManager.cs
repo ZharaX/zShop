@@ -115,11 +115,11 @@ namespace Service.Querys
 		/// </summary>
 		/// <param name="customer">Data Customer Model</param>
 		/// <returns>CustomerDTO</returns>
-		public static Data.Models.Customer FromCustomerDTO(CustomerDTO customer)
+		public static Data.Models.Customer FromCustomerDTO(CustomerDTO customer, int cID)
 		{
 			return new Data.Models.Customer
 			{
-				ID = 1, // TODO:
+				ID = cID,
 				FirstName = customer.FirstName,
 				LastName = customer.LastName,
 				Address = customer.Address,
@@ -127,8 +127,7 @@ namespace Service.Querys
 				City = customer.City,
 				Country = customer.Country,
 				Phone = customer.Phone,
-				Email = customer.Email,
-				//Orders = FromOrderDTO(customer.Orders, customer)
+				Email = customer.Email
 			};
 		}
 

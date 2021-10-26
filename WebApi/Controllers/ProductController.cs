@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace WebAPI.Controllers
 {
@@ -45,13 +46,13 @@ namespace WebAPI.Controllers
 		/// <returns>Product as DTO Class</returns>
 		[HttpGet]
 		[Route("{id}")]
-		public async Task<Service.DTO.ProductDTO> GetProduct(int? id)
+		public async Task<List<Service.DTO.ProductDTO>> GetProduct(int? id)
 		{
 			// ID MUST BE SUPPLIED
 			if (id == null) return null;
 
 			// RETRIEVE THE PRODUCT
-			var product = (Service.DTO.ProductDTO)_siteFunctions.PerformAction(Service.ActionType.Retrieve, Service.FunctionName.Product, id);
+			var product = (List<Service.DTO.ProductDTO>)_siteFunctions.PerformAction(Service.ActionType.Retrieve, Service.FunctionName.Product, id);
 
 			// NO PRODUCT FOUND -> RETURN NULL
 			if (product == null) return null;
@@ -103,16 +104,16 @@ namespace WebAPI.Controllers
 		/// </summary>
 		/// <param name="id">Product ID</param>
 		/// <returns>Status Result</returns>
-		[HttpPost]
+		[HttpDelete]
 		[Route("Delete/{id}")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			// FIND PRODUCT PER ID -> IF NONE FOUND RETURN NOT FOUND MESSAGE
-			var product = (Service.DTO.ProductDTO)_siteFunctions.PerformAction(Service.ActionType.Retrieve, Service.FunctionName.Product, id);
-			if (!ProductExists(product.ProductID)) return NotFound("Product with ID: " + product.ProductID + " was not found!");
+			var product = (List<Service.DTO.ProductDTO>)_siteFunctions.PerformAction(Service.ActionType.Retrieve, Service.FunctionName.Product, id);
+			if (!ProductExists(product.FirstOrDefault(p => p.ProductID == id).ProductID)) return NotFound("Product with ID: " + id + " was not found!");
 
 			// ELSE WE CONTINUE REMOVING PRODUCT
-			if ((bool)_siteFunctions.PerformAction(Service.ActionType.Delete, Service.FunctionName.Product, product))
+			if ((bool)_siteFunctions.PerformAction(Service.ActionType.Delete, Service.FunctionName.Product, product.FirstOrDefault(p => p.ProductID == id).ProductID))
 				return Ok("Product Removed!");
 
 			// WE SHOULD NOT BE GETTING HERE
@@ -122,9 +123,9 @@ namespace WebAPI.Controllers
 		// Checker for Product existence.
 		private bool ProductExists(int id)
 		{
-			var product = (Service.DTO.ProductDTO)_siteFunctions.PerformAction(Service.ActionType.Retrieve, Service.FunctionName.Product, id);
+			var product = (List<Service.DTO.ProductDTO>)_siteFunctions.PerformAction(Service.ActionType.Retrieve, Service.FunctionName.Product, id);
 
-			if (product != null) return true;
+			if (product.FirstOrDefault(p => p.ProductID == id) != null) return true;
 			return false;
 		}
 	}

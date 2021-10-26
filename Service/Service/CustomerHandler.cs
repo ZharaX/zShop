@@ -14,7 +14,7 @@ namespace Service
 		/// </summary>
 		/// <param name="cred">SID[0] | User[1] | Pass[2]</param>
 		/// <returns>SESSION ID (GUID)</returns>
-		DTO.CustomerDTO AddUserForSession(string[] cred);
+		DTO.CustomerDTO AddUserForSession(string[] cred, Data.ZShopContext context);
 
 		/// <summary>
 		/// When user is Authenticated, user will have an SID to validate against.
@@ -23,21 +23,26 @@ namespace Service
 		/// <returns>CustomerDTO Object</returns>
 		DTO.CustomerDTO ReturnCustomerDTO(string sID, Data.Models.Customer cust);
 
+		/// <summary>
+		/// Returns user ID
+		/// </summary>
+		/// <param name="sID">SESSION ID</param>
+		/// <returns>Customer ID</returns>
+		int ReturnCustomerID(string sID);
+
 		bool UpdateUserTimer(string sID, bool userAction);
 	}
 
 	public class CustomerHandler : ICustomerHandler
 	{
-		private readonly ISiteFunctions _siteFunctions;
-
 		private List<ActiveUsers.UserData> _users = new List<ActiveUsers.UserData>();
 
 		// ON INSTANTIATION: Starts Timer Event which checks for user activity (Auto-Logout Functionality)
-		public CustomerHandler(ISiteFunctions siteFunctions) { _siteFunctions = siteFunctions; CheckUserStatus(); }
+		public CustomerHandler() { CheckUserStatus(); }
 
 
 		#region USER / CUSTOMER AUTHENTICATION
-		public DTO.CustomerDTO AddUserForSession(string[] cred)
+		public DTO.CustomerDTO AddUserForSession(string[] cred, Data.ZShopContext context)
 		{
 			if (cred == null)
 				return null;
@@ -46,7 +51,7 @@ namespace Service
 			if (_users.FirstOrDefault(c => c.SID == cred[0]) == null)
 			{
 				// IF USER IS NOT FOUND, CALL LOGIN
-				Data.Models.Customer cust = LoginCustomer(new string[] { cred[1], cred[2] });
+				Data.Models.Customer cust = LoginCustomer(new string[] { cred[1], cred[2] }, context);
 
 				// ADD TO USER STORE IF USER WAS LOGGED IN
 				if (cust != null)
@@ -59,6 +64,10 @@ namespace Service
 					return ReturnCustomerDTO(user.SID, cust);
 				}
 			}
+			else
+			{
+				return ReturnCustomerDTO(cred[0], context.Customers.Find(ReturnCustomerID(cred[0])));
+			}
 
 			// NONE FOUND
 			return null;
@@ -68,10 +77,15 @@ namespace Service
 		/// Finds a Customer with SessionID (Authorized)
 		/// </summary>
 		/// <returns>Data.Models.Customer Object</returns>
-		private Data.Models.Customer LoginCustomer(string[] cred)
+		private Data.Models.Customer LoginCustomer(string[] cred, Data.ZShopContext context)
 		{
 			// GET CUSTOMER OBJECT
-			Data.Models.Customer cust = (Data.Models.Customer)_siteFunctions.PerformAction(ActionType.Login, FunctionName.Customer, cred);
+			Data.Models.Customer cust = new();
+
+			using(var dbContext = context)
+			{
+				cust = dbContext.LoginCustomer(cred);
+			}
 
 			// RETURN CUSTOMER ID
 			if (cust != null) return cust;
@@ -103,6 +117,13 @@ namespace Service
 			};
 
 			return null; // NO CUSTOMER DATA TO TRANSFER
+		}
+		#endregion
+		#region CUSTOMER ID RETURNER
+		public int ReturnCustomerID(string sID)
+		{
+			return 1; // TODO: WHILE WEB API TEST WE NEED THIS SET TO ONE
+			//return _users.FirstOrDefault(c => c.SID == sID).CID;
 		}
 		#endregion
 		#region UPDATE USER AUTO LOGOUT TIMER

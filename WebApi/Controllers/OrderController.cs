@@ -29,14 +29,14 @@ namespace WebAPI.Controllers
 		/// <returns>List of Orders</returns>
 		[HttpGet]
 		[Route("All")]
-		public async Task<IEnumerable<Service.DTO.OrderDTO>> GetAll(string _searchString, bool isCompleted, int _curPage, int _pageSize)
+		public async Task<IEnumerable<Service.DTO.OrderDTO>> GetAll(string _searchString, int _curPage, int _pageSize)
 		{
 			return await _filterService.FilterOrders(
 				_searchString,
 				_curPage,
 				_pageSize,
 				Service.Querys.OrderBy.Descending,
-				Service.Querys.OrderFilterBy.Name); // TODO: ENUM CORRECT VALUES
+				Service.Querys.OrderFilterBy.Date); // TODO: ENUM CORRECT VALUES
 		}
 
 		/// <summary>
@@ -104,7 +104,7 @@ namespace WebAPI.Controllers
 		/// </summary>
 		/// <param name="id">Order ID</param>
 		/// <returns>Status Result</returns>
-		[HttpPost]
+		[HttpDelete]
 		[Route("Delete/{id}")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{

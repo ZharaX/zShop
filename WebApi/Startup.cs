@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace WebApi
 {
@@ -27,6 +28,8 @@ namespace WebApi
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddSingleton<Service.ICustomerHandler, Service.CustomerHandler>();
+
 			string connectionString = Configuration.GetConnectionString("S21DMH3B11_zShopDBContext2");
 			services.AddDbContext<Data.IZShopContext, Data.ZShopContext>(
 				options => options.UseSqlServer(connectionString)
@@ -34,7 +37,20 @@ namespace WebApi
 
 			services.AddScoped<Service.ISiteFunctions, Service.SiteFunctions>();
 
-			services.AddControllers();
+			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+				.AddCookie("Cookies", options =>
+				{
+					options.AccessDeniedPath = "/Error";
+					options.Cookie.Name = "AuthCookie";
+					options.Cookie.HttpOnly = true;
+					options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+					options.LoginPath = "/Users/User";
+					options.ReturnUrlParameter = "ReturnUrl";
+					options.SlidingExpiration = true;
+				});
+
+			services.AddControllers().AddXmlDataContractSerializerFormatters(); // XML
+			//services.AddControllers();
 			services.AddSwaggerGen(c =>
 			{
 				c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });

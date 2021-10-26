@@ -10,7 +10,7 @@ namespace Service.Querys
 	public interface IFilterService
 	{
 		public Task<List<DTO.ProductDTO>> FilterProducts(string searchString, int currentPage, int pageSize, OrderBy order, ProductFilterBy filter);
-		public Task<List<DTO.CustomerDTO>> FilterCustomers(string searchString, int currentPage, int pageSize, OrderBy order, bool isCompleted);
+		public Task<List<DTO.CustomerDTO>> FilterCustomers(string searchString, int currentPage, int pageSize, OrderBy order, CustomerFilterBy filter);
 		public Task<List<DTO.OrderDTO>> FilterOrders(string searchString, int currentPage, int pageSize, OrderBy order, OrderFilterBy filter);
 	}
 
@@ -61,22 +61,28 @@ namespace Service.Querys
 		/// <param name="order">Ascending / Descending</param>
 		/// <param name="filter">Filter on Property</param>
 		/// <returns>List of Products (Filtered / Ordered)</returns>
-		public async Task<List<DTO.CustomerDTO>> FilterCustomers(string searchString, int currentPage, int pageSize, OrderBy order, bool isCompleted)
+		public async Task<List<DTO.CustomerDTO>> FilterCustomers(string searchString, int currentPage, int pageSize, OrderBy order, CustomerFilterBy filter)
 		{
 			// THE QUERY!
 			Customers.CustomerFiltering customerModel = new Customers.CustomerFiltering();
 			var query = (List<DTO.CustomerDTO>)_siteFunctions.PerformAction(ActionType.Query, FunctionName.Customer, searchString);
 
+			// TEST ORDER ATTACH TODO:
+			foreach(DTO.CustomerDTO cust in query)
+			{
+				cust.Orders = (List<DTO.OrderDTO>)_siteFunctions.PerformAction(ActionType.Query, FunctionName.Order, cust);
+			}
+
 			// TOTAL PRODUCT COUNT
 			customerModel.TotalCount = query.Count();
 
-
 			// FILTER BY REFLECTION & ORDERBY
+			var filterBy = filter.ToString();
 			if (order == OrderBy.Ascending)
-				customerModel.Customers = query.Skip((currentPage - 1) * pageSize).Take(pageSize).OrderBy(c => c.Orders.Select(c => c.IsProcessed == isCompleted)).ToList();
+				customerModel.Customers = query.Skip((currentPage - 1) * pageSize).Take(pageSize).OrderBy(c => c.GetType().GetProperty(filterBy).GetValue(c, null)).ToList();
 
 			if (order == OrderBy.Descending)
-				customerModel.Customers = query.Skip((currentPage - 1) * pageSize).Take(pageSize).OrderByDescending(c => c.Orders.Select(c => c.IsProcessed == isCompleted)).ToList();
+				customerModel.Customers = query.Skip((currentPage - 1) * pageSize).Take(pageSize).OrderByDescending(c => c.GetType().GetProperty(filterBy).GetValue(c, null)).ToList();
 
 			return customerModel.Customers;
 		}
@@ -104,10 +110,10 @@ namespace Service.Querys
 
 			// FILTER BY REFLECTION & ORDERBY
 			if (order == OrderBy.Ascending)
-				orderModel.Orders = query.Skip((currentPage - 1) * pageSize).Take(pageSize).OrderBy(p => p.GetType().GetProperty(filterBy).GetValue(p, null)).ToList();
+				orderModel.Orders = query.Skip((currentPage - 1) * pageSize).Take(pageSize).OrderBy(o => o.GetType().GetProperty(filterBy).GetValue(o, null)).ToList();
 
 			if (order == OrderBy.Descending)
-				orderModel.Orders = query.Skip((currentPage - 1) * pageSize).Take(pageSize).OrderByDescending(p => p.GetType().GetProperty(filterBy).GetValue(p, null)).ToList();
+				orderModel.Orders = query.Skip((currentPage - 1) * pageSize).Take(pageSize).OrderByDescending(o => o.GetType().GetProperty(filterBy).GetValue(o, null)).ToList();
 
 			return orderModel.Orders;
 		}
@@ -127,10 +133,17 @@ namespace Service.Querys
 		InStock
 	}
 
+	public enum CustomerFilterBy
+	{
+		First,
+		Last,
+		Orders
+	}
+
 	public enum OrderFilterBy
 	{
-		Name,
+		Date,
 		Price,
-		InStock
+		IsCompleted
 	}
 }

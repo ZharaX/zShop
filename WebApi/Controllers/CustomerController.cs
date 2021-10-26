@@ -29,14 +29,14 @@ namespace WebAPI.Controllers
 		/// <returns>List of Customers</returns>
 		[HttpGet]
 		[Route("All")]
-		public async Task<IEnumerable<Service.DTO.CustomerDTO>> GetAll(string _searchString, bool isCompleted, int _curPage, int _pageSize)
+		public async Task<IEnumerable<Service.DTO.CustomerDTO>> GetAll(string _searchString, int _curPage, int _pageSize)
 		{
 			return await _filterService.FilterCustomers(
 				_searchString,
 				_curPage,
 				_pageSize,
 				Service.Querys.OrderBy.Descending,
-				isCompleted);
+				Service.Querys.CustomerFilterBy.Orders);
 		}
 
 		/// <summary>
@@ -52,7 +52,7 @@ namespace WebAPI.Controllers
 			if (sID == null) return null;
 
 			// RETRIEVE THE PRODUCT
-			var customer = (Service.DTO.CustomerDTO)_siteFunctions.PerformAction(Service.ActionType.Retrieve, Service.FunctionName.Customer, sID);
+			var customer = (Service.DTO.CustomerDTO)_siteFunctions.PerformAction(Service.ActionType.Retrieve, Service.FunctionName.Customer, new string[] { sID });
 
 			// NO CUSTOMER FOUND -> RETURN NULL
 			if (customer == null) return null;
@@ -104,7 +104,7 @@ namespace WebAPI.Controllers
 		/// </summary>
 		/// <param name="sID">SESSION ID</param>
 		/// <returns>Status Result</returns>
-		[HttpPost]
+		[HttpDelete]
 		[Route("Delete/{id}")]
 		public async Task<IActionResult> DeleteConfirmed(string sID)
 		{
