@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPI.Controllers
 {
 	/// <summary>
-	/// API for Products (All, Single, CRUD Functionality)
+	/// API for Customers (All, Single, CRUD Functionality)
 	/// </summary>
 	[ApiController]
 	[Route("[controller]")]
@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
 		/// <param name="_searchString">The SearchString</param>
 		/// <param name="isCompleted">Filter on Incomplete Orders</param>
 		/// <param name="_curPage">The page we're curently on</param>
-		/// <param name="_pageSize">Number of Products to display</param>
+		/// <param name="_pageSize">Number of Customers to display</param>
 		/// <returns>List of Customers</returns>
 		[HttpGet]
 		[Route("All")]
