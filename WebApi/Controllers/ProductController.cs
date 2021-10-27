@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
@@ -9,7 +10,7 @@ namespace WebAPI.Controllers
 	/// API for Products (All, Single, CRUD Functionality)
 	/// </summary>
 	[ApiController]
-	[Route("[controller]")]
+	[Route("api/[controller]")]
 	public class ProductsController : ControllerBase
 	{
 		#region CONTEXT DATA
@@ -27,8 +28,7 @@ namespace WebAPI.Controllers
 		/// <param name="_curPage">The page we're curently on</param>
 		/// <param name="_pageSize">Number of Products to display</param>
 		/// <returns>List of Products</returns>
-		[HttpGet]
-		[Route("Products/All")]
+		[HttpGet("All")]
 		public async Task<IEnumerable<Service.DTO.ProductDTO>> GetAll(string _searchString, int _curPage, int _pageSize)
 		{
 			return await _filterService.FilterProducts(
@@ -44,20 +44,23 @@ namespace WebAPI.Controllers
 		/// </summary>
 		/// <param name="id">Product ID</param>
 		/// <returns>Product as DTO Class</returns>
-		[HttpGet]
-		[Route("Products/{id}")]
-		public async Task<List<Service.DTO.ProductDTO>> GetProduct(int? id)
+		[HttpGet("{id}")]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Service.DTO.ProductDTO))]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		//[Route("Products/{id}")]
+		public IActionResult GetProduct(int? id)
 		{
-			// ID MUST BE SUPPLIED
-			if (id == null) return null;
+			// ID MUST BE SUPPLIED -> RETURN BADREQUEST
+			if (id == null) return BadRequest("ID MUST BE SUPPLIED!");
 
 			// RETRIEVE THE PRODUCT
 			var product = (List<Service.DTO.ProductDTO>)_siteFunctions.PerformAction(Service.ActionType.Retrieve, Service.FunctionName.Product, id);
 
-			// NO PRODUCT FOUND -> RETURN NULL
-			if (product == null) return null;
+			// NO PRODUCT FOUND -> RETURN NOTFOUND
+			if (product == null) return NotFound("NO PRODUCT FOUND!");
 
-			return product; // TODO: TASK AWAIT IMPLEMENTATION
+			return Ok(product); // RETURNS PRODUCT
 		}
 
 		/// <summary>
@@ -65,16 +68,17 @@ namespace WebAPI.Controllers
 		/// </summary>
 		/// <param name="product">The product Data</param>
 		/// <returns>Status Result</returns>
-		[HttpPost]
-		[Route("Products/Create")]
+		[HttpPost("Create")]
+		[ProducesResponseType(StatusCodes.Status201Created)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<IActionResult> CreateProduct(Service.DTO.ProductDTO product)
 		{
 			// ADD PRODUCT
 			if ((bool)_siteFunctions.PerformAction(Service.ActionType.Create, Service.FunctionName.Product, product))
-				return Ok("Product Created, ID: " + product.ProductID);
+				return CreatedAtAction(nameof(GetProduct), new { id = product.ProductID }, product);
 
 			// SOMETHING WENT HORRIBLY WRONG HERE!
-			return BadRequest();
+			return BadRequest("PRODUCT WAS NOT CREATED!");
 		}
 
 		/// <summary>
@@ -83,17 +87,19 @@ namespace WebAPI.Controllers
 		/// <param name="id">Product ID</param>
 		/// <param name="product">Product Object to be edited</param>
 		/// <returns>Status Result</returns>
-		[HttpPut]
-		[Route("Products/Update")]
+		[HttpPut("Update")]		
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		//[ProducesResponseType(StatusCodes.Status204NoContent)]
 		public async Task<IActionResult> EditProduct(int id, Service.DTO.ProductDTO product)
 		{
 			// CHECKS FOR ID MISMATCH/PRODUCT NOT FOUND
-			if (id != product.ProductID) return NotFound("ID: " + id + "does not match product with ID: " + product.ProductID);
+			if (id != product.ProductID) return BadRequest("ID: " + id + "does not match product with ID: " + product.ProductID);
 			if (!ProductExists(product.ProductID)) return NotFound("Product with ID: " + product.ProductID + " was not found!");
 
 			// ELSE UPDATE PRODUCT
 			if ((bool)_siteFunctions.PerformAction(Service.ActionType.Update, Service.FunctionName.Product, product))
-				return Ok(product.ProductID + " Updated");
+				return StatusCode(204,  "Product Updated");
 
 			// WE SHOULD NOT BE GETTING HERE
 			return BadRequest();
@@ -104,8 +110,10 @@ namespace WebAPI.Controllers
 		/// </summary>
 		/// <param name="id">Product ID</param>
 		/// <returns>Status Result</returns>
-		[HttpDelete]
-		[Route("Products/Delete/{id}")]
+		[HttpDelete("Delete/{id}")]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			// FIND PRODUCT PER ID -> IF NONE FOUND RETURN NOT FOUND MESSAGE
@@ -114,7 +122,7 @@ namespace WebAPI.Controllers
 
 			// ELSE WE CONTINUE REMOVING PRODUCT
 			if ((bool)_siteFunctions.PerformAction(Service.ActionType.Delete, Service.FunctionName.Product, product.FirstOrDefault(p => p.ProductID == id).ProductID))
-				return Ok("Product Removed!");
+				return StatusCode(204, new { Message = "Product Removed!" });
 
 			// WE SHOULD NOT BE GETTING HERE
 			return BadRequest();

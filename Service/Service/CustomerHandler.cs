@@ -5,7 +5,7 @@ namespace Service
 {
 	/// <summary>
 	/// Customer Handler Interface implementation
-	/// <para>USE THIS TO ACCESS SITE REPOSITORY</para>
+	/// <para>USE THIS TO ACCESS CUSTOMER HANDLE FUNCTIONALITY</para>
 	/// </summary>
 	public interface ICustomerHandler
 	{
@@ -30,6 +30,12 @@ namespace Service
 		/// <returns>Customer ID</returns>
 		int ReturnCustomerID(string sID);
 
+		/// <summary>
+		/// Keeps users 'alive' when navigationg through application
+		/// </summary>
+		/// <param name="sID">SESSION ID</param>
+		/// <param name="userAction">User Action?</param>
+		/// <returns></returns>
 		bool UpdateUserTimer(string sID, bool userAction);
 	}
 

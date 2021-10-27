@@ -20,7 +20,7 @@ namespace WebApi.Controllers
 		public AuthController(Service.ISiteFunctions siteFunction) { _siteFunctions = siteFunction; }
 
 		[HttpPost]
-		[Route("/")]
+		[Route("/Users/User")]
 		public async Task<IActionResult> LoginUser(string returnUrl = null, string username = null, string userpass = null, string btnCancel = null)
 		{
 			if (btnCancel == "Cancel") return null;
