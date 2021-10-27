@@ -23,12 +23,11 @@ namespace WebAPI.Controllers
 		/// Gets all Orders with supplied Filter/Order parameters.
 		/// </summary>
 		/// <param name="_searchString">The SearchString</param>
-		/// <param name="isCompleted">Filter on Incomplete Orders</param>
 		/// <param name="_curPage">The page we're curently on</param>
 		/// <param name="_pageSize">Number of Orders to display</param>
 		/// <returns>List of Orders</returns>
 		[HttpGet]
-		[Route("All")]
+		[Route("Orders/All")]
 		public async Task<IEnumerable<Service.DTO.OrderDTO>> GetAll(string _searchString, int _curPage, int _pageSize)
 		{
 			return await _filterService.FilterOrders(
@@ -45,7 +44,7 @@ namespace WebAPI.Controllers
 		/// <param name="id">Orders ID</param>
 		/// <returns>Order as DTO Class</returns>
 		[HttpGet]
-		[Route("{id}")]
+		[Route("Order/{id}")]
 		public async Task<Service.DTO.OrderDTO> GetOrder(string id)
 		{
 			// ID MUST BE SUPPLIED
@@ -66,7 +65,7 @@ namespace WebAPI.Controllers
 		/// <param name="order">The Order Data</param>
 		/// <returns>Status Result</returns>
 		[HttpPost]
-		[Route("Create")]
+		[Route("Orders/Create")]
 		public async Task<IActionResult> CreateOrder(Service.DTO.OrderDTO order)
 		{
 			// ADD ORDER
@@ -84,7 +83,7 @@ namespace WebAPI.Controllers
 		/// <param name="customer">Order Object to be edited</param>
 		/// <returns>Status Result</returns>
 		[HttpPut]
-		[Route("Update")]
+		[Route("Orders/Update")]
 		public async Task<IActionResult> EditOrder(int id, Service.DTO.OrderDTO order)
 		{
 			// CHECKS FOR ID MISMATCH/ORDER NOT FOUND
@@ -105,7 +104,7 @@ namespace WebAPI.Controllers
 		/// <param name="id">Order ID</param>
 		/// <returns>Status Result</returns>
 		[HttpDelete]
-		[Route("Delete/{id}")]
+		[Route("Orders/Delete/{id}")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			// FIND ORDER PER ID -> IF NONE FOUND RETURN NOT FOUND MESSAGE

@@ -28,7 +28,7 @@ namespace WebAPI.Controllers
 		/// <param name="_pageSize">Number of Products to display</param>
 		/// <returns>List of Products</returns>
 		[HttpGet]
-		[Route("All")]
+		[Route("Products/All")]
 		public async Task<IEnumerable<Service.DTO.ProductDTO>> GetAll(string _searchString, int _curPage, int _pageSize)
 		{
 			return await _filterService.FilterProducts(
@@ -45,7 +45,7 @@ namespace WebAPI.Controllers
 		/// <param name="id">Product ID</param>
 		/// <returns>Product as DTO Class</returns>
 		[HttpGet]
-		[Route("{id}")]
+		[Route("Products/{id}")]
 		public async Task<List<Service.DTO.ProductDTO>> GetProduct(int? id)
 		{
 			// ID MUST BE SUPPLIED
@@ -66,7 +66,7 @@ namespace WebAPI.Controllers
 		/// <param name="product">The product Data</param>
 		/// <returns>Status Result</returns>
 		[HttpPost]
-		[Route("Create")]
+		[Route("Products/Create")]
 		public async Task<IActionResult> CreateProduct(Service.DTO.ProductDTO product)
 		{
 			// ADD PRODUCT
@@ -84,7 +84,7 @@ namespace WebAPI.Controllers
 		/// <param name="product">Product Object to be edited</param>
 		/// <returns>Status Result</returns>
 		[HttpPut]
-		[Route("Update")]
+		[Route("Products/Update")]
 		public async Task<IActionResult> EditProduct(int id, Service.DTO.ProductDTO product)
 		{
 			// CHECKS FOR ID MISMATCH/PRODUCT NOT FOUND
@@ -105,12 +105,12 @@ namespace WebAPI.Controllers
 		/// <param name="id">Product ID</param>
 		/// <returns>Status Result</returns>
 		[HttpDelete]
-		[Route("Delete/{id}")]
+		[Route("Products/Delete/{id}")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
 			// FIND PRODUCT PER ID -> IF NONE FOUND RETURN NOT FOUND MESSAGE
 			var product = (List<Service.DTO.ProductDTO>)_siteFunctions.PerformAction(Service.ActionType.Retrieve, Service.FunctionName.Product, id);
-			if (!ProductExists(product.FirstOrDefault(p => p.ProductID == id).ProductID)) return NotFound("Product with ID: " + id + " was not found!");
+			if (!ProductExists(product.Where(p => p.ProductID == id).FirstOrDefault().ProductID)) return NotFound("Product with ID: " + id + " was not found!");
 
 			// ELSE WE CONTINUE REMOVING PRODUCT
 			if ((bool)_siteFunctions.PerformAction(Service.ActionType.Delete, Service.FunctionName.Product, product.FirstOrDefault(p => p.ProductID == id).ProductID))

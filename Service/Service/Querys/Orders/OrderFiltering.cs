@@ -2,9 +2,8 @@
 
 namespace Service.Querys.Orders
 {
-	public class OrderFiltering
+	public class OrderFiltering : BaseFiltering
 	{
 		public List<DTO.OrderDTO> Orders { get; set; }
-		public int TotalCount { get; set; }
 	}
 }

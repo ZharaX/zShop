@@ -30,7 +30,7 @@ namespace WebApi
 		{
 			services.AddSingleton<Service.ICustomerHandler, Service.CustomerHandler>();
 
-			string connectionString = Configuration.GetConnectionString("S21DMH3B11_zShopDBContext2");
+			string connectionString = Configuration.GetConnectionString("S21DMH3B11_zShopDBContext");
 			services.AddDbContext<Data.IZShopContext, Data.ZShopContext>(
 				options => options.UseSqlServer(connectionString)
 			);

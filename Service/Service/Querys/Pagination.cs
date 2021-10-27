@@ -120,11 +120,7 @@ namespace Service.Querys
 		#endregion
 	}
 
-	public enum OrderBy
-	{
-		Ascending,
-		Descending
-	}
+	public enum OrderBy { Ascending, Descending }
 
 	public enum ProductFilterBy
 	{
@@ -135,8 +131,8 @@ namespace Service.Querys
 
 	public enum CustomerFilterBy
 	{
-		First,
-		Last,
+		FirstName,
+		LastName,
 		Orders
 	}
 

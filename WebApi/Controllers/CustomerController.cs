@@ -23,12 +23,11 @@ namespace WebAPI.Controllers
 		/// Gets all Customers with supplied Filter/Order parameters.
 		/// </summary>
 		/// <param name="_searchString">The SearchString</param>
-		/// <param name="isCompleted">Filter on Incomplete Orders</param>
 		/// <param name="_curPage">The page we're curently on</param>
 		/// <param name="_pageSize">Number of Customers to display</param>
 		/// <returns>List of Customers</returns>
 		[HttpGet]
-		[Route("All")]
+		[Route("Customers/All")]
 		public async Task<IEnumerable<Service.DTO.CustomerDTO>> GetAll(string _searchString, int _curPage, int _pageSize)
 		{
 			return await _filterService.FilterCustomers(
@@ -36,7 +35,7 @@ namespace WebAPI.Controllers
 				_curPage,
 				_pageSize,
 				Service.Querys.OrderBy.Descending,
-				Service.Querys.CustomerFilterBy.Orders);
+				Service.Querys.CustomerFilterBy.FirstName);
 		}
 
 		/// <summary>
@@ -45,7 +44,7 @@ namespace WebAPI.Controllers
 		/// <param name="sID">SESSION ID</param>
 		/// <returns>Customer as DTO Class</returns>
 		[HttpGet]
-		[Route("{id}")]
+		[Route("Customers/{id}")]
 		public async Task<Service.DTO.CustomerDTO> GetCustomer(string sID)
 		{
 			// ID MUST BE SUPPLIED
@@ -66,7 +65,7 @@ namespace WebAPI.Controllers
 		/// <param name="customer">The Customer Data</param>
 		/// <returns>Status Result</returns>
 		[HttpPost]
-		[Route("Create")]
+		[Route("Customers/Create")]
 		public async Task<IActionResult> CreateProduct(Service.DTO.CustomerDTO customer)
 		{
 			// ADD PRODUCT
@@ -84,7 +83,7 @@ namespace WebAPI.Controllers
 		/// <param name="customer">Customer Object to be edited</param>
 		/// <returns>Status Result</returns>
 		[HttpPut]
-		[Route("Update")]
+		[Route("Customers/Update")]
 		public async Task<IActionResult> EditProduct(string sID, Service.DTO.CustomerDTO customer)
 		{
 			// CHECKS FOR ID MISMATCH/PRODUCT NOT FOUND
@@ -105,7 +104,7 @@ namespace WebAPI.Controllers
 		/// <param name="sID">SESSION ID</param>
 		/// <returns>Status Result</returns>
 		[HttpDelete]
-		[Route("Delete/{id}")]
+		[Route("Customers/Delete/{id}")]
 		public async Task<IActionResult> DeleteConfirmed(string sID)
 		{
 			// FIND PRODUCT PER ID -> IF NONE FOUND RETURN NOT FOUND MESSAGE
