@@ -10,7 +10,7 @@ namespace WebAPI.Controllers
 	/// API for Products (All, Single, CRUD Functionality)
 	/// </summary>
 	[ApiController]
-	[Route("api/[controller]")]
+	[Route("[controller]")]
 	public class ProductsController : ControllerBase
 	{
 		#region CONTEXT DATA
